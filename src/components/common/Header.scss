@@ -1,0 +1,79 @@
+@import '../../App.scss';
+
+.bg-hd-nav{
+    background-color: $loading-color;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 2;
+    height: $nav-height;
+    overflow: hidden;
+    transition: height ease-in-out 0.5s;
+}
+.bg-hd-nav.on{
+    height: 100vh;
+}
+.bg-hd-nav a{
+    text-decoration: unset;
+    color: black;
+}
+
+.bg-hd-wrapper{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: $max-screen-width;
+    margin: 0 auto;
+    padding: 0 20px;
+    height: $nav-height;
+}
+
+
+
+.bg-hd-menu{
+    list-style: none;
+}
+.bg-hd-menu > li{
+    cursor: pointer;
+}
+
+.bg-hd-menu.desktop{
+    display: flex;
+    margin: 0;
+}
+.bg-hd-menu.desktop > li{
+    margin-left: 20px;
+}
+
+.bg-hd-menu.mobile{
+    border-top: 1px solid black;
+}
+.bg-hd-menu.mobile > li{
+    padding: 10px 0;
+    margin: 0 40px;
+    border-bottom: 1px solid black;
+}
+
+
+
+.bg-hd-menu-right-icon,
+.bg-hd-menu-mobile-btn{
+    display: none;
+    cursor: pointer;
+}
+
+/* Medium Viewport 이하 */
+@media screen and (max-width: 1068px) {
+    
+}
+/* Small Viewport 이하 */
+@media screen and (max-width: 734px) {
+    .bg-hd-menu.desktop{
+        display: none;
+    }
+    .bg-hd-menu-right-icon,
+    .bg-hd-menu-mobile-btn{
+        display: inherit;
+    }
+}

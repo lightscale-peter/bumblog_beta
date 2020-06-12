@@ -1,0 +1,133 @@
+@import '../../App.scss';
+
+.main{
+    padding-top: $nav-height;
+    padding-bottom: 15px;
+}
+
+.bg-hp-hero{
+    position: relative;
+    max-width: 2560px;
+    margin: 0 auto;
+}
+
+
+.bg-hp-desc{
+    margin: 5px 20px 0;
+}
+
+.bg-hp-table{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-gap: 15px;
+    margin: 0 15px;
+}
+.bg-hp-list.merge-row{
+    grid-column: 1 / span 4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+/* Medium Viewport 이하 */
+@media screen and (max-width: 1068px) {
+    .bg-hp-table{
+        grid-template-columns: 1fr 1fr;
+    }
+    .bg-hp-list.merge-row{
+        grid-column: 1 / span 2;
+    }
+}
+/* Small Viewport 이하 */
+@media screen and (max-width: 734px) {
+    .bg-hp-table{
+        grid-template-columns: 1fr;
+        margin: 0;
+    }
+    .bg-hp-list.merge-row{
+        grid-column: 1 / span 1;
+    }
+}
+.merge-row .bg-hp-banner{
+    max-width: 500px;
+}
+
+
+
+
+
+.bg-hp-list{
+    list-style: none;
+    background-color: grey;
+    min-height: 20vh;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+    align-content: center;
+    justify-content: center;
+    padding: 20px;
+}
+.bg-hp-grid-wrapper{
+    margin: 15px auto 0;
+    max-width: 1920px;
+}
+
+
+
+
+.bg-hp-copy{
+    position: absolute;
+    transform: translate(-50%, -50%);
+    left: 50%;
+    top: 50%;
+    text-align: center;
+    width: 800px;
+}
+
+/* Medium Viewport 이하 */
+@media screen and (max-width: 1068px) {
+    .bg-hp-copy{
+        width: 600px;
+    }
+}
+/* Small Viewport 이하 */
+@media screen and (max-width: 734px) {
+    .bg-hp-copy{
+        width: 100%;
+    }
+}
+
+
+
+
+// IMAGE
+
+.bg-hp-hero-img{
+    width: 2560px;
+    // height: 1440px;
+    height: 720px;
+    background-size: 2560px 1440px;
+    background-repeat: no-repeat;
+    background-color: gray;
+}
+
+@media only screen and (max-width: 1068px) {
+    .bg-hp-hero-img{
+        width: 1920px;
+        // height: 1080px;
+        height: 540px;
+        background-size: 1920px 1080px;
+    }
+}
+
+
+
+@media only screen and (max-width: 735px) {
+    .bg-hp-hero-img{
+        width: 1600px;
+        // height: 900px;
+        height: 450px;
+        background-size: 1600px 900px;
+    }
+}
+

@@ -1,0 +1,51 @@
+@import '../../App.scss';
+
+.footer{
+    background-color: $loading-color;
+    font-size: 12px;
+}
+.bg-ft{
+    max-width: $max-screen-width;
+    padding: 30px;
+    margin: 0 auto;
+}
+.bg-ft-row-2{
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid black;
+    margin-top: 10px;
+    padding-top: 10px;
+}
+.bg-ft-copyright{
+    display: flex;
+}
+.bg-ft-copyright ul{
+    display: flex;
+    list-style: none;
+    margin-left: 30px;
+}
+
+.bg-ft-copyright ul > li{
+    margin-left: 10px;
+}
+.bg-ft-copyright ul > li:first-child{
+    margin-left: unset;
+}
+
+
+/* Medium Viewport 이하 */
+@media screen and (max-width: 1068px) {
+    
+}
+/* Small Viewport 이하 */
+@media screen and (max-width: 734px) {
+    .bg-ft-copyright{
+        flex-direction: column;
+    }
+    .bg-ft-copyright ul{
+        margin-left: 0;
+    }
+    .bg-ft-row-2{
+        flex-direction: column-reverse;
+    }
+}
