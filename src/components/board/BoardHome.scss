@@ -31,36 +31,23 @@
         color: grey;
     }
 }
-.bg-kw-list-img{
-    background-color: lightgrey;
-    width: 100px;
-    height: 100px;
-}
-.bg-kw-list-row{
+.bg-kw-btm-btns{
+    max-width: 840px;
+    margin: 30px auto 0;
     display: flex;
-    max-width: 800px;
-    margin: 20px auto 0;
-    align-items: center;
-    background-color: white;
-    padding: 20px 25px;
-}
-.bg-kw-list-contents{
-    margin-right: 30px;
-}
-.bg-kw-list-desc{
-    margin-top: 10px;
-}
-.bg-kw-list-info{
-    margin-top: 10px;
-    list-style: none;
-    display: flex;
-    & > li{
-        margin-right: 10px;
+    justify-content: space-between;
+
+    & > div{
+        cursor: pointer;
     }
 }
-.bg-kw-list-desc-txt{
-    display: -webkit-box;
-    overflow: hidden;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
+
+
+/* Medium Viewport 이하 */
+@media screen and (max-width: 1068px) {
+    
+}
+/* Small Viewport 이하 */
+@media screen and (max-width: 734px) {
+    
 }

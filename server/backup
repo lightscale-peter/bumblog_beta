@@ -1,0 +1,29 @@
+mongo "mongodb+srv://cluster0.dbn3m.mongodb.net/bumblog" --username dbUser
+
+db.board.drop();
+db.board.insert([
+    {
+        title: 'Title0',
+        subTitle: 'subTitle0',
+        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia facere est illum aperiam cumque amet soluta dicta adipisci nam similique, possimus nobis minima eveniet maxime natus quae debitis quidem ducimus.',
+        writer: 'bkshin0'
+    },
+    {
+        title: 'Title1',
+        subTitle: 'subTitle0',
+        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia facere est illum aperiam cumque amet soluta dicta adipisci nam similique, possimus nobis minima eveniet maxime natus quae debitis quidem ducimus.',
+        writer: 'bkshin1'
+    },
+    {
+        title: 'Title2',
+        subTitle: 'subTitle0',
+        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia facere est illum aperiam cumque amet soluta dicta adipisci nam similique, possimus nobis minima eveniet maxime natus quae debitis quidem ducimus.',
+        writer: 'bkshin2'
+    },
+    {
+        title: 'Title3',
+        subTitle: 'subTitle0',
+        description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia facere est illum aperiam cumque amet soluta dicta adipisci nam similique, possimus nobis minima eveniet maxime natus quae debitis quidem ducimus.',
+        writer: 'bkshin3'
+    }
+]);

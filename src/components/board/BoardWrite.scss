@@ -1,0 +1,46 @@
+@import '../../App.scss';
+
+.bb-board-write__main{
+    padding-top: 50px;
+    padding-bottom: 15px;
+    background-color: rgba(210, 210, 210, 0.15);
+}
+.bb-board-write__form{
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 0 15px;
+    & .tui-editor-defaultUI{
+        margin-top: 10px;
+        // max-width: 500px;
+        // margin: 30px auto 0;
+    }
+}
+.bb-board-write__title{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 25px;
+    font-size: 13px;
+    margin: 0;
+}
+.bb-board-write__title--sub{
+    @extend .bb-board-write__title;
+    margin-top: 10px;
+}
+
+.bb-board-write__buttons{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    & button{
+        cursor: pointer;
+        width: 49.5%;
+        font-size: 15px;
+        font-weight: bold;
+        background-color: white;
+        border: 1px solid black;
+        height: 40px;
+    }
+    & button:hover{
+        background-color: lightgrey;
+    }
+}

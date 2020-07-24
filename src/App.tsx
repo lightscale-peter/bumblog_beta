@@ -4,7 +4,9 @@ import {
   Header,
   Footer,
   Homepage,
-  Keyword
+  BoardHome,
+  BoardView,
+  BoardWrite
 } from './components';
 import './App.scss';
 
@@ -12,9 +14,11 @@ function App() {
   return (
     <BrowserRouter>
       <Header />
+      <Route exact path="/" component={Homepage} />
         <Switch>
-          <Route exact path="/"><Homepage /></Route>
-          <Route exact path="/keyword"><Keyword /></Route>
+          <Route path="/board/write" component={BoardWrite} />
+          <Route path="/board/view" component={BoardView} />
+          <Route path="/board" component={BoardHome} />
         </Switch>
       <Footer />
     </BrowserRouter>

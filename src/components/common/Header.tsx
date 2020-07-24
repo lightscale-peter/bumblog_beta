@@ -20,20 +20,20 @@ function Header(){
     
 
     return (
-        <nav className="bg-hd-nav" ref={navRef}>
-            <div className="bg-hd-wrapper">
-                <div className="bg-hd-menu-mobile-btn" onClick={toggleMenu}>--</div>
+        <nav className="bb-header__nav" ref={navRef}>
+            <div className="bb-header__menu--desktop">
+                <div className="bb-header__menu-toggle" onClick={toggleMenu}>--</div>
                 <div><Link to="/">LOGO</Link></div>
-                <ul className="bg-hd-menu desktop">
-                    <li><Link to="/keyword">MENU-1</Link></li>
+                <ul className="bb-header__menu-detail--desktop">
+                    <li><Link to="/board">MENU-1</Link></li>
                     <li>MENU-2</li>
                     <li>MENU-3</li>
                     <li>MENU-4</li>
                 </ul>
-                <div className="bg-hd-menu-right-icon"></div>
+                <div className="bb-header__icons--mobile"></div>
             </div>
-            <div>
-                <ul className="bg-hd-menu mobile">
+            <div className="bb-header__menu--mobile">
+                <ul className="bb-header__menu-detail--mobile">
                     <li>MENU-1</li>
                     <li>MENU-2</li>
                     <li>MENU-3</li>
