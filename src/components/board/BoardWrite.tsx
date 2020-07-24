@@ -1,11 +1,10 @@
 import React, { useRef, useState } from 'react';
 import './BoardWrite.scss';
+import {useHistory} from 'react-router-dom';
 
 import 'codemirror/lib/codemirror.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
-
-import {Redirect} from 'react-router';
 
 function BoardWrite(){
 
@@ -20,7 +19,7 @@ function BoardWrite(){
         subTitle: ''
     });
     const [boardText, setBoardText] = useState('');
-
+    let history = useHistory();
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
@@ -36,7 +35,7 @@ function BoardWrite(){
         setBoardText('');
         editorEl.current.editorInst.setHtml('');
 
-
+        history.push('/board');
     }
 
     const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) =>{

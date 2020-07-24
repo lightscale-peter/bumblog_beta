@@ -17,6 +17,9 @@ function Header(){
             navRef.current?.classList.remove('on');
         });
     }, []);
+
+
+    
     
 
     return (
@@ -24,13 +27,15 @@ function Header(){
             <div className="bb-header__menu--desktop">
                 <div className="bb-header__menu-toggle" onClick={toggleMenu}>--</div>
                 <div><Link to="/">LOGO</Link></div>
-                <ul className="bb-header__menu-detail--desktop">
-                    <li><Link to="/board">MENU-1</Link></li>
-                    <li>MENU-2</li>
-                    <li>MENU-3</li>
-                    <li>MENU-4</li>
-                </ul>
-                <div className="bb-header__icons--mobile"></div>
+                <div className="bb-header__menu-detail-wrapper">
+                    <ul className="bb-header__menu-detail--desktop">
+                        <li><Link to="/board">MENU-1</Link></li>
+                        <li>MENU-2</li>
+                        <li>MENU-3</li>
+                        <li>MENU-4</li>
+                    </ul>
+                    <div className="bb-header__icons">ICON</div>
+                </div>
             </div>
             <div className="bb-header__menu--mobile">
                 <ul className="bb-header__menu-detail--mobile">

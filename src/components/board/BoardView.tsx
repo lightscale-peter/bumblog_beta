@@ -6,13 +6,13 @@ import {boardListType} from './BoardHome';
 
 function BoardView(urlParams: any){
 
-
     const [listData, setListData] = useState<boardListType>();
+    const searchVal = urlParams.location.search;
+    const searchData = searchToJson(searchVal);
 
     useEffect(()=>{
         console.log('useEffect');
-        const searchVal = urlParams.location.search;
-        const searchData = searchToJson(searchVal);
+       
         
         axios({
             method: 'get',
@@ -23,7 +23,7 @@ function BoardView(urlParams: any){
             setListData(res.data[0]);
         });
 
-    }, []);
+    }, [searchData]);
 
 
     return (

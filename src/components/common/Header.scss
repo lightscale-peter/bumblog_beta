@@ -62,9 +62,7 @@
     display: none;
     cursor: pointer;
 }
-.bb-header__icons--mobile{
-    display: none;
-}
+
 
 /* Medium Viewport 이하 */
 @media screen and (max-width: 1068px) {
@@ -83,28 +81,10 @@
     }
 }
 
-
-
-
-
-// .bg-hd-menu{
-//     list-style: none;
-// }
-// .bg-hd-menu > li{
-//     cursor: pointer;
-// }
-
-
-// .bg-hd-menu.mobile{
-//     border-top: 1px solid black;
-// }
-// .bg-hd-menu.mobile > li{
-//     padding: 10px 0;
-//     margin: 0 40px;
-//     border-bottom: 1px solid black;
-// }
-
-
-
-
-
+.bb-header__menu-detail-wrapper{
+    display: flex;
+}
+.bb-header__icons{
+    margin-left: 20px;
+    cursor: pointer;
+}

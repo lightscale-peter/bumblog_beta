@@ -12,7 +12,6 @@ exports.findAllList = (req, res) =>{
     const respond = (result) =>{
         res.json(result)
     }
-    console.log('req', req);
     Board.findAllList().then(respond);
 }
 
