@@ -21,12 +21,14 @@ function BoardHome(){
         console.log('BoardHome-useEffect 실행');
         axios({
             method: 'get',
-            url: 'http://localhost:8001/api/board/findAllList'
+            url: 'http://localhost:8001/api/board/list'
         }).then((res) =>{
+            console.log('data', res.data);
             setBoardList(res.data);
         });
 
     }, []);
+
 
     return (
         <main className="main">

@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
+import axios from 'axios';
 import './BoardWrite.scss';
 import {useHistory} from 'react-router-dom';
 
@@ -18,7 +19,7 @@ function BoardWrite(){
         title: '',
         subTitle: ''
     });
-    const [boardText, setBoardText] = useState('');
+    const [boardArticle, setBoardArticle] = useState('');
     let history = useHistory();
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) =>{
@@ -26,14 +27,32 @@ function BoardWrite(){
 
         // 데이터 보내기
         console.log('boardTitle', boardTitle);
-        console.log('boardText', boardText);
+        console.log('boardArticle', boardArticle);
 
         setBoardTitle({
             title: '',
             subTitle: ''
         });
-        setBoardText('');
+        setBoardArticle('');
         editorEl.current.editorInst.setHtml('');
+
+        const boardData = {
+            title: boardTitle.title,
+            subTitle: boardTitle.subTitle,
+            description: boardArticle,
+            writer: 'bkshin2'
+        };
+
+        console.log('boardData', boardData);
+
+        axios({
+            method: 'post',
+            url: 'http://localhost:8001/api/board/list',
+            params: boardData
+        }).then((res) =>{
+            console.log('res', res.data[0]);
+        });
+
 
         history.push('/board');
     }
@@ -47,7 +66,7 @@ function BoardWrite(){
     }
     const onChangeText = () => {
         let htmlVal = editorEl.current.editorInst.getHtml();
-        setBoardText(htmlVal);
+        setBoardArticle(htmlVal);
     }
 
     return (
@@ -64,7 +83,7 @@ function BoardWrite(){
                     useCommandShortcut={true}
                     ref={editorEl}
                     events={{"change": () => onChangeText()}}
-                    initialValue={boardText}
+                    initialValue={boardArticle}
                 />
                 <div className="bb-board-write__buttons">
                     <button>완료</button>

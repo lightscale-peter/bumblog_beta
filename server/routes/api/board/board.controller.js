@@ -6,22 +6,30 @@ const Board = require('../../../models/board');
 
 exports.createList = (req, res) =>{
 
-}
-
-exports.findAllList = (req, res) =>{
     const respond = (result) =>{
-        res.json(result)
-    }
-    Board.findAllList().then(respond);
-}
-
-exports.findOneList = (req, res) =>{
-    const respond = (result) =>{
-        res.json(result)
+        res.json(result);
     }
 
-    Board.findOneList(req.query).then(respond);
+
+    Board.createList(req.query).then(respond);
+
 }
+
+exports.findList = (req, res) =>{
+    const respond = (result) =>{
+        res.json(result);
+    }
+
+    if(req.query._id){
+        // findOne
+        Board.findOneList(req.query).then(respond);
+    }else{
+        // findAll
+        Board.findAllList(req.query).then(respond);
+    }
+}
+
+
 
 exports.updateList = (req, res) =>{
 

@@ -10,18 +10,22 @@ import {
 } from './components';
 import './App.scss';
 
+
+
 function App() {
   return (
-    <BrowserRouter>
-      <Header />
-      <Route exact path="/" component={Homepage} />
-        <Switch>
-          <Route path="/board/write" component={BoardWrite} />
-          <Route path="/board/view" component={BoardView} />
-          <Route path="/board" component={BoardHome} />
-        </Switch>
-      <Footer />
-    </BrowserRouter>
+    <div className="bb-body">
+      <BrowserRouter>
+        <Header />
+        <Route exact path="/" component={Homepage} />
+          <Switch>
+            <Route path="/board/write" component={BoardWrite} />
+            <Route path="/board/view" component={BoardView} />
+            <Route path="/board" component={BoardHome} />
+          </Switch>
+        <Footer />
+      </BrowserRouter>
+    </div>
   );
 }
 
