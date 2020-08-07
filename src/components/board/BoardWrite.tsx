@@ -1,13 +1,18 @@
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
+
+
 import './BoardWrite.scss';
 import {useHistory} from 'react-router-dom';
+import {searchToJson} from '../../utils';
+
+
 
 import 'codemirror/lib/codemirror.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
 import { Editor } from '@toast-ui/react-editor';
 
-function BoardWrite(){
+function BoardWrite(urlParams: any){
 
     type titleType = {
         title: string;
@@ -20,7 +25,38 @@ function BoardWrite(){
         subTitle: ''
     });
     const [boardArticle, setBoardArticle] = useState('');
+    const [isUpdate, setIsUpdate] = useState(false);
+    const [searchVal, setSearchVal] = useState({_id: null});
     let history = useHistory();
+
+
+    useEffect(()=>{
+        const searchVal = urlParams.location.search;
+        const searchData = searchToJson(searchVal);
+        setSearchVal(searchData);
+
+        console.log('searchData', searchData);
+
+        if(searchData._id){
+            setIsUpdate(true);
+            axios({
+                method: 'get',
+                url: 'http://localhost:8001/api/board/list',
+                params: searchData
+            }).then((res) =>{
+                console.log('res', res.data[0]);
+
+                setBoardTitle({
+                    title: res.data[0].title,
+                    subTitle: res.data[0].subTitle
+                });
+                setBoardArticle(res.data[0].description);
+                editorEl.current.editorInst.setHtml(res.data[0].description);
+            });
+        }else{
+            setIsUpdate(false);
+        }
+    }, []);
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
@@ -37,24 +73,33 @@ function BoardWrite(){
         editorEl.current.editorInst.setHtml('');
 
         const boardData = {
+            _id: searchVal._id,
             title: boardTitle.title,
             subTitle: boardTitle.subTitle,
             description: boardArticle,
             writer: 'bkshin2'
         };
 
-        console.log('boardData', boardData);
-
-        axios({
-            method: 'post',
-            url: 'http://localhost:8001/api/board/list',
-            params: boardData
-        }).then((res) =>{
-            console.log('res', res.data[0]);
-        });
-
-
-        history.push('/board');
+        if(isUpdate){
+            axios({
+                method: 'put',
+                url: 'http://localhost:8001/api/board/list',
+                params: boardData
+            }).then((res) =>{
+                console.log('put_res', res.data[0]);
+            });
+            history.push('/board/view?_id=' + searchVal._id);
+        }else{
+            axios({
+                method: 'post',
+                url: 'http://localhost:8001/api/board/list',
+                params: boardData
+            }).then((res) =>{
+                console.log('post_res', res.data[0]);
+            });
+            history.push('/board');
+        }
+        
     }
 
     const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) =>{

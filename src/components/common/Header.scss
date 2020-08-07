@@ -2,6 +2,7 @@
 
 .bb-header__nav{
     background-color: $loading-color;
+    min-width: inherit;
     position: fixed;
     left: 0;
     right: 0;
@@ -24,33 +25,38 @@
     margin: 0 auto;
     padding: 0 20px;
     height: $nav-height;
+
 }
 
 
 
-.bb-header__menu-detail{
-    & > li{
-        list-style: none;
-    }
-}
-.bb-header__menu-detail--desktop{
-    @extend .bb-header__menu-detail;
+
+
+
+
+
+.bb-header__desktop-menu{
     display: flex;
     margin: 0;
     & > li{
+        list-style: none;
         margin-left: 20px;
+    }
+}
+@media screen and (max-width: 734px) {
+    .bb-header__desktop-menu{
+        display: none;
     }
 }
 
 
-.bb-header__menu-detail--mobile{
-    @extend .bb-header__menu-detail;
-
+.bb-header__mobile-menu{
     background-color: lightgray;
     height: 0;
-    transition: height ease-in-out 0.5s;
+    transition: height ease-in-out 0.3s;
     overflow: hidden;
     & > li{
+        list-style: none;
         padding: 10px 0;
         margin: 0 40px;
         border-bottom: 1px solid black;
@@ -62,28 +68,34 @@
 }
 
 
-.bb-header__menu-toggle{
+.bb-header__mobile-menu-btn{
     display: none;
     cursor: pointer;
 }
-
-
-/* Medium Viewport 이하 */
-@media screen and (max-width: 1068px) {
-    
+.bb-header__logo-btn{
+    width: 20%;
 }
-/* Small Viewport 이하 */
+.bb-header__desktop-menu-wrapper{
+    width: 80%;
+}
 @media screen and (max-width: 734px) {
-    .bb-header__menu-detail--desktop{
-        display: none;
-    }
-    .bb-header__menu-toggle{
+    .bb-header__mobile-menu-btn{
         display: inherit;
+        width: calc(100% / 3);
+    }
+    .bb-header__logo-btn{
+        text-align: center;
+        width: calc(100% / 3);
+    }
+    .bb-header__desktop-menu-wrapper{
+        width: calc(100% / 3);
     }
 }
 
-.bb-header__menu-detail-wrapper{
+
+.bb-header__desktop-menu-wrapper{
     display: flex;
+    justify-content: flex-end;
 }
 
 

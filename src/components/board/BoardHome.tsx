@@ -31,16 +31,16 @@ function BoardHome(){
 
 
     return (
-        <main className="main">
-            <section className="bg-kw-hero">
+        <main className="bb-board-home__main">
+            <section className="bb-board-home__hero-section">
                 <div>
                     <h1>Keyword</h1>
                     <div>Description</div>
                 </div>
             </section>
-            <section className="bg-kw-keyword">
+            <section className="bb-board-home__tag-section">
                 <div>
-                    <ul className="bg-kw-tags">
+                    <ul className="bb-board-home__tag-ul">
                         <li className="on">프로그래밍</li>
                         <li>스마트폰</li>
                         <li>코딩</li>
@@ -50,12 +50,12 @@ function BoardHome(){
                 </div>
             </section>
             <section>
-                <div className="bg-kw-btm-btns">
+                <div className="bb-board-home__btns-wrapper">
                     <div>&nbsp;</div>
                     <div><Link to="/board/write">- 글쓰기 -</Link></div>
                 </div>
             </section>
-            <section className="bg-kw-list">
+            <section className="bb-board-home__list-section">
                 <ul>
                     {boardList.map(x => <BoardList key={x._id} data={x} />)}
                 </ul>

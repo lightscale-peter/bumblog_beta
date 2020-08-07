@@ -3,6 +3,7 @@ import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import {
   Header,
   Footer,
+  Modal,
   Homepage,
   BoardHome,
   BoardView,
@@ -17,6 +18,7 @@ function App() {
     <div className="bb-body">
       <BrowserRouter>
         <Header />
+        <Modal />
         <Route exact path="/" component={Homepage} />
           <Switch>
             <Route path="/board/write" component={BoardWrite} />

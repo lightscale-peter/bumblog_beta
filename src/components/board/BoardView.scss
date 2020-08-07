@@ -1,10 +1,11 @@
 
-.bg-kw-vw-hero{
+.bb-board-view__hero-section{
     position: relative;
     min-height: 300px;
     background-color: lightblue;
 }
-.bg-kw-vw-hero-article{
+
+.bb-board-view__hero-section-title-wrapper{
     width: 100%;
     max-width: 600px;
     position: absolute;
@@ -13,13 +14,14 @@
     transform: translate(-50%, -50%);
     text-align: center;
 }
-.bg-kw-vw-hero-article-cont{
+.bb-board-view__subtitle{
     margin: 0 15px;
 }
-.bg-kw-vw-article{
+
+.bb-board-view__article-setcion{
     margin-top: 15px;
 }
-.bg-kw-vw-article-cont{
+.bb-board-view__article{
     max-width: 800px;
     margin: 0 auto;
     padding: 0 15px;
@@ -31,4 +33,14 @@
 /* Small Viewport 이하 */
 @media screen and (max-width: 734px) {
 
+}
+
+.bb-board-view__update-btns{
+    display: flex;
+    justify-content: flex-end;
+    max-width: 800px;
+    margin: 0 auto;
+    & li:not(:only-child):not(:first-child){
+        margin-left: 10px;
+    }
 }

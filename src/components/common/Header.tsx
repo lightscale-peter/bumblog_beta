@@ -1,4 +1,4 @@
-import React, {useRef, useMemo, useEffect} from 'react';
+import React, {useRef, useMemo} from 'react';
 import {Link} from 'react-router-dom';
 import './Header.scss';
 
@@ -7,10 +7,20 @@ function Header(){
     const mobileMenuRef = useRef<HTMLUListElement>(null);
     const subMenuRef = useRef<HTMLDivElement>(null);
 
-    const toggleMobileMenu = () =>{
+    const toggleMainMenu = (event: any , status: Number = 2) =>{
         if(mobileMenuRef.current){
-            mobileMenuRef.current.classList.toggle('on');
-        }
+            switch(status){
+                case 0: // close
+                    mobileMenuRef.current.classList.remove('on');
+                    break;
+                case 1: // open
+                    mobileMenuRef.current.classList.add('on');
+                    break;
+                case 2: // toggle
+                    mobileMenuRef.current.classList.toggle('on');
+                    break;
+            }
+        }           
     }
     const toggleSubMenu = () =>{
         if(subMenuRef.current){
@@ -67,22 +77,13 @@ function Header(){
         });
     }, []);
 
-
-    
-
-
-
-
-
-
-
     return (
         <nav className="bb-header__nav">
             <div className="bb-header__menu--desktop">
-                <div className="bb-header__menu-toggle" onClick={toggleMobileMenu}>--</div>
-                <div><Link to="/">LOGO</Link></div>
-                <div className="bb-header__menu-detail-wrapper">
-                    <ul className="bb-header__menu-detail--desktop">
+                <div className="bb-header__mobile-menu-btn" onClick={(e) => toggleMainMenu(e, 2)}>--</div>
+                <div className="bb-header__logo-btn" onClick={(e) => toggleMainMenu(e, 0)}><Link to="/">LOGO</Link></div>
+                <div className="bb-header__desktop-menu-wrapper">
+                    <ul className="bb-header__desktop-menu">
                         <li><Link to="/board">MENU-1</Link></li>
                         <li>MENU-2</li>
                         <li>MENU-3</li>
@@ -105,9 +106,9 @@ function Header(){
                     </div>
                 </div>
             </div>
-            <div className="bb-header__menu--mobile">
-                <ul className="bb-header__menu-detail--mobile" ref={mobileMenuRef}>
-                    <li>MENU-1</li>
+            <div className="bb-header__mobile-menu-wrapper">
+                <ul className="bb-header__mobile-menu" ref={mobileMenuRef}>
+                    <li onClick={(e) => toggleMainMenu(e, 0)}><Link to="/board">MENU-1</Link></li>
                     <li>MENU-2</li>
                     <li>MENU-3</li>
                     <li>MENU-4</li>

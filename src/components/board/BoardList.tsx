@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {boardListType} from './BoardHome';
 import {Link} from 'react-router-dom';
 import './BoardList.scss';

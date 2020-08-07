@@ -1,15 +1,16 @@
 @import '../../App.scss';
 
-.main{
+.bb-board-home__main{
     padding-top: 50px;
     padding-bottom: 15px;
     background-color: rgba(210, 210, 210, 0.15);
 }
-.bg-kw-hero{
+
+.bb-board-home__hero-section{
     text-align: center;
     margin-top: 30px;
 }
-.bg-kw-tags{
+.bb-board-home__tag-ul{
     list-style: none;
     display: flex;
     justify-content: center;
@@ -31,12 +32,12 @@
         color: grey;
     }
 }
-.bg-kw-btm-btns{
+.bb-board-home__btns-wrapper{
     max-width: 840px;
     margin: 30px auto 0;
     display: flex;
     justify-content: space-between;
-
+    padding: 0 15px;
     & > div{
         cursor: pointer;
     }
