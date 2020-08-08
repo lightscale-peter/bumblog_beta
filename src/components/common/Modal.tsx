@@ -1,5 +1,6 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import './Modal.scss';
+import useModal from '../../hooks/useModal';
 
 type ModalDataType = {
     title: String;
@@ -8,6 +9,16 @@ type ModalDataType = {
 }
 
 function Modal(){
+
+    const [isShow, setIsShow] = useState(false);
+    const {status, onOpenModal, onCloseModal} = useModal();
+
+    console.log('status', status);
+
+    useEffect(function(){
+        setIsShow(status);
+    }, [status]);
+
     const modalEl = useRef<HTMLDivElement>(null);
     const [modalData, setModalData] = useState<ModalDataType>({
         title: 'Tiele',
@@ -17,14 +28,14 @@ function Modal(){
 
     const openWindow = (data: ModalDataType) =>{
         setModalData(data);
-        modalEl.current?.classList.add('on');
+        onOpenModal();
     }
     const closeWindow = () =>{
-        modalEl.current?.classList.remove('on');
+        onCloseModal();
     }
 
     return (
-        <div className="bb-modal__body on" ref={modalEl}>
+        <div className={`bb-modal__body ${isShow && 'on'}`} ref={modalEl}>
             <div className="bb-modal__dim" onClick={closeWindow}></div>
             <div className="bb-modal__window">
                 <div className="bb-modal__window-close-btn" onClick={closeWindow}>X</div>

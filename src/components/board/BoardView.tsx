@@ -7,8 +7,12 @@ import {searchToJson} from '../../utils';
 import {boardListType} from './BoardHome';
 import {useHistory} from 'react-router-dom';
 
+import useModal from '../../hooks/useModal';
+
 
 function BoardView(urlParams: any){
+
+    const {onOpenModal} = useModal();
 
     const [listData, setListData] = useState<boardListType>({
         subTitle: '',
@@ -37,6 +41,8 @@ function BoardView(urlParams: any){
 
 
     const handleDelette = () =>{
+
+        onOpenModal();
 
         
         // axios({
