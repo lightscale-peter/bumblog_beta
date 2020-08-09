@@ -5,7 +5,10 @@ import useModal from '../../hooks/useModal';
 type ModalDataType = {
     title: String;
     desc: String;
-    confirm: boolean;
+    confirm: {
+        isShow: boolean;
+        func: () => void;
+    };
 }
 
 function Modal(){
@@ -23,7 +26,10 @@ function Modal(){
     const [modalData, setModalData] = useState<ModalDataType>({
         title: 'Tiele',
         desc: 'Lorem ipsum dolor sit amet consectetucabo delectus.',
-        confirm: true
+        confirm: {
+            isShow: true,
+            func: () => {alert('confirm!')}
+        }
     });
 
     const openWindow = (data: ModalDataType) =>{
@@ -44,9 +50,9 @@ function Modal(){
                     <div className="bb-modal__window-desc">
                         {modalData.desc}
                     </div>
-                    <div className={`bb-modal__window-btns ${modalData.confirm && 'on'}`}>
-                        <button>아니오</button>
-                        <button>예</button>
+                    <div className={`bb-modal__window-btns ${modalData.confirm.isShow && 'on'}`}>
+                        <button onClick={closeWindow}>아니오</button>
+                        <button onClick={modalData.confirm.func}>예</button>
                     </div>
                 </div>
             </div>

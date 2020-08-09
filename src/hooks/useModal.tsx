@@ -1,15 +1,11 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {RootState} from '../modules';
-import {toggleModal, openModal, closeModal} from '../modules/modal';
+import {openModal, closeModal} from '../modules/modal';
 import { useCallback } from 'react';
 
 function useModal(){
-    const status = useSelector((state:RootState) => state.modal.status);
+    const status = useSelector((state:RootState) => state.modal);
     const dispatch = useDispatch();
-
-    const onToggleModal = useCallback(()=>{
-        dispatch(toggleModal());
-    }, [dispatch]);
 
     const onOpenModal = useCallback(()=>{
         dispatch(openModal());
@@ -21,7 +17,6 @@ function useModal(){
 
     return {
         status,
-        onToggleModal,
         onOpenModal,
         onCloseModal
     }
