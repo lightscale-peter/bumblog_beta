@@ -12,7 +12,7 @@ import useModal from '../../hooks/useModal';
 
 function BoardView(urlParams: any){
 
-    const {onOpenModal} = useModal();
+    const {onOpenConfirmModal, onCloseModal} = useModal();
 
     const [listData, setListData] = useState<boardListType>({
         subTitle: '',
@@ -33,26 +33,37 @@ function BoardView(urlParams: any){
             url: 'http://localhost:8001/api/board/list',
             params: searchData
         }).then((res) =>{
-            // console.log('res', res.data[0]);
+            console.log('res', res.data[0]);
             setListData(res.data[0]);
         });
 
     }, []);
 
 
-    const handleDelette = () =>{
+    const handleDelete = () =>{
 
-        onOpenModal();
+        onOpenConfirmModal({
+            status: true,
+            title: '정말 삭제하시겠습니까?',
+            desc: '삭제한 데이터는 복원할 수 없습니다.',
+            confirm: {
+                isShow: true,
+                func: () => {
+                    axios({
+                        method: 'delete',
+                        url: 'http://localhost:8001/api/board/list',
+                        params: listData
+                    }).then((res) =>{
+                        console.log('deleteRes', res.data[0]);
+                        onCloseModal();
+                        history.push('/board');
+                    });
+                }
+            }
+        });
 
         
-        // axios({
-        //     method: 'delete',
-        //     url: 'http://localhost:8001/api/board/list',
-        //     params: listData
-        // }).then((res) =>{
-        //     console.log('deleteRes', res.data[0]);
-        //     history.push('/board');
-        // });
+        
     }
 
 
@@ -74,7 +85,7 @@ function BoardView(urlParams: any){
                             <Link to={`/board/write?_id=${listData._id === null ? '' : listData._id}`}>수정</Link>
                         </button>
                     </li>
-                    <li><button onClick={handleDelette}>삭제</button></li>
+                    <li><button onClick={handleDelete}>삭제</button></li>
                 </ul>
             </section>
         </main>

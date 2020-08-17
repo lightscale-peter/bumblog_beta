@@ -2,20 +2,30 @@ const OPEN = 'modal/open' as const;
 const OPEN_CONFIRM = 'modal/open_confirm' as const;
 const CLOSE = 'modal/close' as const;
 
-export const openModal = () =>({
-    type: OPEN
-});
 
-type confirmModal = {
+export type ModalDataType = {
+    status: boolean;
     title: string;
     desc: string;
     confirm: {
         isShow: boolean;
-        func: () => void;
-    }
+        func?: () => void;
+    };
 }
 
-export const openConfirmModal = (data:confirmModal) =>({
+export const openModal = (data: ModalDataType) =>({
+    type: OPEN,
+    payload: {
+        title: data.title,
+        desc: data.desc,
+        confirm: {
+            isShow: data.confirm.isShow,
+        }
+    }
+
+});
+
+export const openConfirmModal = (data: ModalDataType) =>({
     type: OPEN_CONFIRM,
     payload: {
         title: data.title,
@@ -36,17 +46,17 @@ type ModalAction =
     | ReturnType<typeof openConfirmModal>
     | ReturnType<typeof closeModal>
 
-type ModalState = {
-    status: boolean;
-    title: string;
-    desc: string;
-    confirm: {
-        isShow: boolean;
-        func: () => void;
-    }
-}
+// type ModalState = {
+//     status: boolean;
+//     title: string;
+//     desc: string;
+//     confirm: {
+//         isShow: boolean;
+//         func: () => void;
+//     }
+// }
 
-const initialState: ModalState = {
+const initialState: ModalDataType = {
     status: false,
     title: '',
     desc: '',
@@ -56,10 +66,17 @@ const initialState: ModalState = {
     }
 }
 
-function modal(state: ModalState = initialState, action: ModalAction){
+function modal(state: ModalDataType = initialState, action: ModalAction): ModalDataType{
     switch(action.type){
         case OPEN:
-            return {status: true}
+            return {
+                status: true, 
+                title: action.payload.title,
+                desc: action.payload.desc,
+                confirm: {
+                    isShow: action.payload.confirm.isShow,
+                }
+            }
         case OPEN_CONFIRM:
             return {
                 status: true, 
@@ -71,7 +88,10 @@ function modal(state: ModalState = initialState, action: ModalAction){
                 }
             }
         case CLOSE:
-            return {status: false}
+            return {
+                ...state,
+                status: false
+            }
         default:
             return state;
     }

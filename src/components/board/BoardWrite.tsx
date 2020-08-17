@@ -1,12 +1,9 @@
 import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 
-
 import './BoardWrite.scss';
 import {useHistory} from 'react-router-dom';
 import {searchToJson} from '../../utils';
-
-
 
 import 'codemirror/lib/codemirror.css';
 import '@toast-ui/editor/dist/toastui-editor.css';
@@ -37,6 +34,7 @@ function BoardWrite(urlParams: any){
 
         console.log('searchData', searchData);
 
+        // 수정요청으로 들어올 경우
         if(searchData._id){
             setIsUpdate(true);
             axios({
@@ -80,24 +78,27 @@ function BoardWrite(urlParams: any){
             writer: 'bkshin2'
         };
 
-        if(isUpdate){
+
+        if(isUpdate){ // 수정일 경우
             axios({
                 method: 'put',
                 url: 'http://localhost:8001/api/board/list',
                 params: boardData
             }).then((res) =>{
                 console.log('put_res', res.data[0]);
+                history.push('/board/view?_id=' + searchVal._id);
             });
-            history.push('/board/view?_id=' + searchVal._id);
-        }else{
+            
+        }else{ // 신규일 경우
             axios({
                 method: 'post',
                 url: 'http://localhost:8001/api/board/list',
                 params: boardData
             }).then((res) =>{
                 console.log('post_res', res.data[0]);
+                history.push('/board');
             });
-            history.push('/board');
+            
         }
         
     }

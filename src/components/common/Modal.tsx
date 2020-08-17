@@ -1,47 +1,25 @@
 import React, { useRef, useState, useEffect } from 'react';
 import './Modal.scss';
 import useModal from '../../hooks/useModal';
+import {ModalDataType} from '../../modules/modal';
 
-type ModalDataType = {
-    title: String;
-    desc: String;
-    confirm: {
-        isShow: boolean;
-        func: () => void;
-    };
-}
+function Modal({data}: {data: ModalDataType}){
 
-function Modal(){
-
-    const [isShow, setIsShow] = useState(false);
-    const {status, onOpenModal, onCloseModal} = useModal();
-
-    console.log('status', status);
-
-    useEffect(function(){
-        setIsShow(status);
-    }, [status]);
+    const {state, onCloseModal} = useModal();
 
     const modalEl = useRef<HTMLDivElement>(null);
-    const [modalData, setModalData] = useState<ModalDataType>({
-        title: 'Tiele',
-        desc: 'Lorem ipsum dolor sit amet consectetucabo delectus.',
-        confirm: {
-            isShow: true,
-            func: () => {alert('confirm!')}
-        }
-    });
+    const [modalData, setModalData] = useState<ModalDataType>(data);
 
-    const openWindow = (data: ModalDataType) =>{
-        setModalData(data);
-        onOpenModal();
-    }
+    useEffect(function(){
+        setModalData(state);
+    }, [state]);
+
     const closeWindow = () =>{
         onCloseModal();
     }
 
     return (
-        <div className={`bb-modal__body ${isShow && 'on'}`} ref={modalEl}>
+        <div className={`bb-modal__body ${modalData.status && 'on'}`} ref={modalEl}>
             <div className="bb-modal__dim" onClick={closeWindow}></div>
             <div className="bb-modal__window">
                 <div className="bb-modal__window-close-btn" onClick={closeWindow}>X</div>
