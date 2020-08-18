@@ -10,26 +10,16 @@ import {
   BoardWrite
 } from './components';
 import './App.scss';
-import {ModalDataType} from './modules/modal'
 
 
 
 function App() {
 
-  const ModalInitData: ModalDataType = {
-    status: false,
-    title: '',
-    desc: '',
-    confirm: {
-      isShow: false
-    }
-  };
-
   return (
     <div className="bb-body">
       <BrowserRouter>
         <Header />
-        <Modal data={ModalInitData} />
+        <Modal />
         <Route exact path="/" component={Homepage} />
           <Switch>
             <Route path="/board/write" component={BoardWrite} />

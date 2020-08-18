@@ -2,8 +2,13 @@ const express = require('express');
 const mongoose = require('mongoose');
 const config = require('./server/config');
 const bodyParser = require('body-parser');
+const morgan = require('morgan');
 const app = express();
 const port = process.env.PORT || 8001;
+
+
+app.use(morgan('dev'));
+app.set('jwt-secret', config.secret);
 
 
 app.use(bodyParser.urlencoded({

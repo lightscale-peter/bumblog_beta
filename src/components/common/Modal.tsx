@@ -3,10 +3,9 @@ import './Modal.scss';
 import useModal from '../../hooks/useModal';
 import {ModalDataType} from '../../modules/modal';
 
-function Modal({data}: {data: ModalDataType}){
+function Modal({data} : {data: ModalDataType}){
 
     const {state, onCloseModal} = useModal();
-
     const modalEl = useRef<HTMLDivElement>(null);
     const [modalData, setModalData] = useState<ModalDataType>(data);
 
@@ -36,6 +35,17 @@ function Modal({data}: {data: ModalDataType}){
             </div>
         </div>
     )
+}
+
+Modal.defaultProps = {
+    data: {
+        status: false,
+        title: '',
+        desc: '',
+        confirm: {
+          isShow: false
+        }
+    }
 }
 
 export default Modal;
