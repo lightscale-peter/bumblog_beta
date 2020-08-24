@@ -12,7 +12,7 @@
   * react-router-dom
   * ETC ...
 
-#### 3. 실행 방법.(두 가지 방법 중 택1 - package.json scripts)
+#### 3. 실행 방법. (두 가지 방법 중 택1 - package.json scripts)
 * 배포파일 생성.  
   * "build"
 * 개발용으로 실행.   
