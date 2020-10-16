@@ -1,6 +1,6 @@
 import { useSelector, useDispatch } from 'react-redux';
 import {RootState} from '../modules';
-import {openModal, openConfirmModal, closeModal, ModalDataType} from '../modules/modal';
+import {openModal, openConfirmModal, closeModal} from '../modules/modal';
 import { useCallback } from 'react';
 
 function useModal(){

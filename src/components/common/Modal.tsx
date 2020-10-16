@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import './Modal.scss';
 import useModal from '../../hooks/useModal';
 import {ModalDataType} from '../../modules/modal';
+import {BsX} from 'react-icons/bs';
 
 function Modal({data} : {data: ModalDataType}){
 
@@ -21,7 +22,7 @@ function Modal({data} : {data: ModalDataType}){
         <div className={`bb-modal__body ${modalData.status && 'on'}`} ref={modalEl}>
             <div className="bb-modal__dim" onClick={closeWindow}></div>
             <div className="bb-modal__window">
-                <div className="bb-modal__window-close-btn" onClick={closeWindow}>X</div>
+                <div className="bb-modal__window-close-btn" onClick={closeWindow}><BsX className="bb-modal__window-corss-icon" /></div>
                 <div>
                     <h1 className="bb-modal__window-title">{modalData.title}</h1>
                     <div className="bb-modal__window-desc">

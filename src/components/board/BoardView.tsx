@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import {Link} from 'react-router-dom';
-import '@toast-ui/editor/dist/toastui-editor.css';
 import './BoardView.scss';
 import axios from 'axios';
 import {searchToJson} from '../../utils';

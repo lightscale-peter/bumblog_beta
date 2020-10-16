@@ -1,7 +1,8 @@
 @import '../../App.scss';
 
 .bb-header__nav{
-    background-color: $loading-color;
+    border-bottom: 1px solid lightgrey;
+    background-color: white;
     min-width: inherit;
     position: fixed;
     left: 0;
@@ -14,41 +15,44 @@
         color: black;
     }
 }
-
-
-
 .bb-header__menu--desktop{
+    @extend .max-screen-width;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    max-width: $max-screen-width;
-    margin: 0 auto;
-    padding: 0 20px;
     height: $nav-height;
-
 }
-
-
-
-
-
-
-
+@media screen and (max-width: 1068px) {
+    .bb-header__menu--desktop{
+        padding: 0 15px;
+    }
+}
+@media screen and (max-width: 734px) {
+    .bb-header__menu--desktop{
+        padding: 0 10px;
+    }
+}
 
 .bb-header__desktop-menu{
     display: flex;
+    align-items: center;
     margin: 0;
     & > li{
         list-style: none;
         margin-left: 20px;
     }
+    & a{
+        @extend .text-regular;
+    }
 }
+// @media screen and (max-width: 1068px) {
+
+// }
 @media screen and (max-width: 734px) {
     .bb-header__desktop-menu{
         display: none;
     }
 }
-
 
 .bb-header__mobile-menu{
     background-color: lightgray;
@@ -63,7 +67,6 @@
     }
     &.on{
         height: 100vh;
-        border-top: 1px solid black;
     }
 }
 
@@ -74,6 +77,9 @@
 }
 .bb-header__logo-btn{
     width: 20%;
+    a {
+        font-size: 18px;
+    }
 }
 .bb-header__desktop-menu-wrapper{
     width: 80%;
@@ -107,6 +113,7 @@
     
 }
 .bb-header__sub-menu-icon{
+    display: flex;
     cursor: pointer;
 }
 .bb-header__sub-menu-box{
@@ -125,7 +132,7 @@
         padding-top: 2px;
         // z-index: 1;
         position: absolute;
-        right: 15px;
+        right: 12px;
     }
 
     & .edge{

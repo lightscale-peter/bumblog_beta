@@ -44,3 +44,64 @@
         background-color: lightgrey;
     }
 }
+
+.bb-board-write__editor-wrapper{
+    margin-top: 10px;
+    border: 1px solid lightgrey;
+    background-color: white;
+}
+.bb-board-write__editor-options{
+    border-bottom: 1px solid lightgrey;
+    display: flex;
+    padding: 5px;
+    & > li{ 
+        box-sizing: border-box;
+        margin-right: 5px;
+        width: 25px;
+        height: 25px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+    & >li.on{
+        border: 1px solid lightgrey;
+    }
+    & > li:hover{
+        border: 1px solid lightgrey;
+    }
+}
+.bb-board-wrtie__editor{ 
+    border: unset;
+    padding:15px;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 300px;
+}
+
+
+.bb-board-write__editor-font-box{
+    position: absolute;
+    top: 25px;
+    background-color: white;
+    border: 1px solid lightgrey;
+    font-size: 13px;
+    max-height: 125px;
+    overflow: scroll;
+    box-sizing: border-box;
+    display: none;
+
+    &.on{
+        display: block;
+    }
+
+    & > li{        
+        padding: 5px 25px;
+    }
+
+    & > li:hover{
+        background-color: lightgrey;
+    }
+}
+

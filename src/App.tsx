@@ -20,7 +20,7 @@ function App() {
       <BrowserRouter>
         <Header />
         <Modal />
-        <Route exact path="/" component={Homepage} />
+        <Route exact path="/" component={BoardHome} />
           <Switch>
             <Route path="/board/write" component={BoardWrite} />
             <Route path="/board/view" component={BoardView} />

@@ -1,11 +1,52 @@
-$max-screen-width: 960px;
-$loading-color: lightgrey;
+$max-screen-width: 1068px;
+$loading-color: #d3d3d3;
 $nav-height: 50px;
 
-a{
-    text-decoration: none;
-    color: inherit
+.max-screen-width {
+    max-width: $max-screen-width;
+    margin-left: auto;
+    margin-right: auto;
 }
-.bb-body{
+
+.bb-body {
     min-width: 320px;
+}
+
+.text-black {
+    font-family: 'NotoSansKR-Black';
+}
+
+.text-bold {
+    font-family: 'NotoSansKR-Bold';
+}
+
+.text-medium {
+    font-family: 'NotoSansKR-Medium';
+}
+
+.text-regular {
+    font-family: 'NotoSansKR-Regular';
+}
+
+.text-white {
+    color: white;
+}
+.text-grey {
+    color: grey;
+}
+
+.text-lightgrey {
+    color: lightgrey;
+}
+
+.icon-chevronright {
+    font-size: 25px;
+    position: relative;
+    margin-bottom: -6px;
+}
+.icon-user {
+    font-size: 25px;
+}
+.icon-menu{
+    font-size: 25px;
 }

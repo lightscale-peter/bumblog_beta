@@ -16,17 +16,15 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-
 app.use('/', express.static(__dirname + '/build'));
 app.use('/api', require('./server/routes/api'));
 
-app.get("*", (req, res) =>{
-    res.sendFile(__dirname + '/build/index.html');
-});
+//리액트 파일 열기
+// app.get("*", (req, res) =>{
+//     res.sendFile(__dirname + '/build/index.html');
+// });
 
-// app.use('/board', express.static(__dirname + '/build'));
-// app.use('/api', require('./server/routes/api'));
-
+//Express 서버 완료시
 app.listen(port, ()=>{
     console.log(`[express] Express server is running on port ${port}`)
 });

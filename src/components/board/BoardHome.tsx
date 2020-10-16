@@ -34,8 +34,10 @@ function BoardHome(){
         <main className="bb-board-home__main">
             <section className="bb-board-home__hero-section">
                 <div>
-                    <h1>Keyword</h1>
-                    <div>Description</div>
+                    <h1>My Blog</h1>
+                    <div className="bb-board-home__hero-desc">
+                        생각나는 것을 기록하고 저장하는 나만의 공간
+                    </div>
                 </div>
             </section>
             <section className="bb-board-home__tag-section">
