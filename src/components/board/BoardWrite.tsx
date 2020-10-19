@@ -46,6 +46,7 @@ function BoardWrite(urlParams: any){
             iframeRef.current.contentDocument.addEventListener('click', checkCmdState);
         }
 
+        //현재 상태를 확인해야 하는 부분
         if(event){
             event.currentTarget.classList.toggle('on');
         }
@@ -58,6 +59,11 @@ function BoardWrite(urlParams: any){
             }else{
                 iframeRef.current.contentDocument.execCommand(exec, true, value);
             }
+        }
+
+        // 로직이 끝난 후 Textarea로 포커스 하기
+        if(iframeRef.current && iframeRef.current.contentDocument){
+            iframeRef.current.contentDocument.body.focus();
         }
     }
 
@@ -92,9 +98,6 @@ function BoardWrite(urlParams: any){
         }
     }
 
-
-
-
     useEffect(()=>{
         if(iframeRef.current && iframeRef.current.contentDocument){
             iframeRef.current.contentDocument.designMode = "on"
@@ -112,7 +115,7 @@ function BoardWrite(urlParams: any){
             setIsUpdate(true);
             axios({
                 method: 'get',
-                url: 'http://localhost:8001/api/board/list',
+                url: '/api/board/list',
                 params: searchData
             }).then((res) =>{
                 console.log('res', res.data[0]);
@@ -170,8 +173,8 @@ function BoardWrite(urlParams: any){
         if(isUpdate){ // 수정일 경우
             axios({
                 method: 'put',
-                url: 'http://localhost:8001/api/board/list',
-                params: boardData
+                url: '/api/board/list',
+                data: boardData
             }).then((res) =>{
                 console.log('put_res', res.data[0]);
                 history.push('/board/view?_id=' + searchVal._id);
@@ -180,8 +183,8 @@ function BoardWrite(urlParams: any){
         }else{ // 신규일 경우
             axios({
                 method: 'post',
-                url: 'http://localhost:8001/api/board/list',
-                params: boardData
+                url: '/api/board/list',
+                data: boardData
             }).then((res) =>{
                 console.log('post_res', res.data[0]);
                 history.push('/board');
@@ -216,12 +219,10 @@ function BoardWrite(urlParams: any){
                         <li data-cmd="underline" onClick={(e) => execCmd('underline', '', e)}><BsTypeUnderline /></li>
                         <li data-cmd="strikethrough" onClick={(e) => execCmd('strikethrough', '', e)}><BsTypeStrikethrough /></li>
                         <li data-cmd="justifycenter" onClick={(e) => execCmd('justifycenter', '', e)}><BsTextCenter /></li>
-
                         <li onClick={(e) => execCmd('insertunorderedlist', '')}><BsListUl /></li>
                         <li onClick={(e) => execCmd('insertorderedlist', '')}><BsListOl /></li>
                         <li onClick={(e) => execCmd('indent', '')}><BsTextIndentLeft /></li>
                         <li onClick={(e) => execCmd('outdent', '')}><BsTextIndentRight /></li>
-
                         <li onClick={fontSizeToggle}>
                             <VscTextSize />
                             <ul className="bb-board-write__editor-font-box" ref={fontSizeRef}>

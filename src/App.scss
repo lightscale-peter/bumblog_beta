@@ -1,6 +1,9 @@
 $max-screen-width: 1068px;
-$loading-color: #d3d3d3;
 $nav-height: 50px;
+
+$white: #ffffff;
+$darkgrey: #2e2e2e;
+
 
 .max-screen-width {
     max-width: $max-screen-width;
@@ -34,11 +37,9 @@ $nav-height: 50px;
 .text-grey {
     color: grey;
 }
-
 .text-lightgrey {
     color: lightgrey;
 }
-
 .icon-chevronright {
     font-size: 25px;
     position: relative;
@@ -50,3 +51,4 @@ $nav-height: 50px;
 .icon-menu{
     font-size: 25px;
 }
+
