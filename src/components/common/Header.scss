@@ -2,7 +2,8 @@
 
 .bb-header__nav{
     border-bottom: 1px solid lightgrey;
-    background-color: white;
+    background-color: $white;
+    color: black;
     min-width: inherit;
     position: fixed;
     left: 0;
@@ -12,7 +13,7 @@
     height: $nav-height;
     & a{
         text-decoration: unset;
-        color: black;
+        color: inherit;
     }
 }
 .bb-header__menu--desktop{

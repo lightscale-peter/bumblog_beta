@@ -8,17 +8,16 @@ import {useHistory} from 'react-router-dom';
 
 import useModal from '../../hooks/useModal';
 
-
 function BoardView(urlParams: any){
 
     const {onOpenConfirmModal, onCloseModal} = useModal();
 
     const [listData, setListData] = useState<boardListType>({
+        _id: '',
         subTitle: '',
         title: '',
         description: '',
-        writer: '',
-        _id: ''
+        writer: ''
     });
     let history = useHistory();
     
@@ -26,16 +25,19 @@ function BoardView(urlParams: any){
         console.log('useEffect');
         const searchVal = urlParams.location.search;
         const searchData = searchToJson(searchVal);
+
+        console.log('searchData', searchData);
        
         axios({
             method: 'get',
-            url: 'http://localhost:8001/api/board/list',
+            url: '/api/board/list',
             params: searchData
         }).then((res) =>{
             console.log('res', res.data[0]);
-            setListData(res.data[0]);
+            if(res.data[0]){
+                setListData(res.data[0]);
+            }
         });
-
     }, []);
 
 
@@ -50,8 +52,8 @@ function BoardView(urlParams: any){
                 func: () => {
                     axios({
                         method: 'delete',
-                        url: 'http://localhost:8001/api/board/list',
-                        params: listData
+                        url: '/api/board/list',
+                        data: listData
                     }).then((res) =>{
                         console.log('deleteRes', res.data[0]);
                         onCloseModal();

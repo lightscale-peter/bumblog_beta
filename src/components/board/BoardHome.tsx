@@ -21,7 +21,7 @@ function BoardHome(){
         console.log('BoardHome-useEffect 실행');
         axios({
             method: 'get',
-            url: 'http://localhost:8001/api/board/list'
+            url: '/api/board/list'
         }).then((res) =>{
             console.log('data', res.data);
             setBoardList(res.data);
@@ -36,14 +36,15 @@ function BoardHome(){
                 <div>
                     <h1>My Blog</h1>
                     <div className="bb-board-home__hero-desc">
-                        생각나는 것을 기록하고 저장하는 나만의 공간
+                        생각나는 것을 기록하고 저장하는 공간
                     </div>
                 </div>
             </section>
             <section className="bb-board-home__tag-section">
                 <div>
                     <ul className="bb-board-home__tag-ul">
-                        <li className="on">프로그래밍</li>
+                        <li className="on">모두</li>
+                        <li>프로그래밍</li>
                         <li>스마트폰</li>
                         <li>코딩</li>
                         <li>공부</li>
