@@ -1,7 +1,10 @@
 ## BumBlog (개인 Blog 작성 중)
 
 #### 1. 프로그램의 특징
-* React.js + Express.js + MongoDB with TypeScript를 활용한 개인 블로그 사이트
+
+* React.js + Express.js + MongoDB를 활용한 개인 블로그 사이트 입니다.
+* NodeJS 기반으로 전 영역 TypeScript로 개발되었습니다.
+* 배포 시에는 Webpack 번들러를 이용하여 ts->js로 압축 및 변환하여 사용했습니다.
 
 #### 2. 사용 기술
 
@@ -16,13 +19,12 @@
   * express
   * mongoose
   
-* Data-Base
-  * mongoDB
+* DataBase
+  * mongoDB 
   
 * 기타
-  * TypeScript
-  * webpack
-  * ts-node
+  * TypeScript (언어)
+  * Webpack (번들링 도구)
 
 #### 3. 실행 방법.
 
