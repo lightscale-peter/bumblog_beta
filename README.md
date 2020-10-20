@@ -2,10 +2,12 @@
 
 #### 1. 프로그램의 특징
 
-* Node JS기반 풀스텍으로 개발한 개인 블로그 사이트 입니다.<br /> cafe24 nodeJS 호스팅 서비스를 이용하여 배포되어 있습니다. [확인하기](http://bumblog.cafe24app.com)
-* 대표적으로 React / express / mongoDB / TypeScript로 구성되어 있습니다.
+* Node JS기반 풀스텍으로 개발한 개인 블로그 사이트 입니다.
+* 현재 게시판 CRUD(생성, 읽기, 수정, 삭제)가 구현되어 있으며, 로그인 기능 추가 중에 있습니다.
+* 프론트 : React / 백엔드 : Express 로 되어있습니다.
 * 전 영역 (프론트 + 백엔드) TypeScript로 개발되어 있습니다.
-* 배포 시에는 Webpack 번들러를 이용하여 ts->js로 압축 및  변환하여 사용했습니다.
+* cafe24 nodeJS 호스팅 서비스를 이용하여 배포되어 어디서든 접속이 가능합니다. [확인하기](http://bumblog.cafe24app.com)
+* 배포 시에는 Webpack 번들러를 이용하여 ts -> js로 변환 후 사용했습니다.
 
 #### 2. 사용 기술
 
