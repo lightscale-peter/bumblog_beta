@@ -2,9 +2,10 @@
 
 #### 1. 프로그램의 특징
 
-* React.js + Express.js + MongoDB를 활용한 개인 블로그 사이트 입니다.
-* NodeJS 기반으로 전 영역 TypeScript로 개발되었습니다.
-* 배포 시에는 Webpack 번들러를 이용하여 ts->js로 압축 및 변환하여 사용했습니다.
+* Node JS기반 풀스텍으로 개발한 개인 블로그 사이트 입니다.<br /> cafe24 nodeJS 호스팅 서비스를 이용하여 배포되어 있습니다.<br /> [확인하기](http://bumblog.cafe24app.com)
+* 대표적으로 React / express / mongoDB / TypeScript로 구성되어 있습니다.
+* 전 영역 (프론트 + 백엔드) TypeScript로 개발되어 있습니다.
+* 배포 시에는 Webpack 번들러를 이용하여 ts->js로 압축 및  변환하여 사용했습니다.
 
 #### 2. 사용 기술
 
