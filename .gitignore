@@ -9,8 +9,8 @@
 # testing
 /coverage
 
-# production - cafe24 에는 build 올려야 한다.
-#build
+# production - cafe24 호스팅시 에는 build 주석처리
+build
 
 # misc
 .DS_Store
