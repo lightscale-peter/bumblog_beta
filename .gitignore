@@ -9,8 +9,8 @@
 # testing
 /coverage
 
-# production
-/build
+# production - cafe24 에는 build 올려야 한다.
+#build
 
 # misc
 .DS_Store
@@ -22,4 +22,4 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-node_modules
+
