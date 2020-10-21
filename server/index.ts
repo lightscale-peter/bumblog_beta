@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import router from './routes/api'
@@ -10,9 +10,11 @@ const app = express();
 const port = process.env.PORT || 8001;
 
 let buildDir = path.resolve(__dirname, '../build');
+let uploadDir = path.resolve(__dirname, '../uploads');
 
 if(process.env.NODE_ENV === 'production'){ // 배포 모드
     buildDir = path.resolve(__dirname, './build');
+    uploadDir = path.resolve(__dirname, './uploads');
 }
 
 app.use(morgan('dev')); // 로그 기록
@@ -28,6 +30,15 @@ app.use('/board', express.static(buildDir));
 app.use('/board/view', express.static(buildDir));
 app.use('/board/write', express.static(buildDir));
 app.use('/api', router);
+app.use('/uploads', express.static(uploadDir));
+
+app.use((req:Request, res:Response, next:NextFunction)=>{
+    res.status(404).send('일치하는 주소가 없습니다.');
+});
+app.use((err:Error, req:Request, res:Response, next:NextFunction)=>{
+    res.status(500).send('서버 에러');
+});
+
 
 // Express 서버 완료시
 app.listen(port, ()=>{

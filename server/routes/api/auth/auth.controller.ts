@@ -1,13 +1,9 @@
-// exports.register = (req, res) => {
-//     res.send('this router is working');
-
-//     const {username, password} = req.body;
-// };
-
 import {Request, Response} from 'express';
+import User, {userType} from '../../../models/user';
 
-export default (req: Request, res: Response) => {
-    res.send('this router is working');
-
-    const {username, password} = req.body;
+export const createUser = (req: Request, res: Response) =>{
+    const respond = (result: boolean) =>{
+        res.json(result);
+    }
+    User.createUser(req.body).then(respond);
 };

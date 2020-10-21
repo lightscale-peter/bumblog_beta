@@ -1,12 +1,16 @@
-// const router = require('express').Router();
-// const controller = require('./auth.controller');
-
 import {Router} from 'express';
-import controller from './auth.controller';
+import {createUser} from './auth.controller';
 
 const router = Router();
-// router.post('/register', controller.register);
+
+router.post('/user', createUser);
+// router.get('/user', findUser);
+// router.put('/user', updateUser);
+// router.delete('/user', deleteUser);
+
+// createUset: (data:userType) => void;
+// findOneUser: () => void;
+// verifiyPassword: () => void;
+// assignAdmin: () => void;
 
 export default router;
-
-// module.exports = router;

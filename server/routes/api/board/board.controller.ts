@@ -1,11 +1,20 @@
-import {Request, Response} from 'express';
+import {NextFunction, Request, Response} from 'express';
 import Board, {documentType} from '../../../models/board';
 
 export const createList = (req: Request, res: Response) =>{
     const respond = (result: boolean) =>{
         res.json(result);
     }
-    Board.createList(req.body).then(respond);
+
+    const data = {
+        ...req.body,
+        tags: req.body.tags.split(',')
+    }
+
+    console.log('req', req.body);
+    console.log('req.files', req.files);
+
+    Board.createList(data, req.files).then(respond);;
 }
 
 export const findList = (req: Request, res: Response) =>{
@@ -44,4 +53,3 @@ export const deleteList = (req: Request, res: Response) =>{
         Board.deleteList(req.body).then(respond);
     }
 }
-
