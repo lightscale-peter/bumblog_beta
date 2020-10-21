@@ -1,7 +1,5 @@
 import {Request} from 'express'
-import mongoose, {Schema, model, Document, Model} from 'mongoose';
-import {Field} from 'multer';
-import Express from 'express'
+import {Schema, model, Document, Model} from 'mongoose';
 
 const Board = new Schema({
     // _id: String,
@@ -30,11 +28,9 @@ export interface documentType extends Document{
     images: imagesType;
 }
 
-type imagesType = 
-    | any
-    | {
-        thumbnail: fileObject[];
-        description: fileObject[];
+export type imagesType = {
+        thumbnail?: fileObject[];
+        description?: fileObject[];
     }
 
 type fileObject = {
@@ -52,10 +48,9 @@ interface modelType extends Model<documentType> {
 
 Board.statics.createList = function(data: documentType, images: imagesType){
 
-
     let thumbImgArray: fileObject[] = [];
-    if(images.thumbImg){
-        images.thumbImg.forEach((image:fileObject) => {
+    if(images.thumbnail){
+        images.thumbnail.forEach((image) => {
             thumbImgArray.push({
                 originalname: image.originalname,
                 filename: image.filename
@@ -64,8 +59,8 @@ Board.statics.createList = function(data: documentType, images: imagesType){
     }
 
     let descImgArray: fileObject[] = [];
-    if(images.descImg){
-        images.descImg.forEach((image:fileObject) => {
+    if(images.description){
+        images.description.forEach((image) => {
             descImgArray.push({
                 originalname: image.originalname,
                 filename: image.filename

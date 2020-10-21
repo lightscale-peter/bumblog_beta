@@ -20,7 +20,6 @@ import {
 
 } from 'react-icons/bs';
 import {VscTextSize} from 'react-icons/vsc';
-import { getAllJSDocTagsOfKind } from 'typescript';
 
 function BoardWrite(urlParams: any){
 
@@ -199,11 +198,11 @@ function BoardWrite(urlParams: any){
             form.append('writer', boardData.writer);
 
             if(thumbImg){
-                form.append('thumbImg', thumbImg);
+                form.append('thumbnail', thumbImg);
             }
             if(descImg){
                 descImg.forEach(file => {
-                    form.append('descImg', file);        
+                    form.append('description', file);        
                 })
             }
 

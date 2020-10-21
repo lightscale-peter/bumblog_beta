@@ -1,7 +1,7 @@
 import {NextFunction, Request, Response} from 'express';
-import Board, {documentType} from '../../../models/board';
+import Board, {documentType, imagesType} from '../../../models/board';
 
-export const createList = (req: Request, res: Response) =>{
+export const createList = (req: Request & {files: imagesType}, res: Response) =>{
     const respond = (result: boolean) =>{
         res.json(result);
     }
@@ -10,9 +10,6 @@ export const createList = (req: Request, res: Response) =>{
         ...req.body,
         tags: req.body.tags.split(',')
     }
-
-    console.log('req', req.body);
-    console.log('req.files', req.files);
 
     Board.createList(data, req.files).then(respond);;
 }
