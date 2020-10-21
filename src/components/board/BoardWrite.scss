@@ -14,6 +14,10 @@
         // max-width: 500px;
         // margin: 30px auto 0;
     }
+    & input{
+        border: 1px solid black;
+        border-radius: 0px;
+    }
 }
 .bb-board-write__title{
     width: 100%;
@@ -30,7 +34,7 @@
 .bb-board-write__buttons{
     display: flex;
     justify-content: space-between;
-    margin-top: 20px;
+    margin-top: 15px;
     & button{
         cursor: pointer;
         width: 49.5%;
@@ -57,8 +61,8 @@
     & > li{ 
         box-sizing: border-box;
         margin-right: 5px;
-        width: 25px;
-        height: 25px;
+        width: 30px;
+        height: 30px;
         cursor: pointer;
         display: flex;
         justify-content: center;
@@ -70,6 +74,9 @@
     }
     & > li:hover{
         border: 1px solid lightgrey;
+    }
+    & svg{
+        font-size: 20px;
     }
 }
 .bb-board-wrtie__editor{ 
@@ -105,3 +112,75 @@
     }
 }
 
+.bb-board-write__tags-wrapper{
+    @extend .text-bold;
+    margin-top: 8px;
+    & > span{
+        cursor: pointer;
+        display: inline-block;
+        font-size: 14px;
+        color: grey;
+        border: 1px solid grey;
+        border-radius: 8px;
+        margin-right: 10px;
+        padding: 2px 8px;
+        background-color: white;
+    }
+    & > span.on,
+    & > span:hover{
+        background-color: #dce0ef;
+    }
+}
+
+.bb-board-write__image-upload-btn{
+    margin-top: 15px;
+    & input{
+        display: none;
+    }
+    & > button{
+        @extend .text-bold;
+        cursor: pointer;
+        width: 100%;
+        background-color: black;
+        color: white;
+        border: 1px solid black;
+        height: 40px;
+    }
+}
+
+.bb-board-write__image-tiles{
+    display: none;
+    margin-top: 20px;
+
+    &.on{
+        display: inherit;
+    }
+
+    & > span{
+        cursor: pointer;
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        background-color: grey;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background-size: auto 100%;
+        background-position: center;
+        border: 1px solid black;
+
+        & svg{
+            font-size: 0;
+        }
+
+    }
+    & > span:hover{
+        opacity: 0.5;
+        background-color: black;
+        color: white;
+        & svg{
+            font-size: 35px;
+        }
+    }
+}

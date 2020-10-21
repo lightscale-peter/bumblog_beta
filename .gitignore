@@ -5,12 +5,14 @@
 /server/node_modules
 /.pnp
 .pnp.js
+/uploads
 
 # testing
 /coverage
 
-# production - cafe24 호스팅시 에는 build 주석처리
+# production - cafe24 호스팅시 에는 아래 주석처리
 build
+web.js*
 
 # misc
 .DS_Store

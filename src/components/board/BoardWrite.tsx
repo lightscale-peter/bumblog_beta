@@ -1,7 +1,8 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, createElement } from 'react';
 import axios from 'axios';
 
 import './BoardWrite.scss';
+import path from 'path';
 import {useHistory} from 'react-router-dom';
 import {searchToJson} from '../../utils';
 
@@ -14,28 +15,30 @@ import {
     BsListOl,
     BsTextIndentLeft,
     BsTextIndentRight,
-    BsTextCenter
+    BsTextCenter,
+    BsX
 
 } from 'react-icons/bs';
 import {VscTextSize} from 'react-icons/vsc';
+import { getAllJSDocTagsOfKind } from 'typescript';
 
 function BoardWrite(urlParams: any){
 
-    type titleType = {
-        title: string;
-        subTitle: string
-    }
-
-    const [boardTitle, setBoardTitle] = useState<titleType>({
-        title: '',
-        subTitle: ''
-    });
+    const [boardTitle, setBoardTitle] = useState('')
+    const [tags, setTags] = useState<string[]>([]);
     const [isUpdate, setIsUpdate] = useState(false);
-    const [searchVal, setSearchVal] = useState({_id: null});
+    const [searchVal, setSearchVal] = useState({_id: ''});
+
+    const [tempThumbImg, setTempThumbImg] = useState('');
+
+    const [thumbImg, setThumbImg] = useState<File | null>(null); 
+    const [descImg, setDescImg] = useState<File[] | null>(null);
+
     let history = useHistory();
 
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const optionsRef = useRef<HTMLUListElement>(null);
+    const thumbImageDom = useRef<HTMLInputElement>(null);
 
 
     // 텍스트 에디터 (옵션) 로직
@@ -108,7 +111,7 @@ function BoardWrite(urlParams: any){
         const searchData = searchToJson(searchVal);
         setSearchVal(searchData);
 
-        console.log('searchData', searchData);
+        // console.log('searchData', searchData);
 
         // 수정요청으로 들어올 경우
         if(searchData._id){
@@ -120,10 +123,15 @@ function BoardWrite(urlParams: any){
             }).then((res) =>{
                 console.log('res', res.data[0]);
 
-                setBoardTitle({
-                    title: res.data[0].title,
-                    subTitle: res.data[0].subTitle
-                });
+                setBoardTitle(res.data[0].title);
+
+                setTags(res.data[0].tags);
+                initTags(res.data[0].tags);
+
+                if(res.data[0].images.thumbnail.length > 0){
+                    setTempThumbImg(path.resolve('./uploads', res.data[0].images.thumbnail[0].filename));
+                }
+
                 if(iframeRef.current && iframeRef.current.contentDocument){
                     iframeRef.current.contentDocument.body.innerHTML = res.data[0].description;
                 }
@@ -131,7 +139,6 @@ function BoardWrite(urlParams: any){
         }else{
             setIsUpdate(false);
         }
-
 
         return ()=>{
             if(iframeRef.current && iframeRef.current.contentDocument){
@@ -149,10 +156,14 @@ function BoardWrite(urlParams: any){
         // 데이터 전송
         const boardData = {
             _id: searchVal._id,
-            title: boardTitle.title,
-            subTitle: boardTitle.subTitle,
+            title: boardTitle,
+            tags: tags,
             description: iframeRef.current?.contentDocument?.body.innerHTML,
-            writer: 'bkshin2'
+            writer: '신범근',
+            images: {
+                thumbnail: thumbImg,
+                description: descImg
+            }
         };
 
         // 데이터 전송 확인
@@ -161,10 +172,9 @@ function BoardWrite(urlParams: any){
         
 
         // 데이터 비우기
-        setBoardTitle({
-            title: '',
-            subTitle: ''
-        });
+        setBoardTitle('');
+        setThumbImg(null);
+        setDescImg(null);
         if(iframeRef.current && iframeRef.current.contentDocument){
             iframeRef.current.contentDocument.body.innerHTML = "";
         }
@@ -181,10 +191,27 @@ function BoardWrite(urlParams: any){
             });
             
         }else{ // 신규일 경우
+
+            const form = new FormData();
+            form.append('title', boardData.title);
+            form.append('tags', boardData.tags.toString());
+            form.append('description', boardData.description ? boardData.description : '');
+            form.append('writer', boardData.writer);
+
+            if(thumbImg){
+                form.append('thumbImg', thumbImg);
+            }
+            if(descImg){
+                descImg.forEach(file => {
+                    form.append('descImg', file);        
+                })
+            }
+
             axios({
+                headers: {'Content-Type': 'multipart/form-data'},
                 method: 'post',
                 url: '/api/board/list',
-                data: boardData
+                data: form
             }).then((res) =>{
                 console.log('post_res', res.data[0]);
                 history.push('/board');
@@ -196,22 +223,96 @@ function BoardWrite(urlParams: any){
 
     const onChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) =>{
         const {name, value} = e.target;
-        setBoardTitle({
-            ...boardTitle,
-            [name]: value
+        setBoardTitle(value);
+    }
+
+    const onSetTags = (e:React.MouseEvent<HTMLSpanElement, MouseEvent>) =>{
+
+        const classList = e.currentTarget.classList;
+        const innerText = e.currentTarget.innerText;
+
+        if(classList.contains('on')){
+            // 버튼 OFF
+            classList.remove('on');
+            if(tags.indexOf(innerText) !== -1){ // 해당 태그가 있을 경우 => 뺸다
+                setTags(tags.filter(tag => tag !== innerText));
+            }
+        }else{
+            // 버튼 ON
+            classList.add('on');
+            if(tags.indexOf(innerText) === -1){ // 해당 태그가 없을 경우 => 더한다
+                setTags(tags.concat(innerText));
+            }
+        }
+    }
+
+    const initTags = (initTags:string[]) =>{
+        document.querySelectorAll('.bb-board-write__tags-wrapper > span').forEach(span =>{
+            initTags.forEach(tag =>{
+                if(tag === span.innerHTML){
+                    span.classList.add('on');
+                }
+            })
         })
     }
 
-    // 텍스트 에디터 만들기 시작
-    // 기능 : 볼드, 폰트사이즈 10~30, 이탤릭, 삭선, 밑줄, 번호, 점, 들여쓰기(2개), 링크, 이미지 삽입, 파일 첨부
+    const onThumbImage = (e: React.ChangeEvent<HTMLInputElement>) =>{
+        if(e.currentTarget.files){
+
+            const thumbnail = e.currentTarget.files[0];
+
+            // console.log('thumbnail', thumbnail);
+
+            const reader = new FileReader();
+            reader.onload = function(e){
+                // console.log('src', e.target?.result);
+                if(e.target?.result){
+                    setTempThumbImg(e.target.result.toString());
+                }
+                
+            }
+            if(thumbnail){
+                reader.readAsDataURL(thumbnail);
+                setThumbImg(thumbnail);
+
+                if(checkImageType(thumbnail.type)){
+                    console.log('이미지 파일');
+                }else{
+                    alert('jpeg, png, jpg 파일만 허용됨');
+                    e.currentTarget.value = "";
+                    setThumbImg(null);
+                }   
+            }
+            
+
+            // console.log('e', e.currentTarget.files[0]);
+        }
+    }
+
+    const checkImageType = (image: string) =>{
+        const types = ['image/jpeg', 'image/png', 'image/jpg'];
+        if(types.indexOf(image) === -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    const cancelThumbImage = () =>{
+        setTempThumbImg('');
+        setThumbImg(null);      
+    }
 
     return (
         <main className="bb-board-write__main">
             <form className="bb-board-write__form" onSubmit={onSubmit}>
-                <input className="bb-board-write__title" placeholder="제목을 입력해주세요." type="text" name="title" value={boardTitle?.title} onChange={onChangeTitle}/>
-                <input className="bb-board-write__title--sub" placeholder="소제목을 입력해주세요." type="text" name="subTitle" value={boardTitle?.subTitle} onChange={onChangeTitle}/>
-  
-
+                <input className="bb-board-write__title" placeholder="제목을 입력해주세요." type="text" name="title" value={boardTitle} onChange={onChangeTitle}/>
+                {/* <input className="bb-board-write__title--sub" placeholder="소제목을 입력해주세요." type="text" name="subTitle" value={boardTitle?.subTitle} onChange={onChangeTitle}/> */}
+                <div className="bb-board-write__tags-wrapper">
+                    <span onClick={onSetTags}>개발</span>
+                    <span onClick={onSetTags}>공부</span>
+                    <span onClick={onSetTags}>생각</span>
+                </div>
                 <div className="bb-board-write__editor-wrapper">
                     <ul className="bb-board-write__editor-options" ref={optionsRef}>
                         <li data-cmd="bold" onClick={(e) => execCmd('bold', '', e)}><BsTypeBold /></li>
@@ -238,13 +339,16 @@ function BoardWrite(urlParams: any){
                     </ul>
                     <iframe className="bb-board-wrtie__editor" name="boadeditrot" ref={iframeRef}></iframe>
                 </div>
-                
-
-
-
+                <div className={`bb-board-write__image-tiles ${tempThumbImg !== '' && 'on'}`}>
+                    <span style={{backgroundImage: `url(${tempThumbImg})`}} onClick={cancelThumbImage}><BsX /></span>
+                </div>
+                <div className="bb-board-write__image-upload-btn">
+                    <input type="file" ref={thumbImageDom} onChange={onThumbImage} />
+                    <button type="button" onClick={()=> thumbImageDom.current?.click()}>이미지 업로드</button>
+                </div>
                 <div className="bb-board-write__buttons">
-                    <button>취소</button>
-                    <button>완료</button>
+                    <button type="button" onClick={() => history.push('/board')}>취소</button>
+                    <button type="submit">완료</button>
                 </div>
             </form>
         </main>

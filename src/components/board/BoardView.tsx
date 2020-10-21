@@ -14,10 +14,14 @@ function BoardView(urlParams: any){
 
     const [listData, setListData] = useState<boardListType>({
         _id: '',
-        subTitle: '',
+        tags: [],
         title: '',
         description: '',
-        writer: ''
+        writer: '',
+        images: {
+            thumbnail: [],
+            description: []
+        }
     });
     let history = useHistory();
     
@@ -74,7 +78,7 @@ function BoardView(urlParams: any){
                 <div className="bb-board-view__hero-section-title-wrapper">
                     <h1>{listData?.title}</h1>
                     <div className="bb-board-view__subtitle">
-                        {listData?.subTitle}
+                        {/* {listData?.subTitle} */}
                     </div>
                 </div>
             </section>
