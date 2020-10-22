@@ -31,13 +31,17 @@ export const findList = (req: Request, res: Response) =>{
     }
 }
 
-export const updateList = (req: Request, res: Response) =>{
+export const updateList = (req: Request & {files: imagesType}, res: Response) =>{
     const respond = (result: boolean) =>{
         res.json(result);
     }
-    if(req.body){
-        Board.updateList(req.body).then(respond);
+
+    const data = {
+        ...req.body,
+        tags: req.body.tags.split(',')
     }
+
+    Board.updateList(data, req.files).then(respond);
 }
 
 

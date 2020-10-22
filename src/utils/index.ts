@@ -1,4 +1,4 @@
-export const searchToJson = (search: string) =>{
+export const getQueryString = (search: string) =>{
     let searchArray = search.substring(1).split('&');
     let searchJson: any = {};
     searchArray.forEach(function(val){

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {Link} from 'react-router-dom';
 import './BoardView.scss';
 import axios from 'axios';
-import {searchToJson} from '../../utils';
+import {getQueryString} from '../../utils';
 import {boardListType} from './BoardHome';
 import {useHistory} from 'react-router-dom';
 
@@ -28,7 +28,7 @@ function BoardView(urlParams: any){
     useEffect(()=>{
         console.log('useEffect');
         const searchVal = urlParams.location.search;
-        const searchData = searchToJson(searchVal);
+        const searchData = getQueryString(searchVal);
 
         console.log('searchData', searchData);
        

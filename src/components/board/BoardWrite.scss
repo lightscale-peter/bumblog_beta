@@ -79,9 +79,22 @@
         font-size: 20px;
     }
 }
+@media screen and (max-width: 1068px) {
+    .bb-board-write__editor-options{
+        padding: 5px 10px;
+        & > li{
+            margin-right: 10px;
+            width: 40px;
+            height: 40px;
+        }
+        & > li:last-child{
+            margin-right: unset;
+        }
+    }
+}
 .bb-board-wrtie__editor{ 
     border: unset;
-    padding:15px;
+    padding: 15px;
     width: 100%;
     box-sizing: border-box;
     min-height: 300px;
@@ -90,7 +103,8 @@
 
 .bb-board-write__editor-font-box{
     position: absolute;
-    top: 25px;
+    top: 40px;
+    left: 0;
     background-color: white;
     border: 1px solid lightgrey;
     font-size: 13px;

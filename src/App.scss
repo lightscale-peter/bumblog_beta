@@ -52,3 +52,14 @@ $darkgrey: #2e2e2e;
     font-size: 25px;
 }
 
+.small-hidden{
+    display: inherit;
+}
+@media screen and (max-width: 1068px) {
+   
+}
+@media screen and (max-width: 734px) {
+    .small-hidden{
+        display: none !important;
+    }
+}
