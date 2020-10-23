@@ -12,11 +12,11 @@ export type boardListType = {
     description: string;
     writer: string;
     images: {
-        thumbnail: {
+        thumbnailImage: {
             originalname: string;
             filename: string;
         }[],
-        description: {
+        descriptionImage: {
             originalname: string;
             filename: string;
         }[]

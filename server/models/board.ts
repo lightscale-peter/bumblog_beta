@@ -1,6 +1,5 @@
 import {Request} from 'express'
 import {Schema, model, Document, Model} from 'mongoose';
-import { parseJsonConfigFileContent } from 'typescript';
 
 const Board = new Schema({
     // _id: String,
@@ -9,11 +8,11 @@ const Board = new Schema({
     description: String,
     writer: String,
     images: {
-        thumbnail: [{
+        thumbnailImage: [{
             originalname: String,
             filename: String
         }],
-        description: [{
+        descriptionImage: [{
             originalname: String,
             filename: String
         }]
@@ -32,8 +31,8 @@ export interface documentType extends Document{
 }
 
 export type imagesType = {
-        thumbnail?: imageNameType[];
-        description?: imageNameType[];
+        thumbnailImage?: imageNameType[];
+        descriptionImage?: imageNameType[];
     }
 
 type imageNameType = {
@@ -54,20 +53,20 @@ interface modelType extends Model<documentType> {
 Board.statics.createList = function(data: documentType, images: imagesType){
 
     let thumbImgArray: imageNameType[] = [];
-    if(images.thumbnail){
-        thumbImgArray = images.thumbnail;
+    if(images.thumbnailImage){
+        thumbImgArray = images.thumbnailImage;
     }
 
     let descImgArray: imageNameType[] = [];
-    if(images.description){
-        descImgArray = images.description;
+    if(images.descriptionImage){
+        descImgArray = images.descriptionImage;
     }
 
     const total = {
         ...data,
         images: {
-            thumbnail: thumbImgArray,
-            description: descImgArray
+            thumbnailImage: thumbImgArray,
+            descriptionImage: descImgArray
         }
     }
 
@@ -77,17 +76,17 @@ Board.statics.createList = function(data: documentType, images: imagesType){
 Board.statics.updateList = function(data: documentType, images: imagesType){
 
     let thumbImgArray: imageNameType[] = [];
-    if(images.thumbnail){
-        thumbImgArray = images.thumbnail;
+    if(images.thumbnailImage){
+        thumbImgArray = images.thumbnailImage;
     }
 
     if(data.thumbnailImage){
-        thumbImgArray = JSON.parse(data.thumbnailImage);
+        thumbImgArray = JSON.parse(data.thumbnailImage);   
     }
 
     let descImgArray: imageNameType[] = [];
-    if(images.description){
-        descImgArray = images.description;
+    if(images.descriptionImage){
+        descImgArray = images.descriptionImage;
     }
 
     if(data.descriptionImage){
@@ -104,8 +103,8 @@ Board.statics.updateList = function(data: documentType, images: imagesType){
         description: data.description,
         writer: data.writer,
         images: {
-            thumbnail: thumbImgArray,
-            description: descImgArray
+            thumbnailImage: thumbImgArray,
+            descriptionImage: descImgArray
         }
     }
 

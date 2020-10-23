@@ -18,6 +18,10 @@
         border: 1px solid black;
         border-radius: 0px;
     }
+
+    & input[class*=decriptionInputFileTag]{
+        display: none;
+    }
 }
 .bb-board-write__title{
     width: 100%;

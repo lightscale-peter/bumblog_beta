@@ -6,12 +6,24 @@ export const createList = (req: Request & {files: imagesType}, res: Response) =>
         res.json(result);
     }
 
+
+    if(req.files.descriptionImage){
+        req.files.descriptionImage.forEach((file, fileIndex) => {
+            req.body.description = req.body.description
+                    .replace(
+                        new RegExp(`decriptionImgTag-${fileIndex+1}\"`, "gi"), 
+                        `decriptionImgTag" src="/uploads/${file.filename}"`
+                    );
+        })
+    };
+    
+
     const data = {
         ...req.body,
         tags: req.body.tags.split(',')
     }
 
-    Board.createList(data, req.files).then(respond);;
+    Board.createList(data, req.files).then(respond);
 }
 
 export const findList = (req: Request, res: Response) =>{
@@ -35,6 +47,16 @@ export const updateList = (req: Request & {files: imagesType}, res: Response) =>
     const respond = (result: boolean) =>{
         res.json(result);
     }
+
+    if(req.files.descriptionImage){
+        req.files.descriptionImage.forEach((file, fileIndex) => {
+            req.body.description = req.body.description
+                    .replace(
+                        new RegExp(`decriptionImgTag-${fileIndex+1}\"`, "gi"), 
+                        `decriptionImgTag" src="/uploads/${file.filename}"`
+                    );
+        })
+    };
 
     const data = {
         ...req.body,

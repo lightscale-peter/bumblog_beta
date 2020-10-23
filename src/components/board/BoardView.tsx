@@ -19,8 +19,8 @@ function BoardView(urlParams: any){
         description: '',
         writer: '',
         images: {
-            thumbnail: [],
-            description: []
+            thumbnailImage: [],
+            descriptionImage: []
         }
     });
     let history = useHistory();

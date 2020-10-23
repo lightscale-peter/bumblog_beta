@@ -28,9 +28,9 @@ const upload = multer({
 });
 
 // CRUD
-router.post('/list',upload.fields([{name: 'thumbnail', maxCount: 1}, {name: 'description', maxCount: 10}]), createList);
+router.post('/list',upload.fields([{name: 'thumbnailImage', maxCount: 1}, {name: 'descriptionImage', maxCount: 10}]), createList);
 router.get('/list', findList);
-router.put('/list', upload.fields([{name: 'thumbnail', maxCount: 1}, {name: 'description', maxCount: 10}]), updateList);
+router.put('/list', upload.fields([{name: 'thumbnailImage', maxCount: 1}, {name: 'descriptionImage', maxCount: 10}]), updateList);
 router.delete('/list', deleteList);
 
 export default router;

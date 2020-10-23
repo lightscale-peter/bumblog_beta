@@ -39,8 +39,8 @@ function BoardList({data}: {data: boardListType}){
     useEffect(()=>{
         setTags(data.tags);
 
-        if(data.images.thumbnail.length > 0){
-            setThumbImg(path.resolve('./uploads', data.images.thumbnail[0].filename));
+        if(data.images.thumbnailImage.length > 0){
+            setThumbImg(path.resolve('./uploads', data.images.thumbnailImage[0].filename));
         }
 
         setDate(dateForm());

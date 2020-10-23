@@ -22,7 +22,6 @@ import {
 } from 'react-icons/bs';
 import {VscTextSize} from 'react-icons/vsc';
 import { boardListType } from './BoardHome';
-import { isJsxFragment } from 'typescript';
 
 function BoardWrite(urlParams: any){
 
@@ -36,6 +35,8 @@ function BoardWrite(urlParams: any){
     const [descriptionImageFilesState, setDescriptionImageFilesState] = useState<(File | null)[] | null>(null);
     const [descriptionImageNamesFromDBState, setDescriptionImageNamesFromDBState] = useState<imageNameType[]>([]);
 
+    const [inputTagCountState, setInputTagCountState] = useState(0);
+
     type imageNameType = {
         originalname: string;
         filename: string;
@@ -47,13 +48,6 @@ function BoardWrite(urlParams: any){
     const optionsRef = useRef<HTMLUListElement>(null);
     const thumbImageDom = useRef<HTMLInputElement>(null);
 
-
-    const addEventOnTextEditor = () =>{
-        if(iframeRef.current && iframeRef.current.contentDocument){
-            iframeRef.current.contentDocument.addEventListener('keyup', checkOptionsOfTextEditor);
-            iframeRef.current.contentDocument.addEventListener('click', checkOptionsOfTextEditor);
-        }
-    }
 
     const toggleButtonStatus = (event:React.MouseEvent<HTMLLIElement, MouseEvent> | undefined) =>{
         if(event){
@@ -107,33 +101,27 @@ function BoardWrite(urlParams: any){
             }
         }
 
+
+
         if(e.type === "keyup"){
             if(e.key === "Backspace"){
                 // console.log('백스페이스 눌렀다.', iframeRef.current?.contentDocument?.body.innerHTML); 
-                console.log('백스페이스 눌렀다.');
+                console.log('백스페이스 눌렀다.', inputTagCountState);
 
-                if(inputTagCount > 0){
-                    for(let i=1; i<=inputTagCount; i++){
+                if(inputTagCountState > 0){
+                    for(let i=1; i<=inputTagCountState; i++){
 
-                        // console.log(`이미지 검사 ${i}`)
+                        console.log(`이미지 검사 ${i}`)
     
-                        if(iframeRef.current?.contentDocument?.body.innerHTML.indexOf(`decriptionImageImg-${i}`) !== -1){
-                            // console.log('이미지가 있다.!!')
+                        if(iframeRef.current?.contentDocument?.body.innerHTML.indexOf(`decriptionImgTag-${i}`) !== -1){
+                            console.log('이미지가 있다.!!')
                         }else{
-                            // console.log('이미지가 없다.!!')
+                            console.log('이미지가 없다.!!', descriptionImageFilesState)
         
-                            if(document.querySelectorAll<HTMLInputElement>(`.decriptionImageInput-${i}`))
-                            document.querySelectorAll<HTMLInputElement>(`.decriptionImageInput-${i}`)[0].value = "";
+                            if(document.querySelectorAll<HTMLInputElement>(`.decriptionInputFileTag-${i}`))
+                            document.querySelectorAll<HTMLInputElement>(`.decriptionInputFileTag-${i}`)[0].value = "";
 
                             if(descriptionImageFilesState && descriptionImageFilesState.length > 0){
-                                console.log('이거다이거다', descriptionImageFilesState.map((file, index) => {
-                                    if(index+1 === i){
-                                        return null;
-                                    }else{
-                                        return file;
-                                    }
-                                    
-                                }))
                                 setDescriptionImageFilesState(descriptionImageFilesState.map((file, index) => {
                                     if(index+1 === i){
                                         return null;
@@ -188,13 +176,13 @@ function BoardWrite(urlParams: any){
 
             setTitleState(res.data[0].title);
             setTagsState(res.data[0].tags[0] === '' ? [] : res.data[0].tags);
-            setThumbnailImageNamesFromDBState(res.data[0].images.thumbnail);
-            setDescriptionImageNamesFromDBState(res.data[0].images.description);
+            setThumbnailImageNamesFromDBState(res.data[0].images.thumbnailImage);
+            setDescriptionImageNamesFromDBState(res.data[0].images.descriptionImage);
 
             setTagsOnViewFromData(res.data[0].tags);
 
-            if(res.data[0].images.thumbnail.length > 0){
-                setTempThumbnailImagePathState(path.resolve('./uploads', res.data[0].images.thumbnail[0].filename));
+            if(res.data[0].images.thumbnailImage.length > 0){
+                setTempThumbnailImagePathState(path.resolve('./uploads', res.data[0].images.thumbnailImage[0].filename));
             }
 
             setTextOnTextEditor(res.data[0].description);
@@ -202,8 +190,6 @@ function BoardWrite(urlParams: any){
     }
 
     useEffect(()=>{
-
-        addEventOnTextEditor();
         setDefaultOnTextEditor();
 
         const queryString = getQueryString(urlParams.location.search);
@@ -217,12 +203,29 @@ function BoardWrite(urlParams: any){
         return ()=>{
             removeEventOnTextEditor();
         }
+
     }, []);
 
+    useEffect(()=>{
+        addEventOnTextEditor();
+        return ()=>{
+            removeEventOnTextEditor();
+        }
+    }, [descriptionImageFilesState]);
+
+
+
+    const addEventOnTextEditor = () =>{
+        if(iframeRef.current && iframeRef.current.contentWindow){
+            iframeRef.current.contentWindow.addEventListener('keyup', checkOptionsOfTextEditor);
+            iframeRef.current.contentWindow.addEventListener('click', checkOptionsOfTextEditor);
+        }
+    }
+
     const removeEventOnTextEditor = () =>{
-        if(iframeRef.current && iframeRef.current.contentDocument){
-            iframeRef.current.contentDocument.removeEventListener('keyup', checkOptionsOfTextEditor);
-            iframeRef.current.contentDocument.removeEventListener('click', checkOptionsOfTextEditor);
+        if(iframeRef.current && iframeRef.current.contentWindow){
+            iframeRef.current.contentWindow.removeEventListener('keyup', checkOptionsOfTextEditor);
+            iframeRef.current.contentWindow.removeEventListener('click', checkOptionsOfTextEditor);
         }
     }
 
@@ -233,36 +236,71 @@ function BoardWrite(urlParams: any){
         }
     }
 
+    const removedImgSrcTextEditorString = () =>{
+        let stringData = iframeRef.current?.contentDocument?.body.innerHTML;
+        stringData = stringData?.replace(/([0-9]\"\s)src=\".*?\"/gi, "$1");
+        // "<img src='dasd' />dassadsdads<img src='dasd' />".replace(/src='.*?\'/gi, "")
+        // "<img class\".decriptionImgTag-1\" src=\"adasddsasdadas\" />".replace(/([0-9]\"\s)src=\".*?\"/gi, "$1");
+        return stringData ? stringData : '';
+    }
+
+    const maintainImgSrcTextEditorString = ()=>{
+        let stringData = iframeRef.current?.contentDocument?.body.innerHTML;
+        return stringData ? stringData : '';
+    }
+
     const setFormData = (idState: string) =>{
         const form = new FormData();
 
+
+        
+        
+
         form.append('title', titleState);
         form.append('tags', tagsState.toString());
-        form.append('description', iframeRef.current?.contentDocument?.body.innerHTML ? iframeRef.current?.contentDocument?.body.innerHTML : '');
+        
         form.append('writer', '신범근');
 
         if(idState == ''){ // 신규 등록
+            form.append('description', removedImgSrcTextEditorString());
 
-            if(thumbnailImageFileState){ // 썸네일 이미지가 있을때
-                form.append('thumbnail', thumbnailImageFileState);
+            // 썸네일 이미지
+            if(thumbnailImageFileState){ 
+                form.append('thumbnailImage', thumbnailImageFileState);
             }
 
-            if(descriptionImageFilesState){ // 본문 이미지가 있을때
+            // 본문 이미지     
+            if(descriptionImageFilesState){ 
                 descriptionImageFilesState.forEach(file =>{
                     if(file){
-                        form.append('description', file);
+                        form.append('descriptionImage', file);
                     }
                 })
             }           
 
         }else{ // 수정 등록
             form.append('_id', idState);
-
+            
+            // 썸네일 이미지
             if(thumbnailImageFileState){ // 이미지를 추가, 변경할때
-                form.append('thumbnail', thumbnailImageFileState);
+                form.append('thumbnailImage', thumbnailImageFileState);
             }else{ //  이미지를 유지할 때 x => x '[]' , o => o '[blabla]', 이미지를 삭제할때
                 form.append('thumbnailImage', JSON.stringify(thumbnailImageNamesFromDBState));
             }
+
+
+            
+            // 본문 이미지
+            if(descriptionImageFilesState){ // 이미지를 추가, 변경할때
+                descriptionImageFilesState.forEach(file =>{
+                    if(file){
+                        form.append('descriptionImage', file);
+                    }
+                })
+                form.append('description', removedImgSrcTextEditorString());
+            }else{ //  이미지를 유지할 때 x => x '[]' , o => o '[blabla]', 이미지를 삭제할때
+                form.append('description', maintainImgSrcTextEditorString());
+            }           
         }
 
         return form;
@@ -390,16 +428,16 @@ function BoardWrite(urlParams: any){
         setThumbnailImageFileState(null);      
     }
 
-    const [inputTagCount, setInputTagCount] = useState(0);
+    
 
 
 
 
     const openFileInput = ()=>{
 
-        setInputTagCount(inputTagCount + 1);
+        setInputTagCountState(inputTagCountState + 1);
         setTimeout(()=>{
-            document.querySelector<HTMLInputElement>(`.decriptionImageInput-${inputTagCount+1}`)?.click();
+            document.querySelector<HTMLInputElement>(`.decriptionInputFileTag-${inputTagCountState+1}`)?.click();
         }, 10)
         
 
@@ -417,8 +455,8 @@ function BoardWrite(urlParams: any){
             if(descriptionImageFile){
                 if(verifyImageType(descriptionImageFile.type) === false){
                     alert('jpeg, png, jpg 파일만 허용됨');
-                    if(inputTagCount !== 0){
-                        setInputTagCount(inputTagCount-1);
+                    if(inputTagCountState !== 0){
+                        setInputTagCountState(inputTagCountState-1);
                     }
                     e.currentTarget.value = ""; // Input File 초기화
                 }else{
@@ -440,20 +478,20 @@ function BoardWrite(urlParams: any){
         const reader = new FileReader();
         reader.onload = function(e){
             if(e.target?.result){
-                const imageTag = `<img width='100%' height='200px' name="testName" src="${e.target.result.toString()}" class=".decriptionImageImg-${inputTagCount}" />`;
+                const imageTag = `<img width='100%' height='auto' class=".decriptionImgTag-${inputTagCountState}" src="${e.target.result.toString()}" />`;
                 iframeRef.current?.contentDocument?.execCommand('InsertHTML', false, imageTag);
             }
         }
         reader.readAsDataURL(descriptionImageFile);
+
+        focusOnTextEditor();
     }
-
-
 
     return (
         <main className="bb-board-write__main">
             <form className="bb-board-write__form" onSubmit={onSubmit}>
 
-                {[...Array(inputTagCount)].map((v, key) => <input key={key} className={`decriptionImageInput-${key+1}`} type="file" onChange={setDescriptionImageFile} />)}
+                {[...Array(inputTagCountState)].map((v, key) => <input key={key} className={`decriptionInputFileTag-${key+1}`} type="file" onChange={setDescriptionImageFile} />)}
 
                 <input className="bb-board-write__title" placeholder="제목을 입력해주세요." type="text" name="title" value={titleState} onChange={setTitleForOnChange}/>
                 {/* <input className="bb-board-write__title--sub" placeholder="소제목을 입력해주세요." type="text" name="subTitle" value={boardTitle?.subTitle} onChange={setTitleForOnChange}/> */}
