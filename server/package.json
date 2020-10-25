@@ -28,7 +28,7 @@
     "webpack-cli": "^4.1.0"
   },
   "scripts": {
-    "start": "nodemon --exec ts-node index.ts",
-    "build": "webpack --config ./config/webpack.config.js"
+    "express-start": "nodemon --exec ts-node index.ts",
+    "express-build": "webpack --config ./config/webpack.config.js"
   }
 }
