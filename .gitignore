@@ -11,8 +11,8 @@
 /coverage
 
 # production - cafe24 호스팅시 에는 아래 주석처리
-build
-web.js
+# build
+# web.js
 
 # misc
 .DS_Store
