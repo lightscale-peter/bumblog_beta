@@ -25,12 +25,12 @@
     "typescript": "^3.7.5"
   },
   "scripts": {
-    "full-start": "concurrently \"npm run start\" \"cd server && npm run start\"",
-    "full-build": "concurrently \"npm run build\" \"cd server && npm run build\"",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "concurrently \"npm run react-start\" \"cd server && npm run express-start\"",
+    "build": "concurrently \"npm run react-build\" \"cd server && npm run express-build\"",
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "react-test": "react-scripts test",
+    "react-eject": "react-scripts eject"
   },
   "eslintConfig": {
     "extends": "react-app"
