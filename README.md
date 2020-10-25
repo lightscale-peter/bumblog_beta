@@ -6,7 +6,7 @@
 * 현재 게시판 CRUD(생성, 읽기, 수정, 삭제)가 구현되어 있으며, 로그인 기능 추가 중에 있습니다.
 * 프론트 : React / 백엔드 : Express 로 되어있습니다.
 * 전 영역 (프론트 + 백엔드) TypeScript로 개발되어 있습니다.
-* cafe24 nodeJS 호스팅 서비스를 이용하여 배포되어 어디서든 접속이 가능합니다. [확인하기](http://bumblog.cafe24app.com)
+* heroku nodeJS 호스팅 서비스를 이용하여 배포되어 어디서든 접속이 가능합니다. [확인하기](https://beomblog.herokuapp.com/)
 * 배포 시에는 Webpack 번들러를 이용하여 ts -> js로 변환 후 사용했습니다.
 
 #### 2. 사용 기술
