@@ -17,7 +17,7 @@ module.exports = {
     extensions: ['.ts', '.js' ]
   },
   output: {
-    filename: 'index.js',
+    filename: 'web.js',
     path: path.resolve(__dirname, '../../')
   }
 };
