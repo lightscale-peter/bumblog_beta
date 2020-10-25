@@ -34,12 +34,15 @@
 해당 경로에서 npm 모듈을 모두 
  설치 후
  
+ * 배포 실행 (heroku 호스팅용)
+   * npm start
+ 
  * 개발 모드
-   * npm run full-start
+   * npm run dev:start
    * 자동으로 https://localhost:3000 에서 앱 실행
  
  * 배포 모드
-   * npm run full-build
+   * npm run dev:build
    * ./build (프론트), web.js (백엔드) 로 번들링.
    * node web.js 실행 후, https://localhost:8001 에서 앱 확인 가능
  
