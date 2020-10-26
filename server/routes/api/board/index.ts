@@ -3,8 +3,14 @@ import multer from 'multer';
 import {v4} from 'uuid';
 import path from 'path';
 import {createList, findList, updateList, deleteList} from './board.controller';
+import {existsSync, mkdirSync} from 'fs';
 
 const router = Router();
+
+let uploadDir = path.resolve('../uploads');
+if(process.env.NODE_ENV === 'production'){ // 배포 모드
+    uploadDir = path.resolve('./uploads');
+}
 
 const uuid = () =>{
     const uuid4 = v4().split('-');
@@ -14,10 +20,6 @@ const uuid = () =>{
 const upload = multer({
     storage: multer.diskStorage({
         destination: (req, file, cb)=>{
-            let uploadDir = path.resolve('../uploads');
-            if(process.env.NODE_ENV === 'production'){ // 배포 모드
-                uploadDir = path.resolve('./uploads');
-            }
             cb(null, uploadDir);
         },
         filename: (req, file, cb)=>{
@@ -26,6 +28,14 @@ const upload = multer({
         }
     }),
 });
+
+const createFolder = () =>{
+    if(!existsSync(uploadDir)){
+        mkdirSync(uploadDir);
+    }
+}
+
+createFolder();
 
 // CRUD
 router.post('/list',upload.fields([{name: 'thumbnailImage', maxCount: 1}, {name: 'descriptionImage', maxCount: 10}]), createList);

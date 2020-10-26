@@ -29,8 +29,8 @@
 }
 .bb-modal__window-close-btn{
     position: absolute;
-    right: 50px;
-    top: 50px;
+    right: 25px;
+    top: 25px;
     font-size: 30px;
     color: grey;
     cursor: pointer;
@@ -43,19 +43,11 @@
     .bb-modal__window{
         padding: 60px 70px;
     }
-    .bb-modal__window-close-btn{
-        right: 40px;
-        top: 40px;
-    }
 }
 /* Small Viewport 이하 */
 @media screen and (max-width: 734px) {
     .bb-modal__window{
         padding: 40px 40px;
-    }
-    .bb-modal__window-close-btn{
-        right: 30px;
-        top: 30px;
     }
 }
 @media screen and (max-width: 340px) {

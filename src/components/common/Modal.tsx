@@ -6,13 +6,13 @@ import {BsX} from 'react-icons/bs';
 
 function Modal({data} : {data: ModalDataType}){
 
-    const {state, onCloseModal} = useModal();
+    const {modalState, onCloseModal} = useModal();
     const modalEl = useRef<HTMLDivElement>(null);
     const [modalData, setModalData] = useState<ModalDataType>(data);
 
     useEffect(function(){
-        setModalData(state);
-    }, [state]);
+        setModalData(modalState);
+    }, [modalState]);
 
     const closeWindow = () =>{
         onCloseModal();

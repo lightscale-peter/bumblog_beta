@@ -5,7 +5,9 @@
 /server/node_modules
 /.pnp
 .pnp.js
-/uploads/*
+
+# image files
+/uploads
 
 # testing
 /coverage

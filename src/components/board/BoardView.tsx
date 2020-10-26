@@ -37,9 +37,9 @@ function BoardView(urlParams: any){
             url: '/api/board/list',
             params: searchData
         }).then((res) =>{
-            console.log('res', res.data[0]);
-            if(res.data[0]){
-                setListData(res.data[0]);
+            console.log('res', res.data);
+            if(res.data){
+                setListData(res.data);
             }
         });
     }, []);
@@ -59,15 +59,13 @@ function BoardView(urlParams: any){
                         url: '/api/board/list',
                         data: listData
                     }).then((res) =>{
-                        console.log('deleteRes', res.data[0]);
+                        console.log('deleteRes', res.data);
                         onCloseModal();
                         history.push('/board');
                     });
                 }
             }
         });
-
-        
         
     }
 

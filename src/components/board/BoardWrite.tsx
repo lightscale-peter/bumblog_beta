@@ -5,6 +5,7 @@ import './BoardWrite.scss';
 import path from 'path';
 import {useHistory} from 'react-router-dom';
 import {getQueryString} from '../../utils';
+import useModal from '../../hooks/useModal';
 
 import {
     BsTypeBold, 
@@ -21,19 +22,24 @@ import {
 
 } from 'react-icons/bs';
 import {VscTextSize} from 'react-icons/vsc';
-import { boardListType } from './BoardHome';
+import { boardListType, boardListImagesType } from './BoardHome';
 
 function BoardWrite(urlParams: any){
+
+    const {onOpenConfirmModal, onCloseModal} = useModal();
 
     const [titleState, setTitleState] = useState('')
     const [tagsState, setTagsState] = useState<string[]>([]);
     const [idState, setIdState] = useState('');
+    const [imageState, setImageState] = useState<boardListImagesType>({
+        thumbnailImage: [],
+        descriptionImage:[]
+    });
+    const [nullCheckState, setNullCheckState] = useState(false);
 
     const [tempThumbnailImagePathState, setTempThumbnailImagePathState] = useState('');
     const [thumbnailImageFileState, setThumbnailImageFileState] = useState<File | null>(null); 
-    const [thumbnailImageNamesFromDBState, setThumbnailImageNamesFromDBState] = useState<imageNameType[]>([]);
     const [descriptionImageFilesState, setDescriptionImageFilesState] = useState<(File | null)[] | null>(null);
-    const [descriptionImageNamesFromDBState, setDescriptionImageNamesFromDBState] = useState<imageNameType[]>([]);
 
     const [inputTagCountState, setInputTagCountState] = useState(0);
 
@@ -46,7 +52,8 @@ function BoardWrite(urlParams: any){
 
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const optionsRef = useRef<HTMLUListElement>(null);
-    const thumbImageDom = useRef<HTMLInputElement>(null);
+    const thumbImageRef = useRef<HTMLInputElement>(null);
+    const titleInputRef = useRef<HTMLInputElement>(null);
 
 
     const toggleButtonStatus = (event:React.MouseEvent<HTMLLIElement, MouseEvent> | undefined) =>{
@@ -74,12 +81,10 @@ function BoardWrite(urlParams: any){
     // 텍스트 에디터 (옵션) 로직
     const sendOptionToTextEditor = (exec: string, value: string, event?:React.MouseEvent<HTMLLIElement, MouseEvent>) =>{
 
-        
         toggleButtonStatus(event);
         applyOptionOnTextEditor(exec, value);
         focusOnTextEditor();
     }
-
 
     // 텍스트 에디터 (옵션 실시간 체크) 로직
     const checkOptionsOfTextEditor = (e: KeyboardEvent | MouseEvent & {key?: string}) =>{
@@ -101,13 +106,24 @@ function BoardWrite(urlParams: any){
             }
         }
 
-
-
+        // 백스페이스를 눌렀을떄 이미지가 지워졌는지 확인하는 로직
         if(e.type === "keyup"){
             if(e.key === "Backspace"){
-                // console.log('백스페이스 눌렀다.', iframeRef.current?.contentDocument?.body.innerHTML); 
                 console.log('백스페이스 눌렀다.', inputTagCountState);
 
+                // imageState - 기존 이미지 지워졌는지 검사
+                imageState.descriptionImage.forEach(image => {
+                    if(iframeRef.current?.contentDocument?.body.innerHTML.indexOf(image.filename) === -1){
+                        console.log('이미지가 삭제 되었다.');
+                        setImageState({
+                            ...imageState,
+                            descriptionImage: imageState.descriptionImage.filter(item => item.filename !== image.filename)
+                        });
+
+                    }
+                });
+
+                // descriptionImageFilesState - 신규 이미지 지워졌는지 검사
                 if(inputTagCountState > 0){
                     for(let i=1; i<=inputTagCountState; i++){
 
@@ -134,8 +150,7 @@ function BoardWrite(urlParams: any){
                             
                         }
                     }
-                }
-                
+                }                
             }
         }
         
@@ -171,21 +186,20 @@ function BoardWrite(urlParams: any){
             params: {
                 _id: id
             }
-        }).then((res: {data: boardListType[]}) =>{
-            console.log('res', res.data[0]);
+        }).then((res: {data: boardListType}) =>{
+            console.log('res', res.data);
 
-            setTitleState(res.data[0].title);
-            setTagsState(res.data[0].tags[0] === '' ? [] : res.data[0].tags);
-            setThumbnailImageNamesFromDBState(res.data[0].images.thumbnailImage);
-            setDescriptionImageNamesFromDBState(res.data[0].images.descriptionImage);
+            setTitleState(res.data.title);
+            setTagsState(res.data.tags[0] === '' ? [] : res.data.tags);
+            setImageState(res.data.images);
 
-            setTagsOnViewFromData(res.data[0].tags);
+            setTagsOnViewByData(res.data.tags);
 
-            if(res.data[0].images.thumbnailImage.length > 0){
-                setTempThumbnailImagePathState(path.resolve('./uploads', res.data[0].images.thumbnailImage[0].filename));
+            if(res.data.images.thumbnailImage.length > 0){
+                setTempThumbnailImagePathState(path.resolve('./uploads', res.data.images.thumbnailImage[0].filename));
             }
 
-            setTextOnTextEditor(res.data[0].description);
+            setTextOnTextEditor(res.data.description);
         });
     }
 
@@ -211,7 +225,7 @@ function BoardWrite(urlParams: any){
         return ()=>{
             removeEventOnTextEditor();
         }
-    }, [descriptionImageFilesState]);
+    }, [descriptionImageFilesState, imageState]);
 
 
 
@@ -236,7 +250,7 @@ function BoardWrite(urlParams: any){
         }
     }
 
-    const removedImgSrcTextEditorString = () =>{
+    const getTextEditorContentsAfterRemoveTempImgSrc = () =>{
         let stringData = iframeRef.current?.contentDocument?.body.innerHTML;
         stringData = stringData?.replace(/([0-9]\"\s)src=\".*?\"/gi, "$1");
         // "<img src='dasd' />dassadsdads<img src='dasd' />".replace(/src='.*?\'/gi, "")
@@ -244,25 +258,60 @@ function BoardWrite(urlParams: any){
         return stringData ? stringData : '';
     }
 
-    const maintainImgSrcTextEditorString = ()=>{
+    const getTextEditorContents = ()=>{
         let stringData = iframeRef.current?.contentDocument?.body.innerHTML;
         return stringData ? stringData : '';
+    }
+
+
+    const nullCheckData = (targets: {type: string; target: string;} []): boolean =>{
+        let passFlag = true;
+
+        console.log('targets', targets);
+      
+        targets.some(item => {
+            console.log('item', item);
+
+            if(item.target === ''){
+                onOpenConfirmModal({
+                    status: true,
+                    title: `${item.type} 오류`,
+                    desc: `${item.type}을 입력해 주세요.`,
+                    confirm: {
+                        isShow: true,
+                        func: () => {
+                            onCloseModal();
+                            switch(item.type){
+                                case '제목':
+                                    titleInputRef.current?.focus();
+                                    break;
+                                case '본문':
+                                    if(iframeRef.current?.contentDocument)
+                                        iframeRef.current?.contentDocument.body.focus();
+                                    break;
+                                default:
+                            }
+                        }
+                    }
+                });
+                passFlag = false;
+                return true;
+            }
+        });
+
+        return passFlag;
+       
     }
 
     const setFormData = (idState: string) =>{
         const form = new FormData();
 
-
-        
-        
-
         form.append('title', titleState);
-        form.append('tags', tagsState.toString());
-        
+        form.append('tags', JSON.stringify(tagsState));
+        form.append('description', getTextEditorContentsAfterRemoveTempImgSrc());
         form.append('writer', '신범근');
 
         if(idState == ''){ // 신규 등록
-            form.append('description', removedImgSrcTextEditorString());
 
             // 썸네일 이미지
             if(thumbnailImageFileState){ 
@@ -280,16 +329,13 @@ function BoardWrite(urlParams: any){
 
         }else{ // 수정 등록
             form.append('_id', idState);
+            form.append('images', JSON.stringify(imageState)); // 기존 이미지 정보
             
             // 썸네일 이미지
             if(thumbnailImageFileState){ // 이미지를 추가, 변경할때
                 form.append('thumbnailImage', thumbnailImageFileState);
-            }else{ //  이미지를 유지할 때 x => x '[]' , o => o '[blabla]', 이미지를 삭제할때
-                form.append('thumbnailImage', JSON.stringify(thumbnailImageNamesFromDBState));
             }
 
-
-            
             // 본문 이미지
             if(descriptionImageFilesState){ // 이미지를 추가, 변경할때
                 descriptionImageFilesState.forEach(file =>{
@@ -297,10 +343,7 @@ function BoardWrite(urlParams: any){
                         form.append('descriptionImage', file);
                     }
                 })
-                form.append('description', removedImgSrcTextEditorString());
-            }else{ //  이미지를 유지할 때 x => x '[]' , o => o '[blabla]', 이미지를 삭제할때
-                form.append('description', maintainImgSrcTextEditorString());
-            }           
+            }
         }
 
         return form;
@@ -310,43 +353,53 @@ function BoardWrite(urlParams: any){
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) =>{
         e.preventDefault();
 
-        const form = setFormData(idState);
-      
-        if(idState === ''){ // 신규 등록
-            
-            axios({
-                headers: {'Content-Type': 'multipart/form-data'},
-                method: 'post',
-                url: '/api/board/list',
-                data: form
-            }).then((res) =>{
-                console.log('post_res', res.data[0]);
-                history.push('/board');
-            });
+        const passFlag = nullCheckData([
+                {type: '제목', target: titleState}, 
+                {type: '태그', target: tagsState.toString()}, 
+                {type: '본문', target: getTextEditorContents()}
+            ]);
 
-        }else{ // 수정 등록
-  
-            axios({
-                headers: {'Content-Type': 'multipart/form-data'},
-                method: 'put',
-                url: '/api/board/list',
-                data: form
-            }).then((res) =>{
-                console.log('put_res', res.data[0]);
-                history.push('/board/view?_id=' + idState);
-            });
-        }
-
-
-        // 데이터 비우기
-        setTitleState('');
-        setThumbnailImageFileState(null);
-        setThumbnailImageNamesFromDBState([]);
-        setDescriptionImageFilesState(null);
-        setDescriptionImageNamesFromDBState([]);
-
-        clearTextOnTextEditor();
         
+        if(passFlag){
+            const form = setFormData(idState);
+        
+            if(idState === ''){ // 신규 등록
+                
+                axios({
+                    headers: {'Content-Type': 'multipart/form-data'},
+                    method: 'post',
+                    url: '/api/board/list',
+                    data: form
+                }).then((res) =>{
+                    console.log('post_res', res.data[0]);
+                    history.push('/board');
+                });
+    
+            }else{ // 수정 등록
+      
+                axios({
+                    headers: {'Content-Type': 'multipart/form-data'},
+                    method: 'put',
+                    url: '/api/board/list',
+                    data: form
+                }).then((res) =>{
+                    console.log('put_res', res.data[0]);
+                    history.push('/board/view?_id=' + idState);
+                });
+            }
+    
+    
+            // 데이터 비우기
+            setTitleState('');
+            setImageState({
+                thumbnailImage: [],
+                descriptionImage:[]
+            });
+            setThumbnailImageFileState(null);
+            setDescriptionImageFilesState(null);
+    
+            clearTextOnTextEditor();
+        }
     }
 
     const setTitleForOnChange = (e: React.ChangeEvent<HTMLInputElement>) =>{
@@ -374,7 +427,7 @@ function BoardWrite(urlParams: any){
         }
     }
 
-    const setTagsOnViewFromData = (initTags:string[]) =>{
+    const setTagsOnViewByData = (initTags:string[]) =>{
         document.querySelectorAll('.bb-board-write__tags-wrapper > span').forEach(span =>{
             initTags.forEach(tag =>{
                 if(tag === span.innerHTML){
@@ -387,16 +440,23 @@ function BoardWrite(urlParams: any){
     const setThumbnailImageFile = (e: React.ChangeEvent<HTMLInputElement>) =>{
         if(e.currentTarget.files){
 
-            const thumbImageFile = e.currentTarget.files[0];
+            const imageFile = e.currentTarget.files[0];
 
-            if(thumbImageFile){
-                if(verifyImageType(thumbImageFile.type) === false){
-                    alert('jpeg, png, jpg 파일만 허용됨');
+            if(imageFile){
+                if(verifyImageType(imageFile.type) === false){
+                    onOpenConfirmModal({
+                        status: true,
+                        title: '이미지 오류',
+                        desc: 'jpeg, png, jpg 파일만 가능합니다.',
+                        confirm: {
+                            isShow: false
+                        }
+                    });
                     e.currentTarget.value = ""; // Input File 초기화
                     setThumbnailImageFileState(null); // State 초기화
                 }else{
-                    setTempThumbnailImageOnView(thumbImageFile);
-                    setThumbnailImageFileState(thumbImageFile);
+                    setTempThumbnailImageOnView(imageFile);
+                    setThumbnailImageFileState(imageFile);
                 }
             }
         }
@@ -424,8 +484,11 @@ function BoardWrite(urlParams: any){
 
     const removeThumbnailImage = () =>{
         setTempThumbnailImagePathState('');
-        setThumbnailImageNamesFromDBState([]);
-        setThumbnailImageFileState(null);      
+        setThumbnailImageFileState(null);   
+        setImageState({
+            ...imageState,
+            thumbnailImage: []
+        });   
     }
 
     
@@ -441,31 +504,37 @@ function BoardWrite(urlParams: any){
         }, 10)
         
 
-
         // iframeRef.current?.contentDocument?.write("<img width='100%' height='300px'/>");
     }
 
     const setDescriptionImageFile = (e: React.ChangeEvent<HTMLInputElement>) =>{
 
-        console.log('e', e);
+        // console.log('e', e);
 
         if(e.currentTarget.files){
-            const descriptionImageFile = e.currentTarget.files[0];
+            const imageFile = e.currentTarget.files[0];
 
-            if(descriptionImageFile){
-                if(verifyImageType(descriptionImageFile.type) === false){
-                    alert('jpeg, png, jpg 파일만 허용됨');
+            if(imageFile){
+                if(verifyImageType(imageFile.type) === false){
+                    onOpenConfirmModal({
+                        status: true,
+                        title: '이미지 오류',
+                        desc: 'jpeg, png, jpg 파일만 가능합니다.',
+                        confirm: {
+                            isShow: false
+                        }
+                    });
                     if(inputTagCountState !== 0){
                         setInputTagCountState(inputTagCountState-1);
                     }
                     e.currentTarget.value = ""; // Input File 초기화
                 }else{
-                    setTempDescriptImageOnTextEditor(descriptionImageFile);
+                    setTempDescriptImageOnTextEditor(imageFile);
 
                     if(descriptionImageFilesState === null){
-                        setDescriptionImageFilesState([descriptionImageFile]);
+                        setDescriptionImageFilesState([imageFile]);
                     }else{
-                        setDescriptionImageFilesState(descriptionImageFilesState.concat(descriptionImageFile));
+                        setDescriptionImageFilesState(descriptionImageFilesState.concat(imageFile));
                     }
                 }   
             }
@@ -493,7 +562,7 @@ function BoardWrite(urlParams: any){
 
                 {[...Array(inputTagCountState)].map((v, key) => <input key={key} className={`decriptionInputFileTag-${key+1}`} type="file" onChange={setDescriptionImageFile} />)}
 
-                <input className="bb-board-write__title" placeholder="제목을 입력해주세요." type="text" name="title" value={titleState} onChange={setTitleForOnChange}/>
+                <input className="bb-board-write__title" ref={titleInputRef} placeholder="제목을 입력해주세요." type="text" name="title" value={titleState} onChange={setTitleForOnChange}/>
                 {/* <input className="bb-board-write__title--sub" placeholder="소제목을 입력해주세요." type="text" name="subTitle" value={boardTitle?.subTitle} onChange={setTitleForOnChange}/> */}
                 <div className="bb-board-write__tags-wrapper">
                     <span onClick={setTagsData}>개발</span>
@@ -531,8 +600,8 @@ function BoardWrite(urlParams: any){
                     <span style={{backgroundImage: `url(${tempThumbnailImagePathState})`}} onClick={removeThumbnailImage}><BsX /></span>
                 </div>
                 <div className="bb-board-write__image-upload-btn">
-                    <input type="file" ref={thumbImageDom} onChange={setThumbnailImageFile} />
-                    <button type="button" onClick={()=> thumbImageDom.current?.click()}>이미지 업로드</button>
+                    <input type="file" ref={thumbImageRef} onChange={setThumbnailImageFile} />
+                    <button type="button" onClick={()=> thumbImageRef.current?.click()}>썸네일 이미지 업로드</button>
                 </div>
                 <div className="bb-board-write__buttons">
                     <button type="button" onClick={() => history.push('/board')}>취소</button>

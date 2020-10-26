@@ -51,9 +51,9 @@ db.on('error', console.error);
 db.once('open', ()=>{
     console.log('[mongoose] connected to mongodb server');
 });
-if(process.env.NODE_ENV !== 'production'){
-    mongoose.set('debug', true); // 개발 모드
-}
+// if(process.env.NODE_ENV !== 'production'){
+//     mongoose.set('debug', true); // 개발 모드
+// }
 mongoose.connect(bumblog.mongodbUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true

@@ -6,7 +6,6 @@ export const createList = (req: Request & {files: imagesType}, res: Response) =>
         res.json(result);
     }
 
-
     if(req.files.descriptionImage){
         req.files.descriptionImage.forEach((file, fileIndex) => {
             req.body.description = req.body.description
@@ -20,7 +19,7 @@ export const createList = (req: Request & {files: imagesType}, res: Response) =>
 
     const data = {
         ...req.body,
-        tags: req.body.tags.split(',')
+        tags: JSON.parse(req.body.tags)
     }
 
     Board.createList(data, req.files).then(respond);
@@ -51,16 +50,16 @@ export const updateList = (req: Request & {files: imagesType}, res: Response) =>
     if(req.files.descriptionImage){
         req.files.descriptionImage.forEach((file, fileIndex) => {
             req.body.description = req.body.description
-                    .replace(
-                        new RegExp(`decriptionImgTag-${fileIndex+1}\"`, "gi"), 
-                        `decriptionImgTag" src="/uploads/${file.filename}"`
-                    );
+                .replace(
+                    new RegExp(`decriptionImgTag-${fileIndex+1}\"`, "gi"), 
+                    `decriptionImgTag" src="/uploads/${file.filename}"`
+                );
         })
     };
 
     const data = {
         ...req.body,
-        tags: req.body.tags.split(',')
+        tags: JSON.parse(req.body.tags)
     }
 
     Board.updateList(data, req.files).then(respond);
@@ -71,7 +70,7 @@ export const deleteList = (req: Request, res: Response) =>{
     const respond = (result: boolean) =>{
         res.json(result);
     }
-    console.log('deleteList query', req.query);
+    
     if(req.body){
         Board.deleteList(req.body).then(respond);
     }

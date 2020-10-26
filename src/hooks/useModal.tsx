@@ -4,7 +4,7 @@ import {openModal, openConfirmModal, closeModal} from '../modules/modal';
 import { useCallback } from 'react';
 
 function useModal(){
-    const state = useSelector((state:RootState) => state.modal);
+    const modalState = useSelector((state:RootState) => state.modal);
     const dispatch = useDispatch();
 
     const onOpenModal = useCallback((data)=>{
@@ -20,7 +20,7 @@ function useModal(){
     }, [dispatch]);
 
     return {
-        state,
+        modalState,
         onOpenModal,
         onOpenConfirmModal,
         onCloseModal

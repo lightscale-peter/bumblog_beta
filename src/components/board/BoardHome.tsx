@@ -4,6 +4,7 @@ import BoardList from './BoardList';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 import {BsPencilSquare} from 'react-icons/bs';
+import useModal from '../../hooks/useModal';
 
 export type boardListType = {
     _id: string;
@@ -11,20 +12,25 @@ export type boardListType = {
     title: string;
     description: string;
     writer: string;
-    images: {
-        thumbnailImage: {
-            originalname: string;
-            filename: string;
-        }[],
-        descriptionImage: {
-            originalname: string;
-            filename: string;
-        }[]
-    }
+    images: boardListImagesType;
+}
+
+export type boardListImagesType = {
+    thumbnailImage: {
+        originalname: string;
+        filename: string;
+    }[];
+    descriptionImage: {
+        originalname: string;
+        filename: string;
+    }[];
 }
 
 
 function BoardHome(){
+
+
+    const {modalState} = useModal();
 
     const [boardList, setBoardList] = useState<boardListType[]>([]);
     const tagFilter = (e:React.MouseEvent<HTMLLIElement, MouseEvent>) =>{
