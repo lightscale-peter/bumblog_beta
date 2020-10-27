@@ -33,8 +33,7 @@ function BoardView(urlParams: any){
         console.log('useEffect');
         const searchVal = urlParams.location.search;
         const searchData = getQueryString(searchVal);
-
-        console.log('searchData', searchData);
+        window.scrollTo(0, 0);
        
         axios({
             method: 'get',
