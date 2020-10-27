@@ -36,7 +36,7 @@ function BoardHome(){
     const tagFilter = (e:React.MouseEvent<HTMLLIElement, MouseEvent>) =>{
 
         // 버튼 초기화
-        document.querySelectorAll('.bb-board-home__tag-ul > li').forEach((list)=>{
+        document.querySelectorAll('.bb-board-home__tags-ul > li').forEach((list)=>{
             list.classList.remove('on');
         });
 
@@ -69,6 +69,8 @@ function BoardHome(){
             // console.log('data', res.data);
             setBoardList(res.data);
         });
+
+        window.scrollTo(0, 0);
 
     }, []);
 

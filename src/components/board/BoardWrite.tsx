@@ -223,6 +223,8 @@ function BoardWrite(urlParams: any){
             setFirstClickOfEditorState(false);
         }
 
+        window.scrollTo(0, 0);
+
         return ()=>{
             removeEventOnTextEditor();
         }
