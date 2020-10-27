@@ -24,7 +24,7 @@ function Modal({data} : {data: ModalDataType}){
             <div className="bb-modal__window">
                 <div className="bb-modal__window-close-btn" onClick={closeWindow}><BsX className="bb-modal__window-corss-icon" /></div>
                 <div>
-                    <h1 className="bb-modal__window-title">{modalData.title}</h1>
+                    <h2 className="bb-modal__window-title">{modalData.title}</h2>
                     <div className="bb-modal__window-desc">
                         {modalData.desc}
                     </div>

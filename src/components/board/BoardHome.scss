@@ -2,27 +2,29 @@
 
 .bb-board-home__main{
     padding-top: 50px;
-    padding-bottom: 15px;
-    background-color: rgba(210, 210, 210, 0.15);
+    // background-color: rgba(210, 210, 210, 0.15);
 }
 
 .bb-board-home__hero-section{
     text-align: center;
+    margin-top: 60px;
+}
+.bb-board-home__tags-section{
     margin-top: 30px;
 }
-.bb-board-home__tag-ul{
+.bb-board-home__tags-ul{
     list-style: none;
     display: flex;
     justify-content: center;
-    max-width: 500px;
-    margin: 30px auto 0;
+    margin: auto 0;
     flex-wrap: wrap;
+    
     & > li{
         @extend .text-bold;
         cursor: pointer;
-        border: 2px solid lightgrey;
+        border: 1px solid lightgrey;
         color: lightgrey;
-        border-radius: 15px;
+        border-radius: 8px;
         padding: 2px 10px;
         font-size: 14px;
         margin: 5px;
@@ -34,15 +36,21 @@
     }
 }
 
-
+.bb-board-home__write-button-section{
+    margin-top: 30px;
+}
 .bb-board-home__btns-wrapper{
-    max-width: 840px;
-    margin: 30px auto 0;
+    max-width: 800px;
+    margin: 0 auto;
     display: flex;
     justify-content: space-between;
-    padding: 0 15px;
     & > div{
         cursor: pointer;
+    }
+}
+@media screen and (max-width: 1068px) {
+    .bb-board-home__btns-wrapper{
+        padding: 0 20px;
     }
 }
 .bb-board-home__hero-desc{
@@ -55,10 +63,19 @@
 .bb-board-home__write-icon{
     font-size: 20px;
 }
-
-/* Medium Viewport 이하 */
-@media screen and (max-width: 1068px) {
+.bb-board-home__list-section{
+    margin-top: 20px;
+}
+.bb-board-home__list-ul-tag{
     
+    & > li{
+        border-top: 1px solid lightgray;
+    }
+}
+@media screen and (max-width: 1068px) {
+    .bb-board-home__list-ul-tag{
+        margin-top: 15px;
+    }
 }
 /* Small Viewport 이하 */
 @media screen and (max-width: 734px) {

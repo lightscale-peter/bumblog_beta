@@ -3,14 +3,12 @@ import './Footer.scss';
 
 function Footer(){
     return (
-        <footer className="bb-common__footer-tag">
-            <div className="bb-common__footer-wrapper">
-                <div className="bb-common__footer-block-1">
-                    <div className="bb-common__footer-copyright">
-                        <div>Copyright © 2020 Bumblog Inc. All rights reserved</div>
-                    </div>
-                    <div className="text-bold">Bumblog</div>
+        <footer className="bb-common__footer">
+            <div className="bb-common__footer-contents-wrapper">
+                <div className="bb-common__footer-copyright">
+                    <div>Copyright © 2020 Bumblog Inc. All rights reserved</div>
                 </div>
+                <div className="text-bold">Bumblog</div>
             </div>
         </footer>
     )

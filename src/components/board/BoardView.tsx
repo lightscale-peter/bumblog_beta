@@ -5,7 +5,9 @@ import axios from 'axios';
 import {getQueryString} from '../../utils';
 import {boardListType} from './BoardHome';
 import {useHistory} from 'react-router-dom';
-
+import defaultThumbnail from '../../assets/images/board/default_thumbnail.jpg';
+import {BsPencilSquare, BsTrash} from 'react-icons/bs'
+import path from 'path';
 import useModal from '../../hooks/useModal';
 
 function BoardView(urlParams: any){
@@ -23,6 +25,8 @@ function BoardView(urlParams: any){
             descriptionImage: []
         }
     });
+
+    const [thumbnailImageState, setThumbnailImageState] = useState('');
     let history = useHistory();
     
     useEffect(()=>{
@@ -40,6 +44,14 @@ function BoardView(urlParams: any){
             console.log('res', res.data);
             if(res.data){
                 setListData(res.data);
+
+                const thumbnailImage = res.data.images.thumbnailImage[0];
+                if(thumbnailImage){
+                    setThumbnailImageState(path.resolve('./uploads', thumbnailImage.filename));
+                }else{
+                    setThumbnailImageState(defaultThumbnail);   
+                }
+                
             }
         });
     }, []);
@@ -71,8 +83,8 @@ function BoardView(urlParams: any){
 
 
     return (
-        <main className="main">
-            <section className="bb-board-view__hero-section">
+        <main className="bb-board-view__main">
+            <section className="bb-board-view__hero-section" style={{backgroundImage: `url(${thumbnailImageState})`}}>
                 <div className="bb-board-view__hero-section-title-wrapper">
                     <h1>{listData?.title}</h1>
                     <div className="bb-board-view__subtitle">
@@ -82,13 +94,21 @@ function BoardView(urlParams: any){
             </section>
             <section className="bb-board-view__article-section">
                 <article className="bb-board-view__article tui-editor-contents" dangerouslySetInnerHTML={{__html: listData.description}}></article>
+            </section>
+            <section className="bb-board-view__buttons-section">
                 <ul className="bb-board-view__update-btns">
                     <li>
                         <button>
-                            <Link to={`/board/write?_id=${listData._id === null ? '' : listData._id}`}>수정</Link>
+                            <Link to={`/board/write?_id=${listData._id === null ? '' : listData._id}`}>
+                                <BsPencilSquare className="bb-board-view__pencil-icon" />
+                            </Link>
                         </button>
                     </li>
-                    <li><button onClick={handleDelete}>삭제</button></li>
+                    <li>
+                        <button onClick={handleDelete}>
+                            <BsTrash className="bb-board-view__tresh-icon" />
+                        </button>
+                    </li>
                 </ul>
             </section>
         </main>

@@ -1,3 +1,5 @@
+@import '../../App.scss';
+
 .bg-kw-list{
     & > ul{
         list-style: none;
@@ -29,14 +31,18 @@
 
 .bb-board-list__body{
     cursor: pointer;
-    background-color: white;
-    padding: 20px;
-    margin: 20px auto 0;
+    // background-color: white;
+    padding: 20px 0;
+    margin: 0px auto;
     max-width: 800px;
 }
+@media screen and (max-width: 1068px) {
+    .bb-board-list__body{
+        padding: 20px;
+    }
+}
 @media screen and (max-width: 734px) {
-    .bg-kw-list-row{
-        margin: 15px auto 0;
+    .bb-board-list__body{
         padding: 15px;
     }
 }
@@ -44,73 +50,92 @@
 
 .bb-board-list__contents-wrapper{
     display: flex;
-    align-items: center;
     justify-content: space-between;
 }
-.bb-board-list__tag-wrapper{
-
-    margin-top: 5px;
-
+.bb-board-list__article-tags{
+    margin-top: 15px;
     & > span{
         display: inline-block;
         font-size: 12px;
         color: grey;
         border: 1px solid grey;
-        border-radius: 14px;
+        border-radius: 6px;
         margin-right: 5px;
-        padding: 0px 8px;
+        padding: 0px 6px;
     }
-}
-
-.bb-board-list__article{
-    margin-right: 20px;
-    width: calc(100% - 220px);
-    & .desc{
-        margin-top: 10px;
-        display: -webkit-box;
-        overflow: hidden;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-    }
-    & .info{
-        margin-top: 10px;
-        list-style: none;
-        display: flex;
-        & > li{
-            margin-right: 10px;
-        }
-    }
-    & .main-title{
-        // 여러 줄 일떄
-        display: -webkit-box;
-        overflow: hidden;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
-
-        // 한 줄 일떄
-        // overflow: hidden;
-        // text-overflow: ellipsis;
-        // white-space: nowrap;
-    }
-    
 }
 @media screen and (max-width: 1068px) {
-    .bb-board-list__article{
+
+}
+@media screen and (max-width: 734px) {
+    .bb-board-list__article-tags{
+        margin-top: 10px;
+    }
+}
+
+
+.bb-board-list__article-title{
+    @extend .text-regular;
+    font-size: 20px;
+    line-height: 1.4em;
+
+    // 여러 줄 일떄
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+
+    // 한 줄 일떄
+    // overflow: hidden;
+    // text-overflow: ellipsis;
+    // white-space: nowrap;
+}
+.bb-board-list__article-description{
+    margin-top: 10px;
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+}
+.bb-board-list__article-extra-info{
+    @extend .text-light;
+    font-size: 15px;
+    margin-top: 10px;
+    list-style: none;
+    display: flex;
+    & > li{
         margin-right: 10px;
+    }
+}
+.bb-board-list__article-wrapper{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin: 30px 20px 30px 0px;
+    width: calc(100% - 220px);
+
+}
+@media screen and (max-width: 1068px) {
+    .bb-board-list__article-wrapper{
+        margin: 20px 10px 20px 0px;
         width: calc(100% - 170px);
-        & .desc {
-            -webkit-line-clamp: 2;
-        }
+    }
+    .bb-board-list__article-description{
+        -webkit-line-clamp: 2;
     }
 }
 @media screen and (max-width: 734px) {
-    .bb-board-list__article{
-        margin-right: 0;
+    .bb-board-list__article-wrapper{
+        margin: 5px 0px 5px 0px;
         width: calc(100% - 130px);
-        & .info{
-            font-size: 13px;
-        }
     }
-    
+    .bb-board-list__article-extra-info{
+        font-size: 13px;
+    }
+}
+@media screen and (max-width: 414px) {
+    .bb-board-list__article-wrapper{
+        margin: 0;
+    }
 }
 

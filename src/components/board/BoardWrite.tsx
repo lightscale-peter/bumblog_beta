@@ -35,7 +35,7 @@ function BoardWrite(urlParams: any){
         thumbnailImage: [],
         descriptionImage:[]
     });
-    const [nullCheckState, setNullCheckState] = useState(false);
+    const [firstClickOfEditorState, setFirstClickOfEditorState] = useState(true);
 
     const [tempThumbnailImagePathState, setTempThumbnailImagePathState] = useState('');
     const [thumbnailImageFileState, setThumbnailImageFileState] = useState<File | null>(null); 
@@ -86,13 +86,18 @@ function BoardWrite(urlParams: any){
         focusOnTextEditor();
     }
 
-    // 텍스트 에디터 (옵션 실시간 체크) 로직
-    const checkOptionsOfTextEditor = (e: KeyboardEvent | MouseEvent & {key?: string}) =>{
 
+    const clickAndKeyUpEventOfTextEditor = (e: KeyboardEvent | MouseEvent & {key?: string}) =>{
+
+        if(firstClickOfEditorState){
+            clearTextOnTextEditor();
+            setFirstClickOfEditorState(false);
+        }
+
+
+        // 텍스트 에디터 (옵션 실시간 체크) 로직
         if(iframeRef.current && iframeRef.current.contentDocument){
-
             const document = iframeRef.current.contentDocument;
-
             if(optionsRef.current){
                 optionsRef.current.childNodes.forEach((list: any) => {
                     if(list.dataset.cmd){
@@ -109,12 +114,9 @@ function BoardWrite(urlParams: any){
         // 백스페이스를 눌렀을떄 이미지가 지워졌는지 확인하는 로직
         if(e.type === "keyup"){
             if(e.key === "Backspace"){
-                console.log('백스페이스 눌렀다.', inputTagCountState);
-
                 // imageState - 기존 이미지 지워졌는지 검사
                 imageState.descriptionImage.forEach(image => {
                     if(iframeRef.current?.contentDocument?.body.innerHTML.indexOf(image.filename) === -1){
-                        console.log('이미지가 삭제 되었다.');
                         setImageState({
                             ...imageState,
                             descriptionImage: imageState.descriptionImage.filter(item => item.filename !== image.filename)
@@ -126,8 +128,6 @@ function BoardWrite(urlParams: any){
                 // descriptionImageFilesState - 신규 이미지 지워졌는지 검사
                 if(inputTagCountState > 0){
                     for(let i=1; i<=inputTagCountState; i++){
-
-                        console.log(`이미지 검사 ${i}`)
     
                         if(iframeRef.current?.contentDocument?.body.innerHTML.indexOf(`decriptionImgTag-${i}`) !== -1){
                             console.log('이미지가 있다.!!')
@@ -175,7 +175,15 @@ function BoardWrite(urlParams: any){
     const setDefaultOnTextEditor = () =>{
         if(iframeRef.current && iframeRef.current.contentDocument){
             iframeRef.current.contentDocument.designMode = "on"
-            iframeRef.current.contentDocument.body.style.fontFamily = 'NotoSansKR-Regular';
+            iframeRef.current.contentDocument.head.innerHTML 
+            = `<style>
+                @import url("https://fonts.googleapis.com/earlyaccess/notosanskr.css");
+            </style>`;
+            iframeRef.current.contentDocument.body.style.fontFamily = 'Noto Sans KR';
+            iframeRef.current.contentDocument.body.style.fontWeight = '400';
+            iframeRef.current.contentDocument.body.style.margin = '0px';
+            const placeholder = "<div style='color: grey;'>내용을 입력해주세요.</div>"
+            iframeRef.current.contentDocument.body.innerHTML = placeholder;
         }
     }
 
@@ -212,6 +220,7 @@ function BoardWrite(urlParams: any){
         if(queryString._id){
             setIdState(queryString._id);
             setContentsOnPage(queryString._id);
+            setFirstClickOfEditorState(false);
         }
 
         return ()=>{
@@ -225,21 +234,21 @@ function BoardWrite(urlParams: any){
         return ()=>{
             removeEventOnTextEditor();
         }
-    }, [descriptionImageFilesState, imageState]);
+    }, [descriptionImageFilesState, imageState, firstClickOfEditorState]);
 
 
 
     const addEventOnTextEditor = () =>{
         if(iframeRef.current && iframeRef.current.contentWindow){
-            iframeRef.current.contentWindow.addEventListener('keyup', checkOptionsOfTextEditor);
-            iframeRef.current.contentWindow.addEventListener('click', checkOptionsOfTextEditor);
+            iframeRef.current.contentWindow.addEventListener('keyup', clickAndKeyUpEventOfTextEditor);
+            iframeRef.current.contentWindow.addEventListener('click', clickAndKeyUpEventOfTextEditor);
         }
     }
 
     const removeEventOnTextEditor = () =>{
         if(iframeRef.current && iframeRef.current.contentWindow){
-            iframeRef.current.contentWindow.removeEventListener('keyup', checkOptionsOfTextEditor);
-            iframeRef.current.contentWindow.removeEventListener('click', checkOptionsOfTextEditor);
+            iframeRef.current.contentWindow.removeEventListener('keyup', clickAndKeyUpEventOfTextEditor);
+            iframeRef.current.contentWindow.removeEventListener('click', clickAndKeyUpEventOfTextEditor);
         }
     }
 
@@ -264,7 +273,7 @@ function BoardWrite(urlParams: any){
     }
 
 
-    const nullCheckData = (targets: {type: string; target: string;} []): boolean =>{
+    const nullCheckData = (targets: {type: string; target: string;}[]): boolean =>{
         let passFlag = true;
 
         console.log('targets', targets);
@@ -272,7 +281,7 @@ function BoardWrite(urlParams: any){
         targets.some(item => {
             console.log('item', item);
 
-            if(item.target === ''){
+            if(item.target === '' || item.target.indexOf('내용을 입력해주세요.') !== -1){
                 onOpenConfirmModal({
                     status: true,
                     title: `${item.type} 오류`,
@@ -408,6 +417,8 @@ function BoardWrite(urlParams: any){
     }
 
     const setTagsData = (e:React.MouseEvent<HTMLSpanElement, MouseEvent>) =>{
+
+        console.log('클릭');
 
         const classList = e.currentTarget.classList;
         const innerText = e.currentTarget.innerText;
@@ -558,7 +569,8 @@ function BoardWrite(urlParams: any){
 
     return (
         <main className="bb-board-write__main">
-            <form className="bb-board-write__form" onSubmit={onSubmit}>
+            <section className="bb-board-write__form-section">
+                <form className="bb-board-write__form" onSubmit={onSubmit}>
 
                 {[...Array(inputTagCountState)].map((v, key) => <input key={key} className={`decriptionInputFileTag-${key+1}`} type="file" onChange={setDescriptionImageFile} />)}
 
@@ -607,7 +619,8 @@ function BoardWrite(urlParams: any){
                     <button type="button" onClick={() => history.push('/board')}>취소</button>
                     <button type="submit">완료</button>
                 </div>
-            </form>
+                </form>
+            </section>
         </main>
     )
 }

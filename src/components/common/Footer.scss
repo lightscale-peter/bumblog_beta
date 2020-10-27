@@ -1,20 +1,23 @@
 @import '../../App.scss';
 
-.bb-common__footer-tag{
+.bb-common__footer{
     background-color: $white;
     font-size: 12px;
+    margin-top: 30px;
 }
-.bb-common__footer-wrapper{
-    max-width: $max-screen-width;
-    padding: 30px;
-    margin: 0 auto;
-}
-.bb-common__footer-block-1{
+.bb-common__footer-contents-wrapper{
     display: flex;
     justify-content: space-between;
-    border-top: 1px solid black;
-    margin-top: 10px;
-    padding-top: 10px;
+    max-width: $max-screen-width;
+    padding: 15px;
+    margin: 0 auto;
+    border-top: 1px solid grey;
+}
+@media screen and (max-width: 414px) {
+    .bb-common__footer-contents-wrapper{
+        flex-direction: column;
+        align-items: center;
+    }
 }
 .bb-common__footer-copyright{
     display: flex;
@@ -28,8 +31,5 @@
 @media screen and (max-width: 734px) {
     .bb-common__footer-copyright{
         flex-direction: column;
-    }
-    .bb-common__footer-block-1{
-        flex-direction: column-reverse;
     }
 }

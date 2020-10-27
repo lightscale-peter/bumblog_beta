@@ -3,6 +3,7 @@ import {boardListType} from './BoardHome';
 import {Link} from 'react-router-dom';
 import path from 'path';
 import './BoardList.scss';
+import defaultThumbnail from '../../assets/images/board/default_thumbnail.jpg';
 
 function BoardList({data}: {data: boardListType}){
 
@@ -10,8 +11,7 @@ function BoardList({data}: {data: boardListType}){
 
     const [tags, setTags] = useState<string[]>([]);
     const [date, setDate] = useState('');
-    const [thumbImg, setThumbImg] = useState('');
-
+    const [thumbImg, setThumbImg] = useState(defaultThumbnail);
 
     const dateForm = () =>{
         const timeStamp = data._id.toString().substring(0,8);
@@ -50,14 +50,17 @@ function BoardList({data}: {data: boardListType}){
             <li className="bb-board-list__body">
                 <Link to={`/board/view?_id=${data._id}`}>
                     <div className="bb-board-list__contents-wrapper">
-                        <div className="bb-board-list__article">
-                            <h2 className="main-title">{data.title}</h2>
-                            <div className="bb-board-list__tag-wrapper">
-                                {data.tags.map((tag, index) => <span key={index}>{tag}</span>)}
+                        <div className="bb-board-list__article-wrapper">
+                            <div>
+                                <div className="bb-board-list__article-title">{data.title}</div>
+                                <div className="bb-board-list__article-tags">
+                                    {data.tags.map((tag, index) => <span key={index}>{tag}</span>)}
+                                </div>
                             </div>
-                            {/* <div className="desc" dangerouslySetInnerHTML={{__html: data.description}}></div> */}
-                            <ul className="info">
-                            <li>{date}</li>
+                            
+                            {/* <div className="bb-board-list__article-description" dangerouslySetInnerHTML={{__html: data.description}}></div> */}
+                            <ul className="bb-board-list__article-extra-info">
+                                <li>{date}</li>
                                 <li>{data.writer}</li>
                             </ul>
                         </div>

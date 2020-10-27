@@ -77,15 +77,15 @@ function BoardHome(){
         <main className="bb-board-home__main">
             <section className="bb-board-home__hero-section">
                 <div>
-                    <h1>My Blog</h1>
+                    <h1>Bumblog</h1>
                     <div className="bb-board-home__hero-desc">
                         생각나는 것을 기록하고 저장하는 공간
                     </div>
                 </div>
             </section>
-            <section className="bb-board-home__tag-section">
+            <section className="bb-board-home__tags-section">
                 <div>
-                    <ul className="bb-board-home__tag-ul">
+                    <ul className="bb-board-home__tags-ul">
                         <li className="on" onClick={tagFilter}>모두</li>
                         <li onClick={tagFilter}>개발</li>
                         <li onClick={tagFilter}>공부</li>
@@ -93,7 +93,7 @@ function BoardHome(){
                     </ul>
                 </div>
             </section>
-            <section>
+            <section className="bb-board-home__write-button-section">
                 <div className="bb-board-home__btns-wrapper">
                     <div>&nbsp;</div>
                     <div>
@@ -104,7 +104,7 @@ function BoardHome(){
                 </div>
             </section>
             <section className="bb-board-home__list-section">
-                <ul>
+                <ul className="bb-board-home__list-ul-tag">
                     {boardList.map(x => <BoardList key={x._id} data={x} />)}
                 </ul>
             </section>
