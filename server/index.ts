@@ -29,8 +29,8 @@ app.use('/', express.static(buildDir));
 app.use('/board', express.static(buildDir));
 app.use('/board/view', express.static(buildDir));
 app.use('/board/write', express.static(buildDir));
-app.use('/api', router);
 app.use('/uploads', express.static(uploadDir));
+app.use('/api', router);
 
 app.use((req:Request, res:Response, next:NextFunction)=>{
     res.status(404).send('일치하는 주소가 없습니다.');

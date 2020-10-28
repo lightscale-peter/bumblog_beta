@@ -47,13 +47,17 @@ db.board.insert([
 db.user.drop();
 db.user.insert([
     {
-        username: 'test',
+        username: 'sbg',
         password: '1234',
-        admin: true
+        admin: {
+            type: true
+        }
     },
     {
-        username: 'test1',
+        username: 'bkshin',
         password: '1234',
-        admin: false
+        admin: {
+            type: false
+        }
     }
 ]);

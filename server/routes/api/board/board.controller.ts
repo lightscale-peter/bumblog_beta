@@ -1,4 +1,4 @@
-import {NextFunction, Request, Response} from 'express';
+import {Request, Response} from 'express';
 import Board, {documentType, imagesType} from '../../../models/board';
 
 export const createList = (req: Request & {files: imagesType}, res: Response) =>{
@@ -15,7 +15,6 @@ export const createList = (req: Request & {files: imagesType}, res: Response) =>
                     );
         })
     };
-    
 
     const data = {
         ...req.body,

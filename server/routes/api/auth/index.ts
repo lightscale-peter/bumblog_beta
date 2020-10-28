@@ -1,12 +1,12 @@
 import {Router} from 'express';
-import {createUser} from './auth.controller';
+import {createUser, findUser, updateUser, deleteUser} from './auth.controller';
 
 const router = Router();
 
 router.post('/user', createUser);
-// router.get('/user', findUser);
-// router.put('/user', updateUser);
-// router.delete('/user', deleteUser);
+router.get('/user', findUser);
+router.put('/user', updateUser);
+router.delete('/user', deleteUser);
 
 // createUset: (data:userType) => void;
 // findOneUser: () => void;

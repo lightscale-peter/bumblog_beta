@@ -1,6 +1,5 @@
 import {Schema, Document, Model, model} from 'mongoose';
 
-
 const User = new Schema({
     username: String,
     password: String,
@@ -10,26 +9,39 @@ const User = new Schema({
     }
 });
 
-export interface userType extends Document{
+export type userType = {
     username: string;
     password: string;
     admin?: {
         type: boolean;
     }
 }
-interface modelType extends Model<userType>{
-    createUser: (data:userType) => Promise<boolean>;
-    // findOneUser: () => void;
-    // verifiyPassword: () => void;
-    // assignAdmin: () => void;
+
+export interface userTypeDocument extends Document, userType{}
+
+export interface modelType extends Model<userTypeDocument>{
+    findOneByUsername: (username: string) => Promise<userType>;
+    createUser: (user: userType) => Promise<userType>;
+    assignAdmin: () => Promise<userType> | undefined;
 }
 
-User.statics.createUser = function(data:userType){
-    console.log('data', data);
-
-    // return new Promise((resolve, reject) =>{ resolve(true)});
-    return model('User').insertMany(data);
+User.statics.findOneByUsername = function(username: string){
+    return this.findOne({username: username});
 }
+
+User.statics.createUser = function(user: userType){
+    console.log('user', user);
+    return this.create(user);
+}
+
+User.methods.assignAdmin = function(){
+    this.admin = true;
+    return this.save();
+}
+
+
+
+
 
 // User.statics.create = function(username, password){
 //     const user = new this({
@@ -55,4 +67,4 @@ User.statics.createUser = function(data:userType){
 //     return this.save();
 // }
 
-export default model<userType, modelType>('User', User, 'user');
+export default model<userTypeDocument, modelType>('User', User, 'user');
