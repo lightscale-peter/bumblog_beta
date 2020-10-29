@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import {Link} from 'react-router-dom';
+import {Link, match} from 'react-router-dom';
 import './BoardView.scss';
 import axios from 'axios';
-import {getQueryString} from '../../utils';
 import {boardListType} from './BoardHome';
 import {useHistory} from 'react-router-dom';
 import defaultThumbnail from '../../assets/images/board/default_thumbnail.jpg';
 import {BsPencilSquare, BsTrash} from 'react-icons/bs'
 import path from 'path';
 import useModal from '../../hooks/useModal';
+import {matchType} from '../../App';
 
-function BoardView(urlParams: any){
+
+function BoardView({match}: {match: match<matchType>}){
 
     const {onOpenConfirmModal, onCloseModal} = useModal();
 
@@ -30,21 +31,19 @@ function BoardView(urlParams: any){
     let history = useHistory();
     
     useEffect(()=>{
-        console.log('useEffect');
-        const searchVal = urlParams.location.search;
-        const searchData = getQueryString(searchVal);
+
         window.scrollTo(0, 0);
        
         axios({
             method: 'get',
-            url: '/api/board/list',
-            params: searchData
+            url: `/api/board/list/${match.params.list_id}`
         }).then((res) =>{
-            console.log('res', res.data);
-            if(res.data){
-                setListData(res.data);
 
+            if(res.data){
+
+                setListData(res.data);
                 const thumbnailImage = res.data.images.thumbnailImage[0];
+
                 if(thumbnailImage){
                     setThumbnailImageState(path.resolve('./uploads', thumbnailImage.filename));
                 }else{
@@ -57,7 +56,6 @@ function BoardView(urlParams: any){
 
 
     const handleDelete = () =>{
-
         onOpenConfirmModal({
             status: true,
             title: '정말 삭제하시겠습니까?',
@@ -76,8 +74,7 @@ function BoardView(urlParams: any){
                     });
                 }
             }
-        });
-        
+        });   
     }
 
 
@@ -98,7 +95,7 @@ function BoardView(urlParams: any){
                 <ul className="bb-board-view__update-btns">
                     <li>
                         <button>
-                            <Link to={`/board/write?_id=${listData._id === null ? '' : listData._id}`}>
+                            <Link to={`/board/write/${match.params.list_id}`}>
                                 <BsPencilSquare className="bb-board-view__pencil-icon" />
                             </Link>
                         </button>

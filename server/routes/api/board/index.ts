@@ -2,8 +2,9 @@ import {Router} from 'express';
 import multer from 'multer';
 import {v4} from 'uuid';
 import path from 'path';
-import {createList, findList, updateList, deleteList} from './board.controller';
+import {createList, findAllList, findOneList, updateList, deleteList} from './board.controller';
 import {existsSync, mkdirSync} from 'fs';
+import {authMiddleware} from '../../../middlewares/auth';
 
 const router = Router();
 
@@ -39,8 +40,13 @@ createFolder();
 
 // CRUD
 router.post('/list',upload.fields([{name: 'thumbnailImage', maxCount: 1}, {name: 'descriptionImage', maxCount: 10}]), createList);
-router.get('/list', findList);
+router.get('/list', findAllList);
+router.get('/list/:list_id', findOneList);
+
+// router.put('/list', authMiddleware);
 router.put('/list', upload.fields([{name: 'thumbnailImage', maxCount: 1}, {name: 'descriptionImage', maxCount: 10}]), updateList);
+
+// router.delete('/list', authMiddleware);
 router.delete('/list', deleteList);
 
 export default router;

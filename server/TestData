@@ -49,15 +49,11 @@ db.user.insert([
     {
         username: 'sbg',
         password: '1234',
-        admin: {
-            type: true
-        }
+        admin: true
     },
     {
         username: 'bkshin',
         password: '1234',
-        admin: {
-            type: false
-        }
+        admin: false
     }
 ]);

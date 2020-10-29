@@ -1,5 +1,5 @@
 import {Router} from 'express';
-import {createUser, findUser, updateUser, deleteUser} from './auth.controller';
+import {createUser, findUser, updateUser, deleteUser, login} from './auth.controller';
 
 const router = Router();
 
@@ -8,9 +8,6 @@ router.get('/user', findUser);
 router.put('/user', updateUser);
 router.delete('/user', deleteUser);
 
-// createUset: (data:userType) => void;
-// findOneUser: () => void;
-// verifiyPassword: () => void;
-// assignAdmin: () => void;
+router.post('/login', login);
 
 export default router;

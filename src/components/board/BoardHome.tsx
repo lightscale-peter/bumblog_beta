@@ -4,7 +4,6 @@ import BoardList from './BoardList';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 import {BsPencilSquare} from 'react-icons/bs';
-import useModal from '../../hooks/useModal';
 
 export type boardListType = {
     _id: string;
@@ -28,9 +27,6 @@ export type boardListImagesType = {
 
 
 function BoardHome(){
-
-
-    const {modalState} = useModal();
 
     const [boardList, setBoardList] = useState<boardListType[]>([]);
     const tagFilter = (e:React.MouseEvent<HTMLLIElement, MouseEvent>) =>{
@@ -64,14 +60,11 @@ function BoardHome(){
     }
 
     useEffect(()=>{
-        // console.log('BoardHome-useEffect 실행');
         getListFromDB().then((res) =>{
-            // console.log('data', res.data);
             setBoardList(res.data);
         });
 
         window.scrollTo(0, 0);
-
     }, []);
 
 

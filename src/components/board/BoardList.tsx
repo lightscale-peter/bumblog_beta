@@ -48,7 +48,7 @@ function BoardList({data}: {data: boardListType}){
 
     return (
             <li className="bb-board-list__body">
-                <Link to={`/board/view?_id=${data._id}`}>
+                <Link to={`/board/view/${data._id}`}>
                     <div className="bb-board-list__contents-wrapper">
                         <div className="bb-board-list__article-wrapper">
                             <div>

@@ -1,4 +1,4 @@
-const OPEN = 'modal/open' as const;
+const OPEN_ALERT = 'modal/open' as const;
 const OPEN_CONFIRM = 'modal/open_confirm' as const;
 const CLOSE = 'modal/close' as const;
 
@@ -13,8 +13,8 @@ export type ModalDataType = {
     };
 }
 
-export const openModal = (data: ModalDataType) =>({
-    type: OPEN,
+export const openAlertModal = (data: ModalDataType) =>({
+    type: OPEN_ALERT,
     payload: {
         title: data.title,
         desc: data.desc,
@@ -42,19 +42,9 @@ export const closeModal = () =>({
 })
 
 type ModalAction = 
-    | ReturnType<typeof openModal>
+    | ReturnType<typeof openAlertModal>
     | ReturnType<typeof openConfirmModal>
     | ReturnType<typeof closeModal>
-
-// type ModalState = {
-//     status: boolean;
-//     title: string;
-//     desc: string;
-//     confirm: {
-//         isShow: boolean;
-//         func: () => void;
-//     }
-// }
 
 const initialState: ModalDataType = {
     status: false,
@@ -68,7 +58,7 @@ const initialState: ModalDataType = {
 
 function modal(state: ModalDataType = initialState, action: ModalAction): ModalDataType{
     switch(action.type){
-        case OPEN:
+        case OPEN_ALERT:
             return {
                 status: true, 
                 title: action.payload.title,

@@ -6,3 +6,5 @@ export {default as Homepage} from './home/Homepage';
 export {default as BoardHome} from './board/BoardHome';
 export {default as BoardView} from './board/BoardView';
 export {default as BoardWrite} from './board/BoardWrite';
+
+export {default as BoardTest} from './board/BoardTest';

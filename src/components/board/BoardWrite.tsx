@@ -3,8 +3,7 @@ import axios from 'axios';
 
 import './BoardWrite.scss';
 import path from 'path';
-import {useHistory} from 'react-router-dom';
-import {getQueryString} from '../../utils';
+import {match, useHistory} from 'react-router-dom';
 import useModal from '../../hooks/useModal';
 
 import {
@@ -19,12 +18,13 @@ import {
     BsTextCenter,
     BsX,
     BsCardImage
-
 } from 'react-icons/bs';
 import {VscTextSize} from 'react-icons/vsc';
 import { boardListType, boardListImagesType } from './BoardHome';
+import {matchType} from '../../App';
 
-function BoardWrite(urlParams: any){
+
+function BoardWrite({match}: {match: match<matchType>}){
 
     const {onOpenConfirmModal, onCloseModal} = useModal();
 
@@ -42,11 +42,6 @@ function BoardWrite(urlParams: any){
     const [descriptionImageFilesState, setDescriptionImageFilesState] = useState<(File | null)[] | null>(null);
 
     const [inputTagCountState, setInputTagCountState] = useState(0);
-
-    type imageNameType = {
-        originalname: string;
-        filename: string;
-    }
 
     let history = useHistory();
 
@@ -80,7 +75,6 @@ function BoardWrite(urlParams: any){
 
     // 텍스트 에디터 (옵션) 로직
     const sendOptionToTextEditor = (exec: string, value: string, event?:React.MouseEvent<HTMLLIElement, MouseEvent>) =>{
-
         toggleButtonStatus(event);
         applyOptionOnTextEditor(exec, value);
         focusOnTextEditor();
@@ -93,7 +87,6 @@ function BoardWrite(urlParams: any){
             clearTextOnTextEditor();
             setFirstClickOfEditorState(false);
         }
-
 
         // 텍스트 에디터 (옵션 실시간 체크) 로직
         if(iframeRef.current && iframeRef.current.contentDocument){
@@ -190,10 +183,7 @@ function BoardWrite(urlParams: any){
     const setContentsOnPage = (id:string) =>{
         axios({
             method: 'get',
-            url: '/api/board/list',
-            params: {
-                _id: id
-            }
+            url: `/api/board/list/${match.params.list_id}`
         }).then((res: {data: boardListType}) =>{
             console.log('res', res.data);
 
@@ -214,20 +204,16 @@ function BoardWrite(urlParams: any){
     useEffect(()=>{
         setDefaultOnTextEditor();
 
-        const queryString = getQueryString(urlParams.location.search);
+        const listId = match.params.list_id;
         
         // 수정요청으로 들어올 경우
-        if(queryString._id){
-            setIdState(queryString._id);
-            setContentsOnPage(queryString._id);
+        if(listId){
+            setIdState(listId);
+            setContentsOnPage(listId);
             setFirstClickOfEditorState(false);
         }
 
         window.scrollTo(0, 0);
-
-        return ()=>{
-            removeEventOnTextEditor();
-        }
 
     }, []);
 
@@ -277,8 +263,6 @@ function BoardWrite(urlParams: any){
 
     const nullCheckData = (targets: {type: string; target: string;}[]): boolean =>{
         let passFlag = true;
-
-        console.log('targets', targets);
       
         targets.some(item => {
             console.log('item', item);
@@ -504,11 +488,6 @@ function BoardWrite(urlParams: any){
         });   
     }
 
-    
-
-
-
-
     const openFileInput = ()=>{
 
         setInputTagCountState(inputTagCountState + 1);
@@ -516,7 +495,6 @@ function BoardWrite(urlParams: any){
             document.querySelector<HTMLInputElement>(`.decriptionInputFileTag-${inputTagCountState+1}`)?.click();
         }, 10)
         
-
         // iframeRef.current?.contentDocument?.write("<img width='100%' height='300px'/>");
     }
 

@@ -1,14 +1,14 @@
 import { useSelector, useDispatch } from 'react-redux';
-import {RootState} from '../modules';
-import {openModal, openConfirmModal, closeModal} from '../modules/modal';
+import { RootState } from '../modules';
+import { openAlertModal, openConfirmModal, closeModal } from '../modules/modal';
 import { useCallback } from 'react';
 
 function useModal(){
     const modalState = useSelector((state:RootState) => state.modal);
     const dispatch = useDispatch();
 
-    const onOpenModal = useCallback((data)=>{
-        dispatch(openModal(data));
+    const onOpenAlertModal = useCallback((data)=>{
+        dispatch(openAlertModal(data));
     }, [dispatch]);
 
     const onOpenConfirmModal = useCallback((data)=>{
@@ -21,7 +21,7 @@ function useModal(){
 
     return {
         modalState,
-        onOpenModal,
+        onOpenAlertModal,
         onOpenConfirmModal,
         onCloseModal
     }

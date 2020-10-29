@@ -1,4 +1,7 @@
 import {Schema, Document, Model, model} from 'mongoose';
+import CRYPTO from 'crypto';
+import {bumblog} from '../config/bumblog.config'
+
 
 const User = new Schema({
     username: String,
@@ -12,26 +15,35 @@ const User = new Schema({
 export type userType = {
     username: string;
     password: string;
-    admin?: {
-        type: boolean;
-    }
+    admin?: boolean
 }
 
-export interface userTypeDocument extends Document, userType{}
+export interface userTypeDocument extends Document, userType{ // methods
+    assignAdmin: () => Promise<userTypeDocument> | undefined;
+    verify: (password: string) => boolean;
+}
 
-export interface modelType extends Model<userTypeDocument>{
-    findOneByUsername: (username: string) => Promise<userType>;
-    createUser: (user: userType) => Promise<userType>;
-    assignAdmin: () => Promise<userType> | undefined;
+export interface modelType extends Model<userTypeDocument>{ //statics
+    findOneByUsername: (username: string) => Promise<userTypeDocument>;
+    createUser: (user: userType) => Promise<userTypeDocument>;
 }
 
 User.statics.findOneByUsername = function(username: string){
     return this.findOne({username: username});
 }
 
-User.statics.createUser = function(user: userType){
-    console.log('user', user);
-    return this.create(user);
+User.statics.createUser = function(userData: userType){
+
+    const encrypted = CRYPTO.createHmac('sha1', bumblog.secret)
+                            .update(userData.password)
+                            .digest('base64');
+
+    const user = new this({
+        ...userData,
+        password: encrypted
+    });
+
+    return user.save();
 }
 
 User.methods.assignAdmin = function(){
@@ -39,32 +51,12 @@ User.methods.assignAdmin = function(){
     return this.save();
 }
 
+User.methods.verify = function(password: string){
 
-
-
-
-// User.statics.create = function(username, password){
-//     const user = new this({
-//         username,
-//         password
-//     });
-
-//     return user.save();
-// }
-
-// User.statics.findOneByUsername = function(username){
-//     return this.findOne({
-//         username
-//     }).exec();
-// };
-
-// User.methods.verifiy = function(password){
-//     return this.password === password;
-// };
-
-// User.methods.assignAdmin = function(){
-//     this.admin = true;
-//     return this.save();
-// }
+    const encrypted = CRYPTO.createHmac('sha1', bumblog.secret)
+                            .update(password)
+                            .digest('base64');
+    return this.password === encrypted;
+}
 
 export default model<userTypeDocument, modelType>('User', User, 'user');
