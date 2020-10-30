@@ -47,12 +47,12 @@ db.board.insert([
 db.user.drop();
 db.user.insert([
     {
-        username: 'sbg',
+        email: 'sbg',
         password: '1234',
         admin: true
     },
     {
-        username: 'bkshin',
+        email: 'bkshin',
         password: '1234',
         admin: false
     }

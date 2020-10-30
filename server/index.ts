@@ -3,6 +3,8 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import router from './routes/api'
 import path from 'path';
+import cors from 'cors';
+import cookieParser from 'cookie-parser';
 import {bumblog} from './config/bumblog.config';
 import morgan from 'morgan';
 
@@ -16,7 +18,8 @@ if(process.env.NODE_ENV === 'production'){ // 배포 모드
     buildDir = path.resolve(__dirname, './build');
     uploadDir = path.resolve(__dirname, './uploads');
 }
-
+// app.use(cors());
+app.use(cookieParser());
 app.use(morgan('dev')); // 로그 기록
 app.set('jwt-secret', bumblog.secret);
 
@@ -25,17 +28,22 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
+// app.all('/*', (req: Request, res: Response, next:NextFunction) =>{
+//     next();
+// });
+
 app.use('/', express.static(buildDir));
+app.use('/login', express.static(buildDir));
 app.use('/board', express.static(buildDir));
 app.use('/board/view', express.static(buildDir));
 app.use('/board/write', express.static(buildDir));
 app.use('/uploads', express.static(uploadDir));
 app.use('/api', router);
 
-app.use((req:Request, res:Response, next:NextFunction)=>{
+app.use((req:Request, res:Response)=>{
     res.status(404).send('일치하는 주소가 없습니다.');
 });
-app.use((err:Error, req:Request, res:Response, next:NextFunction)=>{
+app.use((err:Error, req:Request, res:Response)=>{
     res.status(500).send('서버 에러');
 });
 

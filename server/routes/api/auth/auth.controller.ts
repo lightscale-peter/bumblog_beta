@@ -1,13 +1,13 @@
 import {Request, Response} from 'express';
 import User, { userTypeDocument } from '../../../models/user';
-import JWT from 'jsonwebtoken';
+import JWT, { VerifyErrors } from 'jsonwebtoken';
 
 export const createUser = (req: Request, res: Response) =>{
 
-    const {username, password} = req.body;
+    const {email, password} = req.body;
  
     const userData = {
-        username: username,
+        email: email,
         password: password
     }
     
@@ -16,7 +16,7 @@ export const createUser = (req: Request, res: Response) =>{
     const create = (user: userTypeDocument) =>{
         console.log('create', user);
         if(user){
-            throw new Error('username is already exist');
+            throw new Error('email is already exist');
         }else{
             return User.createUser(userData);
         }
@@ -37,6 +37,7 @@ export const createUser = (req: Request, res: Response) =>{
 
     const respond = (isAdmin: userTypeDocument | undefined) => {
         res.json({
+            status: true,
             message: 'register successfully',
             admin: isAdmin ? true : false
         })
@@ -44,13 +45,14 @@ export const createUser = (req: Request, res: Response) =>{
 
     const onError = (error: Error | null) =>{
         res.status(409).json({
+            status: false,
             name: error?.name,
             message: error?.message
         })
     }
 
 
-    User.findOneByUsername(username)
+    User.findOneByEmail(email)
         .then(create)
         .then(count)
         .then(assign)
@@ -72,7 +74,7 @@ export const deleteUser = () =>{
 };
 
 export const login = (req: Request, res: Response) =>{
-    const {username, password} = req.body;
+    const {email, password} = req.body;
     const secret = req.app.get('jwt-secret');
 
     const check = (user: userTypeDocument) =>{
@@ -82,7 +84,7 @@ export const login = (req: Request, res: Response) =>{
                     JWT.sign(
                         {
                             _id: user._id,
-                            username: user.username,
+                            email: user.email,
                             admin: user.admin
                         },
                         secret,
@@ -108,21 +110,76 @@ export const login = (req: Request, res: Response) =>{
     }
 
     const respond = (token: string | undefined) =>{
+
+        const exdays = 1;
+        res.cookie('token', token, {httpOnly: true, expires: new Date(Date.now() + (exdays*24*60*60*1000))});
+        console.log('token registered on cookie');
+
         res.json({
+            status: true,
             message: 'logged in successfully',
-            token
-        })
+            // token
+        });        
     }
 
     const onError = (error: Error | null) =>{
         res.status(403).json({
+            status: false,
             message: error?.message
         });
     }
 
-    User.findOneByUsername(username)
+    User.findOneByEmail(email)
         .then(check)
         .then(respond)
         .catch(onError);
 
+}
+
+export const logout = (req: Request, res: Response) =>{
+    res.clearCookie('token');
+    res.json({
+        status: true,
+        message: 'logged out successfully'
+    });
+}
+
+export const check = (req: Request, res: Response) =>{
+    const token = req.cookies.token;
+    const tokenString = typeof(token) === 'string' ? token : '';
+    const secret = req.app.get('jwt-secret');
+
+    if(!token){
+        return res.json({
+            status: false,
+            message: 'not logged in'
+        })
+    }
+
+    const p = new Promise<object | undefined>((resolve, reject) =>{
+        JWT.verify(
+            tokenString,
+            secret,
+            (err: VerifyErrors | null, decoded: object | undefined)  =>{
+                if(err) reject(err);
+                resolve(decoded);
+            }
+        )
+    });
+
+    const respond = (decoded: object | undefined) =>{
+        res.json({
+            status: true,
+            info: decoded
+        })
+    }
+
+    const onError = (error: VerifyErrors | null) =>{
+        res.json({
+            success: false,
+            message: error?.message
+        })
+    }
+
+    p.then(respond).catch(onError);
 }

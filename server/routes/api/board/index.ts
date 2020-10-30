@@ -40,6 +40,7 @@ createFolder();
 
 // CRUD
 router.post('/list',upload.fields([{name: 'thumbnailImage', maxCount: 1}, {name: 'descriptionImage', maxCount: 10}]), createList);
+
 router.get('/list', findAllList);
 router.get('/list/:list_id', findOneList);
 

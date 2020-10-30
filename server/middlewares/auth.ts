@@ -2,13 +2,14 @@ import { NextFunction, Request, Response } from 'express';
 import JWT, { VerifyErrors } from 'jsonwebtoken';
 
 export const authMiddleware = (req: Request & {decoded?: object | undefined}, res: Response, next: NextFunction) =>{
-    const token = req.headers['x-access-token'] || req.query.token;
+    // const token = req.headers['x-access-token'] || req.query.token;
+    const token = req.cookies.token;
     const tokenString = typeof(token) === 'string' ? token : '';
     const secret = req.app.get('jwt-secret');
 
     if(!token){
         return res.status(403).json({
-            success: false,
+            status: false,
             message: 'not logged in'
         })
     }

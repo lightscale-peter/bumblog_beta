@@ -4,7 +4,7 @@ import {bumblog} from '../config/bumblog.config'
 
 
 const User = new Schema({
-    username: String,
+    email: String,
     password: String,
     admin: {
         type: Boolean,
@@ -13,7 +13,7 @@ const User = new Schema({
 });
 
 export type userType = {
-    username: string;
+    email: string;
     password: string;
     admin?: boolean
 }
@@ -24,12 +24,12 @@ export interface userTypeDocument extends Document, userType{ // methods
 }
 
 export interface modelType extends Model<userTypeDocument>{ //statics
-    findOneByUsername: (username: string) => Promise<userTypeDocument>;
+    findOneByEmail: (email: string) => Promise<userTypeDocument>;
     createUser: (user: userType) => Promise<userTypeDocument>;
 }
 
-User.statics.findOneByUsername = function(username: string){
-    return this.findOne({username: username});
+User.statics.findOneByEmail = function(email: string){
+    return this.findOne({email: email});
 }
 
 User.statics.createUser = function(userData: userType){
