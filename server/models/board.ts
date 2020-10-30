@@ -1,4 +1,6 @@
 import {Schema, model, Document, Model} from 'mongoose';
+import { createImportSpecifier } from 'typescript';
+import { ContextExclusionPlugin } from 'webpack';
 
 const Board = new Schema({
     // _id: String,
@@ -24,7 +26,7 @@ export type boardType = {
     tags: string | string[];
     description: string;
     writer: string;
-    images: imagesType | string;
+    images: imagesType;
     thumbnailImage?: string;
     descriptionImage?: string;
 }

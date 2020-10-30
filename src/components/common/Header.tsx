@@ -1,9 +1,13 @@
-import React, {useRef, useMemo} from 'react';
-import {Link} from 'react-router-dom';
+import React, {useRef, useMemo, useEffect, useState} from 'react';
+import axios from 'axios';
+import {Link, useHistory} from 'react-router-dom';
 import {BiMenu, BiUser} from 'react-icons/bi';
 import './Header.scss';
 
 function Header(){
+
+    const history = useHistory();
+    const [isLoginState, setIsLoginState] = useState(false);
 
     const mobileMenuRef = useRef<HTMLUListElement>(null);
     const subMenuRef = useRef<HTMLDivElement>(null);
@@ -76,11 +80,37 @@ function Header(){
         }
     }
 
-    useMemo(()=>{
+    const logout = () =>{
+        axios({
+            method: 'delete',
+            url: '/api/auth/login'
+        }).then((res) =>{
+            console.log('post_res', res.data);
+            if(res.data.status){
+                setIsLoginState(false);
+                history.push('/');
+            }
+        });
+    }
+
+    useEffect(()=>{
         window.addEventListener('resize', ()=>{
             mobileMenuRef.current?.classList.remove('on');
             subMenuRef.current?.classList.remove('on');
         });
+
+        axios({
+            method: 'get',
+            url: '/api/auth/check'
+        }).then((res) =>{
+            console.log('post_res', res.data);
+            
+            if(res.data.status){
+                setIsLoginState(true);
+            }
+         
+        });
+
     }, []);
 
     return (
@@ -99,11 +129,13 @@ function Header(){
                                 <div className="edge"></div>
                             </div>
                             <ul className="bb-header__sub-menu-box-ul">
-                                <li className="bb-header__sub-menu-box-li">1번 메뉴</li>
-                                <li className="bb-header__sub-menu-box-li">1번 메뉴</li>
-                                <li className="bb-header__sub-menu-box-li">1번 메뉴</li>
-                                <li className="bb-header__sub-menu-box-li">1번 메뉴</li>
-                                <li className="bb-header__sub-menu-box-li">1번 메뉴</li>
+                                {isLoginState ? (
+                                        <li className="bb-header__sub-menu-box-li" onClick={logout}>로그아웃</li>
+                                    ) : (
+                                        <li className="bb-header__sub-menu-box-li">
+                                            <Link to="/login">로그인</Link>
+                                        </li>
+                                    )}
                             </ul>
                         </div>
                     </div>

@@ -4,9 +4,11 @@ import {
   Header,
   Footer,
   Modal,
+  Login,
   BoardHome,
   BoardView,
   BoardWrite,
+  BoardWriteNew,
   BoardTest
 } from './components';
 import './App.scss';
@@ -18,15 +20,15 @@ export type matchType = {
 function App() {
   return (
     <div className="bb-body">
-      <BoardTest />
       <BrowserRouter>
         <Header />
         <Modal />
         <Route exact path="/" component={BoardHome} />
         <Switch>
+          <Route path="/login" component={Login} />
           <Route path="/board/test" component={BoardTest} />
-          <Route path="/board/write" component={BoardWrite} />
-          <Route path="/board/write/:list_id" component={BoardWrite} />
+          <Route path="/board/write/:list_id" component={BoardWriteNew} />
+          <Route path="/board/write" component={BoardWriteNew} />
           <Route path="/board/view/:list_id" component={BoardView} />
           <Route path="/board" component={BoardHome} />
         </Switch>

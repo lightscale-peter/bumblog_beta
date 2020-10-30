@@ -19,7 +19,7 @@ export const openAlertModal = (data: ModalDataType) =>({
         title: data.title,
         desc: data.desc,
         confirm: {
-            isShow: data.confirm.isShow,
+            isShow: false
         }
     }
 

@@ -10,7 +10,7 @@ export const createList = (req: Request & {files: imagesType}, res: Response) =>
         tags: req.body.tags,
         description: req.body.description,
         writer: req.body.writer,
-        images: req.body.image ? req.body.images : {
+        images: {
             thumbnailImage: [],
             descriptionImage: []
         }
@@ -31,10 +31,9 @@ export const createList = (req: Request & {files: imagesType}, res: Response) =>
         };
 
         // 업로드 파일이 있는경우 해당정보 데이터에 입력 
-        if(typeof(boardData.images) !== 'string'){
-            boardData.images.thumbnailImage = files.thumbnailImage ? files.thumbnailImage : [];
-            boardData.images.descriptionImage = files.descriptionImage ? files.descriptionImage : [];
-        }
+        boardData.images.thumbnailImage = files.thumbnailImage ? files.thumbnailImage : [];
+        boardData.images.descriptionImage = files.descriptionImage ? files.descriptionImage : [];
+
         
         return Promise.resolve(boardData);
     }
@@ -88,14 +87,9 @@ export const updateList = (req: Request & {files: imagesType}, res: Response) =>
         tags: req.body.tags,
         description: req.body.description,
         writer: req.body.writer,
-        images: req.body.image ? req.body.images : {
-            thumbnailImage: [],
-            descriptionImage: []
-        }
+        images: JSON.parse(req.body.images)
     }
     const files = req.files;
-
-
 
     const setImageInfo = (boardData: boardType, files: imagesType) =>{
 
@@ -110,16 +104,13 @@ export const updateList = (req: Request & {files: imagesType}, res: Response) =>
         };
 
         // set images info on data
-        if(typeof(boardData.images) !== 'string'){ // 신규 이미지
-            boardData.images.thumbnailImage = files.thumbnailImage ? files.thumbnailImage : [];
-            boardData.images.descriptionImage = files.descriptionImage ? files.descriptionImage : [];
-        }else{ // 기존 이미지
-            const images = JSON.parse(boardData.images);
-            boardData.images = {
-                thumbnailImage: images.thumbnailImage,
-                descriptionImage: images.descriptionImage
-            }
+        if(files.thumbnailImage && boardData.images.thumbnailImage){
+            boardData.images.thumbnailImage = boardData.images.thumbnailImage.concat(files.thumbnailImage);
         }
+        if(files.descriptionImage && boardData.images.descriptionImage){
+            boardData.images.descriptionImage = boardData.images.descriptionImage.concat(files.descriptionImage);
+        }
+        
         
         return Promise.resolve(boardData);
     }
@@ -153,6 +144,7 @@ export const updateList = (req: Request & {files: imagesType}, res: Response) =>
                             });
 
                             if(pass_flag === false){
+                                console.log('thumbnailImage Removed');
                                 removeImageFile(DBimage.filename)
                             }
                         });
@@ -169,6 +161,7 @@ export const updateList = (req: Request & {files: imagesType}, res: Response) =>
                             });
 
                             if(pass_flag === false){
+                                console.log('descriptionImage Removed');
                                 removeImageFile(DBimage.filename)
                             }
                         });
@@ -249,7 +242,7 @@ const removeImageFile = (filename: string) =>{
                 if(err){
                     console.log('remove file fail', err);
                 }else{
-                    console.log('remove file success');
+                    console.log('remove file success', filename);
                 }
             });
         }

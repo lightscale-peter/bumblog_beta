@@ -28,7 +28,7 @@ function BoardView({match}: {match: match<matchType>}){
     });
 
     const [thumbnailImageState, setThumbnailImageState] = useState('');
-    let history = useHistory();
+    const history = useHistory();
     
     useEffect(()=>{
 

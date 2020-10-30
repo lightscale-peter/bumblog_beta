@@ -12,17 +12,30 @@ import {
     BsTextCenter,
     BsCardImage
 } from 'react-icons/bs';
-import {VscTextSize} from 'react-icons/vsc';
+import { VscTextSize } from 'react-icons/vsc';
 import { useEffect } from 'react';
+import useModal from '../../hooks/useModal';
+import {boardListImagesType} from '../board/BoardHome'
 
-function TextEditor(){
 
-    type textEditorImagesType = {
-        descriptionImage: {
-            originalname: string;
-            filename: string;
-        }[];
-    }
+function TextEditor({
+    textEditorContentsState,
+    setTextEditorContentsState,
+    imageState,
+    setImageState,
+    textEditorImageFilesState,
+    setTextEditorImageFilesState
+}:{
+    textEditorContentsState: string
+    setTextEditorContentsState: React.Dispatch<React.SetStateAction<string>>
+    imageState: boardListImagesType
+    setImageState: React.Dispatch<React.SetStateAction<boardListImagesType>>
+    textEditorImageFilesState: File[]
+    setTextEditorImageFilesState: React.Dispatch<React.SetStateAction<File[]>>
+}){
+
+
+    const {onOpenConfirmModal} = useModal();
 
     const iframeRef = useRef<HTMLIFrameElement>(null);
     const optionsRef = useRef<HTMLUListElement>(null);
@@ -30,10 +43,6 @@ function TextEditor(){
 
     const [inputTagCountState, setInputTagCountState] = useState(0);
     const [firstClickOfEditorState, setFirstClickOfEditorState] = useState(true);
-    const [imageState, setImageState] = useState<textEditorImagesType>({
-        descriptionImage:[]
-    });
-    const [descriptionImageFilesState, setDescriptionImageFilesState] = useState<(File | null)[] | null>(null);
 
     // 텍스트 에디터 폰트사이즈 윈도우 토글
     const toggleFontSizeWindow = () =>{
@@ -41,7 +50,6 @@ function TextEditor(){
             fontSizeRef.current.classList.toggle('on');
         }
     }
-    
 
     // 텍스트 에디터 (옵션) 로직
     const sendOptionToTextEditor = (exec: string, value: string, event?:React.MouseEvent<HTMLLIElement, MouseEvent>) =>{
@@ -73,13 +81,10 @@ function TextEditor(){
     }
 
     const openFileInput = ()=>{
-
         setInputTagCountState(inputTagCountState + 1);
         setTimeout(()=>{
             document.querySelector<HTMLInputElement>(`.decriptionInputFileTag-${inputTagCountState+1}`)?.click();
         }, 10)
-        
-        // iframeRef.current?.contentDocument?.write("<img width='100%' height='300px'/>");
     }
 
     const addEventOnTextEditor = () =>{
@@ -133,26 +138,21 @@ function TextEditor(){
                     }
                 });
 
-                // descriptionImageFilesState - 신규 이미지 지워졌는지 검사
+                // textEditorImageFilesState - 신규 이미지 지워졌는지 검사
                 if(inputTagCountState > 0){
                     for(let i=1; i<=inputTagCountState; i++){
     
                         if(iframeRef.current?.contentDocument?.body.innerHTML.indexOf(`decriptionImgTag-${i}`) !== -1){
                             console.log('이미지가 있다.!!')
                         }else{
-                            console.log('이미지가 없다.!!', descriptionImageFilesState)
+                            console.log('이미지가 없다.!!', textEditorImageFilesState)
         
                             if(document.querySelectorAll<HTMLInputElement>(`.decriptionInputFileTag-${i}`))
                             document.querySelectorAll<HTMLInputElement>(`.decriptionInputFileTag-${i}`)[0].value = "";
 
-                            if(descriptionImageFilesState && descriptionImageFilesState.length > 0){
-                                setDescriptionImageFilesState(descriptionImageFilesState.map((file, index) => {
-                                    if(index+1 === i){
-                                        return null;
-                                    }else{
-                                        return file;
-                                    }
-                                    
+                            if(textEditorImageFilesState.length > 0){
+                                setTextEditorImageFilesState(textEditorImageFilesState.filter((file, index) => {
+                                    return index+1 !== i;
                                 }))
                             }
                             
@@ -161,6 +161,8 @@ function TextEditor(){
                 }                
             }
         }
+
+        setTextEditorContentsState(getTextEditorContentsAfterRemoveTempImgSrc());
     }
 
     const clearTextOnTextEditor = () =>{
@@ -184,31 +186,92 @@ function TextEditor(){
         }
     }
 
+    const setImageFile = (e: React.ChangeEvent<HTMLInputElement>) =>{
+
+        if(e.currentTarget.files){
+            const imageFile = e.currentTarget.files[0];
+
+            if(imageFile){
+                if(verifyImageType(imageFile.type) === false){
+                    onOpenConfirmModal({
+                        status: true,
+                        title: '이미지 오류',
+                        desc: 'jpeg, png, jpg 파일만 가능합니다.',
+                        confirm: {
+                            isShow: false
+                        }
+                    });
+                    if(inputTagCountState !== 0){
+                        setInputTagCountState(inputTagCountState-1);
+                    }
+                    e.currentTarget.value = ""; // Input File 초기화
+                }else{
+                    setTempImageOnTextEditor(imageFile);
+
+                    if(textEditorImageFilesState === null){
+                        setTextEditorImageFilesState([imageFile]);
+                    }else{
+                        setTextEditorImageFilesState(textEditorImageFilesState.concat(imageFile));
+                    }
+                }   
+            }
+
+        }
+    
+    }
+
+    const setTempImageOnTextEditor = (descriptionImageFile: File)=>{
+        const reader = new FileReader();
+        reader.onload = function(e){
+            if(e.target?.result){
+                const imageTag = `<img width='100%' height='auto' class=".decriptionImgTag-${inputTagCountState}" src="${e.target.result.toString()}" />`;
+                iframeRef.current?.contentDocument?.execCommand('InsertHTML', false, imageTag);
+                setTextEditorContentsState(getTextEditorContentsAfterRemoveTempImgSrc());
+            }
+        }
+        reader.readAsDataURL(descriptionImageFile);
+        focusOnTextEditor();
+    }
+
+    const verifyImageType = (image: string) =>{
+        const types = ['image/jpeg', 'image/png', 'image/jpg'];
+        if(types.indexOf(image) === -1){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
+    const getTextEditorContentsAfterRemoveTempImgSrc = () =>{
+        let stringData = iframeRef.current?.contentDocument?.body.innerHTML;
+        stringData = stringData?.replace(/([0-9]\"\s)src=\".*?\"/gi, "$1");
+        return stringData ? stringData : '';
+    }
+
+
     useEffect(()=>{
         setDefaultOnTextEditor();
-
-        // const listId = match.params.list_id;
-        
-        // 수정요청으로 들어올 경우
-        // if(listId){
-            // setIdState(listId);
-            // setContentsOnPage(listId);
-            setFirstClickOfEditorState(false);
-        // }
-
         window.scrollTo(0, 0);
 
     }, []);
+
+    useEffect(()=>{
+        if(iframeRef.current && iframeRef.current.contentDocument && textEditorContentsState !== '' && firstClickOfEditorState){
+            iframeRef.current.contentDocument.body.innerHTML = textEditorContentsState;
+            setFirstClickOfEditorState(false);
+        }
+    }, [textEditorContentsState]);
 
     useEffect(()=>{
         addEventOnTextEditor();
         return ()=>{
             removeEventOnTextEditor();
         }
-    }, [descriptionImageFilesState, imageState, firstClickOfEditorState]);
+    }, [textEditorImageFilesState, imageState, firstClickOfEditorState]);
 
     return (
         <div className="bb-board-write__editor-wrapper">
+            {[...Array(inputTagCountState)].map((v, key) => <input key={key} className={`decriptionInputFileTag-${key+1}`} type="file" onChange={setImageFile} />)}
             <ul className="bb-board-write__editor-options" ref={optionsRef}>
                 <li onClick={toggleFontSizeWindow}>
                     <VscTextSize />

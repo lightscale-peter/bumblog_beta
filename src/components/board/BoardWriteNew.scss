@@ -1,0 +1,237 @@
+@import '../../App.scss';
+
+.bb-board-write__main{
+    padding-top: 50px;
+    // background-color: rgba(210, 210, 210, 0.15);
+}
+.bb-board-write__form-section{
+    margin: 80px 0;
+    padding: 0 15px;
+}
+@media screen and (max-width: 1068px) {
+    .bb-board-write__form-section{
+        margin: 60px 0;
+    }
+}
+@media screen and (max-width: 414px) {
+    .bb-board-write__form-section{
+        margin: 40px 0;
+    }
+}
+.bb-board-write__form{
+    max-width: 600px;
+    margin: 0px auto;
+    & .tui-editor-defaultUI{
+        margin-top: 10px;
+        // max-width: 500px;
+        // margin: 30px auto 0;
+    }
+    & input{
+        border: 1px solid black;
+        border-radius: 0px;
+    }
+
+    & input[class*=decriptionInputFileTag]{
+        display: none;
+    }
+}
+.bb-board-write__title{
+    font-size: 16px;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 15px;
+    margin: 0;
+}
+
+.bb-board-write__buttons{
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+
+    & > button{
+        cursor: pointer;
+        width: 50%;
+        font-weight: bold;
+        background-color: white;
+        border: 1px solid black;
+        height: 40px;
+    }
+    & button:hover{
+        background-color: lightgrey;
+    }
+    & > button:first-child{
+        margin-right: 7.5px;
+    }
+    & > button:last-child{
+        margin-left: 7.5px;
+    }
+}
+
+.bb-board-write__editor-wrapper{
+    margin-top: 15px;
+    border: 1px solid black;
+    background-color: white;
+}
+.bb-board-write__editor-options{
+    border-bottom: 1px solid lightgrey;
+    display: flex;
+    padding: 5px;
+    & > li{ 
+        box-sizing: border-box;
+        margin-right: 5px;
+        width: 30px;
+        height: 30px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+    }
+    & >li.on{
+        border: 1px solid lightgrey;
+    }
+    & svg{
+        font-size: 20px;
+    }
+}
+@media screen and (max-width: 1068px) {
+    .bb-board-write__editor-options{
+        padding: 5px 10px;
+        & > li{
+            margin-right: 10px;
+            width: 40px;
+            height: 40px;
+        }
+        & > li:last-child{
+            margin-right: unset;
+        }
+    }
+}
+
+@media screen and (max-width: 414px) {
+    .bb-board-write__editor-options{
+        position: -webkit-sticky;
+        position: sticky;
+        top: 50px;
+        background-color: white;
+    }
+}
+.bb-board-wrtie__editor{ 
+    border: unset;
+    padding: 15px;
+    width: 100%;
+    box-sizing: border-box;
+    min-height: 400px;
+}
+@media screen and (max-width: 1068px) {
+    .bb-board-wrtie__editor{ 
+        min-height: 350px;
+    }
+}
+@media screen and (max-width: 414px) {
+    .bb-board-wrtie__editor{ 
+        min-height: 300px;
+    }
+}
+
+
+.bb-board-write__editor-font-box{
+    position: absolute;
+    top: 40px;
+    left: 0;
+    background-color: white;
+    border: 1px solid lightgrey;
+    font-size: 13px;
+    max-height: 125px;
+    overflow: scroll;
+    box-sizing: border-box;
+    display: none;
+
+    &.on{
+        display: block;
+    }
+
+    & > li{        
+        padding: 5px 25px;
+    }
+
+    & > li:hover{
+        background-color: lightgrey;
+    }
+}
+
+.bb-board-write__tags-wrapper{
+    @extend .text-bold;
+    margin-top: 15px;
+    & > span{
+        cursor: pointer;
+        display: inline-block;
+        font-size: 14px;
+        color: grey;
+        border: 1px solid grey;
+        border-radius: 5px;
+        margin-right: 10px;
+        padding: 2px 8px;
+        background-color: white;
+    }
+    & > span.on{
+        background-color: #dce0ef;
+    }
+}
+
+.bb-board-write__image-upload-btn{
+    margin-top: 15px;
+    & input{
+        display: none;
+    }
+    & > button{
+        @extend .text-bold;
+        cursor: pointer;
+        width: 100%;
+        background-color: black;
+        color: white;
+        border: 1px solid black;
+        height: 40px;
+        font-size: 15px;
+    }
+}
+
+.bb-board-write__image-tiles{
+    display: none;
+    margin-top: 15px;
+
+    &.on{
+        display: inherit;
+    }
+
+    & > span{
+        cursor: pointer;
+        display: inline-block;
+        width: 100px;
+        height: 100px;
+        background-color: grey;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        background-size: auto 100%;
+        background-position: center;
+        border: 1px solid black;
+
+        & svg{
+            font-size: 0;
+        }
+
+    }
+    & > span:hover{
+        opacity: 0.5;
+        background-color: black;
+        color: white;
+        & svg{
+            font-size: 35px;
+        }
+    }
+}
+.bb-board-write__editor-placeholder{
+    color: lightgray;
+}
