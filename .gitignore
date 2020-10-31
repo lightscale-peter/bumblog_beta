@@ -3,7 +3,7 @@
 # dependencies
 /node_modules
 /server/node_modules
-/server/config/bumblog.config.ts
+/server/config
 /.pnp
 .pnp.js
 
