@@ -7,9 +7,7 @@ import {
   Login,
   BoardHome,
   BoardView,
-  BoardWrite,
-  BoardWriteNew,
-  BoardTest
+  BoardWrite
 } from './components';
 import './App.scss';
 
@@ -26,9 +24,8 @@ function App() {
         <Route exact path="/" component={BoardHome} />
         <Switch>
           <Route path="/login" component={Login} />
-          <Route path="/board/test" component={BoardTest} />
-          <Route path="/board/write/:list_id" component={BoardWriteNew} />
-          <Route path="/board/write" component={BoardWriteNew} />
+          <Route path="/board/write/:list_id" component={BoardWrite} />
+          <Route path="/board/write" component={BoardWrite} />
           <Route path="/board/view/:list_id" component={BoardView} />
           <Route path="/board" component={BoardHome} />
         </Switch>

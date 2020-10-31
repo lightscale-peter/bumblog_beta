@@ -52,8 +52,6 @@ export const createList = (req: Request & {files: imagesType}, res: Response) =>
         res.json(newList);
     }
 
-
-
     setImageInfo(boardData, files)
         .then(JsonParseTagsData)
         .then(createList)

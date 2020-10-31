@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, createElement } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import axios from 'axios';
 
 import './BoardWrite.scss';
@@ -6,179 +6,39 @@ import path from 'path';
 import {match, useHistory} from 'react-router-dom';
 import useModal from '../../hooks/useModal';
 
-import {
-    BsTypeBold, 
-    BsTypeItalic,
-    BsTypeUnderline,
-    BsTypeStrikethrough,
-    BsListUl,
-    BsListOl,
-    BsTextIndentLeft,
-    BsTextIndentRight,
-    BsTextCenter,
-    BsX,
-    BsCardImage
-} from 'react-icons/bs';
-import {VscTextSize} from 'react-icons/vsc';
+import TextEditor from '../common/TextEditor';
+
 import { boardListType, boardListImagesType } from './BoardHome';
-import {matchType} from '../../App';
+import { matchType } from '../../App';
+import { BsX } from 'react-icons/bs';
 
 
 function BoardWrite({match}: {match: match<matchType>}){
 
+    const history = useHistory();
     const {onOpenConfirmModal, onCloseModal} = useModal();
+
+    const iframeRef = useRef<HTMLIFrameElement>(null);
+    const thumbImageRef = useRef<HTMLInputElement>(null);
+    const titleInputRef = useRef<HTMLInputElement>(null);
 
     const [titleState, setTitleState] = useState('')
     const [tagsState, setTagsState] = useState<string[]>([]);
     const [idState, setIdState] = useState('');
+
+    const [thumbnailImageFilesState, setThumbnailImageFilesState] = useState<File | null>(null);
+    const [tempThumbnailImagePathState, setTempThumbnailImagePathState] = useState('');
+
+    const [textEditorContentsState, setTextEditorContentsState] = useState('');
+    const [textEditorImageFilesState, setTextEditorImageFilesState] = useState<File[]>([]); // 신규 이미지 확인용
+
+
+    const [textEditorImageFileNamesState, setTextEditorImageFileNamesState] = useState<string[]>([]); // 기존 이미지 확인용 
+
     const [imageState, setImageState] = useState<boardListImagesType>({
         thumbnailImage: [],
         descriptionImage:[]
     });
-    const [firstClickOfEditorState, setFirstClickOfEditorState] = useState(true);
-
-    const [tempThumbnailImagePathState, setTempThumbnailImagePathState] = useState('');
-    const [thumbnailImageFileState, setThumbnailImageFileState] = useState<File | null>(null); 
-    const [descriptionImageFilesState, setDescriptionImageFilesState] = useState<(File | null)[] | null>(null);
-
-    const [inputTagCountState, setInputTagCountState] = useState(0);
-
-    let history = useHistory();
-
-    const iframeRef = useRef<HTMLIFrameElement>(null);
-    const optionsRef = useRef<HTMLUListElement>(null);
-    const thumbImageRef = useRef<HTMLInputElement>(null);
-    const titleInputRef = useRef<HTMLInputElement>(null);
-
-
-    const toggleButtonStatus = (event:React.MouseEvent<HTMLLIElement, MouseEvent> | undefined) =>{
-        if(event){
-            event.currentTarget.classList.toggle('on');
-        }
-    }
-
-    const applyOptionOnTextEditor = (exec: string, value: string) =>{
-        if(iframeRef.current && iframeRef.current.contentDocument){
-            if(value === ''){
-                iframeRef.current.contentDocument.execCommand(exec);
-            }else{
-                iframeRef.current.contentDocument.execCommand(exec, true, value);
-            }
-        }
-    }
-
-    const focusOnTextEditor = ()=>{
-        if(iframeRef.current && iframeRef.current.contentDocument){
-            iframeRef.current.contentDocument.body.focus();
-        }
-    }
-
-    // 텍스트 에디터 (옵션) 로직
-    const sendOptionToTextEditor = (exec: string, value: string, event?:React.MouseEvent<HTMLLIElement, MouseEvent>) =>{
-        toggleButtonStatus(event);
-        applyOptionOnTextEditor(exec, value);
-        focusOnTextEditor();
-    }
-
-
-    const clickAndKeyUpEventOfTextEditor = (e: KeyboardEvent | MouseEvent & {key?: string}) =>{
-
-        if(firstClickOfEditorState){
-            clearTextOnTextEditor();
-            setFirstClickOfEditorState(false);
-        }
-
-        // 텍스트 에디터 (옵션 실시간 체크) 로직
-        if(iframeRef.current && iframeRef.current.contentDocument){
-            const document = iframeRef.current.contentDocument;
-            if(optionsRef.current){
-                optionsRef.current.childNodes.forEach((list: any) => {
-                    if(list.dataset.cmd){
-                        if(document.queryCommandState(list.dataset.cmd)){
-                            list.classList.add('on');
-                        }else{
-                            list.classList.remove('on');
-                        }
-                    } 
-                });
-            }
-        }
-
-        // 백스페이스를 눌렀을떄 이미지가 지워졌는지 확인하는 로직
-        if(e.type === "keyup"){
-            if(e.key === "Backspace"){
-                // imageState - 기존 이미지 지워졌는지 검사
-                imageState.descriptionImage.forEach(image => {
-                    if(iframeRef.current?.contentDocument?.body.innerHTML.indexOf(image.filename) === -1){
-                        setImageState({
-                            ...imageState,
-                            descriptionImage: imageState.descriptionImage.filter(item => item.filename !== image.filename)
-                        });
-
-                    }
-                });
-
-                // descriptionImageFilesState - 신규 이미지 지워졌는지 검사
-                if(inputTagCountState > 0){
-                    for(let i=1; i<=inputTagCountState; i++){
-    
-                        if(iframeRef.current?.contentDocument?.body.innerHTML.indexOf(`decriptionImgTag-${i}`) !== -1){
-                            console.log('이미지가 있다.!!')
-                        }else{
-                            console.log('이미지가 없다.!!', descriptionImageFilesState)
-        
-                            if(document.querySelectorAll<HTMLInputElement>(`.decriptionInputFileTag-${i}`))
-                            document.querySelectorAll<HTMLInputElement>(`.decriptionInputFileTag-${i}`)[0].value = "";
-
-                            if(descriptionImageFilesState && descriptionImageFilesState.length > 0){
-                                setDescriptionImageFilesState(descriptionImageFilesState.map((file, index) => {
-                                    if(index+1 === i){
-                                        return null;
-                                    }else{
-                                        return file;
-                                    }
-                                    
-                                }))
-                            }
-                            
-                        }
-                    }
-                }                
-            }
-        }
-        
-       
-    }
-
-    const fontSizeRef = useRef<HTMLUListElement>(null);
-
-    // 텍스트 에디터 폰트사이즈 윈도우 토글
-    const toggleFontSizeWindow = () =>{
-        if(fontSizeRef.current){
-            fontSizeRef.current.classList.toggle('on');
-        }
-    }
-
-    const setTextOnTextEditor = (text: string) =>{
-        if(iframeRef.current && iframeRef.current.contentDocument){
-            iframeRef.current.contentDocument.body.innerHTML = text;
-        }
-    }
-
-    const setDefaultOnTextEditor = () =>{
-        if(iframeRef.current && iframeRef.current.contentDocument){
-            iframeRef.current.contentDocument.designMode = "on"
-            iframeRef.current.contentDocument.head.innerHTML 
-            = `<style>
-                @import url("https://fonts.googleapis.com/earlyaccess/notosanskr.css");
-            </style>`;
-            iframeRef.current.contentDocument.body.style.fontFamily = 'Noto Sans KR';
-            iframeRef.current.contentDocument.body.style.fontWeight = '400';
-            iframeRef.current.contentDocument.body.style.margin = '0px';
-            const placeholder = "<div style='color: grey;'>내용을 입력해주세요.</div>"
-            iframeRef.current.contentDocument.body.innerHTML = placeholder;
-        }
-    }
 
     const setContentsOnPage = (id:string) =>{
         axios({
@@ -189,6 +49,8 @@ function BoardWrite({match}: {match: match<matchType>}){
 
             setTitleState(res.data.title);
             setTagsState(res.data.tags[0] === '' ? [] : res.data.tags);
+
+
             setImageState(res.data.images);
 
             setTagsOnViewByData(res.data.tags);
@@ -197,68 +59,28 @@ function BoardWrite({match}: {match: match<matchType>}){
                 setTempThumbnailImagePathState(path.resolve('./uploads', res.data.images.thumbnailImage[0].filename));
             }
 
-            setTextOnTextEditor(res.data.description);
+            setTextEditorContentsState(res.data.description);
         });
     }
 
+
+
+
     useEffect(()=>{
-        setDefaultOnTextEditor();
 
         const listId = match.params.list_id;
+
+        console.log("match", match);
         
         // 수정요청으로 들어올 경우
         if(listId){
             setIdState(listId);
             setContentsOnPage(listId);
-            setFirstClickOfEditorState(false);
         }
 
         window.scrollTo(0, 0);
 
     }, []);
-
-    useEffect(()=>{
-        addEventOnTextEditor();
-        return ()=>{
-            removeEventOnTextEditor();
-        }
-    }, [descriptionImageFilesState, imageState, firstClickOfEditorState]);
-
-
-
-    const addEventOnTextEditor = () =>{
-        if(iframeRef.current && iframeRef.current.contentWindow){
-            iframeRef.current.contentWindow.addEventListener('keyup', clickAndKeyUpEventOfTextEditor);
-            iframeRef.current.contentWindow.addEventListener('click', clickAndKeyUpEventOfTextEditor);
-        }
-    }
-
-    const removeEventOnTextEditor = () =>{
-        if(iframeRef.current && iframeRef.current.contentWindow){
-            iframeRef.current.contentWindow.removeEventListener('keyup', clickAndKeyUpEventOfTextEditor);
-            iframeRef.current.contentWindow.removeEventListener('click', clickAndKeyUpEventOfTextEditor);
-        }
-    }
-
-
-    const clearTextOnTextEditor = () =>{
-        if(iframeRef.current && iframeRef.current.contentDocument){
-            iframeRef.current.contentDocument.body.innerHTML = "";
-        }
-    }
-
-    const getTextEditorContentsAfterRemoveTempImgSrc = () =>{
-        let stringData = iframeRef.current?.contentDocument?.body.innerHTML;
-        stringData = stringData?.replace(/([0-9]\"\s)src=\".*?\"/gi, "$1");
-        // "<img src='dasd' />dassadsdads<img src='dasd' />".replace(/src='.*?\'/gi, "")
-        // "<img class\".decriptionImgTag-1\" src=\"adasddsasdadas\" />".replace(/([0-9]\"\s)src=\".*?\"/gi, "$1");
-        return stringData ? stringData : '';
-    }
-
-    const getTextEditorContents = ()=>{
-        let stringData = iframeRef.current?.contentDocument?.body.innerHTML;
-        return stringData ? stringData : '';
-    }
 
 
     const nullCheckData = (targets: {type: string; target: string;}[]): boolean =>{
@@ -303,19 +125,19 @@ function BoardWrite({match}: {match: match<matchType>}){
 
         form.append('title', titleState);
         form.append('tags', JSON.stringify(tagsState));
-        form.append('description', getTextEditorContentsAfterRemoveTempImgSrc());
+        form.append('description', textEditorContentsState);
         form.append('writer', '신범근');
 
         if(idState == ''){ // 신규 등록
 
             // 썸네일 이미지
-            if(thumbnailImageFileState){ 
-                form.append('thumbnailImage', thumbnailImageFileState);
+            if(thumbnailImageFilesState){ 
+                form.append('thumbnailImage', thumbnailImageFilesState);
             }
 
             // 본문 이미지     
-            if(descriptionImageFilesState){ 
-                descriptionImageFilesState.forEach(file =>{
+            if(textEditorImageFilesState){ 
+                textEditorImageFilesState.forEach(file =>{
                     if(file){
                         form.append('descriptionImage', file);
                     }
@@ -324,16 +146,17 @@ function BoardWrite({match}: {match: match<matchType>}){
 
         }else{ // 수정 등록
             form.append('_id', idState);
+
             form.append('images', JSON.stringify(imageState)); // 기존 이미지 정보
             
             // 썸네일 이미지
-            if(thumbnailImageFileState){ // 이미지를 추가, 변경할때
-                form.append('thumbnailImage', thumbnailImageFileState);
+            if(thumbnailImageFilesState){ // 이미지를 추가, 변경할때
+                form.append('thumbnailImage', thumbnailImageFilesState);
             }
 
             // 본문 이미지
-            if(descriptionImageFilesState){ // 이미지를 추가, 변경할때
-                descriptionImageFilesState.forEach(file =>{
+            if(textEditorImageFilesState){ // 이미지를 추가, 변경할때
+                textEditorImageFilesState.forEach(file =>{
                     if(file){
                         form.append('descriptionImage', file);
                     }
@@ -351,7 +174,7 @@ function BoardWrite({match}: {match: match<matchType>}){
         const passFlag = nullCheckData([
                 {type: '제목', target: titleState}, 
                 {type: '태그', target: tagsState.toString()}, 
-                {type: '본문', target: getTextEditorContents()}
+                {type: '본문', target: textEditorContentsState}
             ]);
 
         
@@ -386,14 +209,16 @@ function BoardWrite({match}: {match: match<matchType>}){
     
             // 데이터 비우기
             setTitleState('');
+          
             setImageState({
                 thumbnailImage: [],
                 descriptionImage:[]
             });
-            setThumbnailImageFileState(null);
-            setDescriptionImageFilesState(null);
+            setTextEditorImageFilesState([]);
+
+            setThumbnailImageFilesState(null);
     
-            clearTextOnTextEditor();
+            setTextEditorContentsState('');
         }
     }
 
@@ -450,10 +275,10 @@ function BoardWrite({match}: {match: match<matchType>}){
                         }
                     });
                     e.currentTarget.value = ""; // Input File 초기화
-                    setThumbnailImageFileState(null); // State 초기화
+                    setThumbnailImageFilesState(null); // State 초기화
                 }else{
                     setTempThumbnailImageOnView(imageFile);
-                    setThumbnailImageFileState(imageFile);
+                    setThumbnailImageFilesState(imageFile);
                 }
             }
         }
@@ -481,79 +306,19 @@ function BoardWrite({match}: {match: match<matchType>}){
 
     const removeThumbnailImage = () =>{
         setTempThumbnailImagePathState('');
-        setThumbnailImageFileState(null);   
+        setThumbnailImageFilesState(null);   
         setImageState({
             ...imageState,
             thumbnailImage: []
         });   
+
     }
 
-    const openFileInput = ()=>{
-
-        setInputTagCountState(inputTagCountState + 1);
-        setTimeout(()=>{
-            document.querySelector<HTMLInputElement>(`.decriptionInputFileTag-${inputTagCountState+1}`)?.click();
-        }, 10)
-        
-        // iframeRef.current?.contentDocument?.write("<img width='100%' height='300px'/>");
-    }
-
-    const setDescriptionImageFile = (e: React.ChangeEvent<HTMLInputElement>) =>{
-
-        // console.log('e', e);
-
-        if(e.currentTarget.files){
-            const imageFile = e.currentTarget.files[0];
-
-            if(imageFile){
-                if(verifyImageType(imageFile.type) === false){
-                    onOpenConfirmModal({
-                        status: true,
-                        title: '이미지 오류',
-                        desc: 'jpeg, png, jpg 파일만 가능합니다.',
-                        confirm: {
-                            isShow: false
-                        }
-                    });
-                    if(inputTagCountState !== 0){
-                        setInputTagCountState(inputTagCountState-1);
-                    }
-                    e.currentTarget.value = ""; // Input File 초기화
-                }else{
-                    setTempDescriptImageOnTextEditor(imageFile);
-
-                    if(descriptionImageFilesState === null){
-                        setDescriptionImageFilesState([imageFile]);
-                    }else{
-                        setDescriptionImageFilesState(descriptionImageFilesState.concat(imageFile));
-                    }
-                }   
-            }
-
-        }
-    
-    }
-
-    const setTempDescriptImageOnTextEditor = (descriptionImageFile: File)=>{
-        const reader = new FileReader();
-        reader.onload = function(e){
-            if(e.target?.result){
-                const imageTag = `<img width='100%' height='auto' class=".decriptionImgTag-${inputTagCountState}" src="${e.target.result.toString()}" />`;
-                iframeRef.current?.contentDocument?.execCommand('InsertHTML', false, imageTag);
-            }
-        }
-        reader.readAsDataURL(descriptionImageFile);
-
-        focusOnTextEditor();
-    }
 
     return (
         <main className="bb-board-write__main">
             <section className="bb-board-write__form-section">
                 <form className="bb-board-write__form" onSubmit={onSubmit}>
-
-                {[...Array(inputTagCountState)].map((v, key) => <input key={key} className={`decriptionInputFileTag-${key+1}`} type="file" onChange={setDescriptionImageFile} />)}
-
                 <input className="bb-board-write__title" ref={titleInputRef} placeholder="제목을 입력해주세요." type="text" name="title" value={titleState} onChange={setTitleForOnChange}/>
                 {/* <input className="bb-board-write__title--sub" placeholder="소제목을 입력해주세요." type="text" name="subTitle" value={boardTitle?.subTitle} onChange={setTitleForOnChange}/> */}
                 <div className="bb-board-write__tags-wrapper">
@@ -561,33 +326,14 @@ function BoardWrite({match}: {match: match<matchType>}){
                     <span onClick={setTagsData}>공부</span>
                     <span onClick={setTagsData}>생각</span>
                 </div>
-                <div className="bb-board-write__editor-wrapper">
-                    <ul className="bb-board-write__editor-options" ref={optionsRef}>
-                        <li onClick={toggleFontSizeWindow}>
-                            <VscTextSize />
-                            <ul className="bb-board-write__editor-font-box" ref={fontSizeRef}>
-                                <li onClick={(e) => sendOptionToTextEditor('fontSize', '1')}>10px</li>
-                                <li onClick={(e) => sendOptionToTextEditor('fontSize', '2')}>13px</li>
-                                <li onClick={(e) => sendOptionToTextEditor('fontSize', '3')}>16px</li>
-                                <li onClick={(e) => sendOptionToTextEditor('fontSize', '4')}>18px</li>
-                                <li onClick={(e) => sendOptionToTextEditor('fontSize', '5')}>24px</li>
-                                <li onClick={(e) => sendOptionToTextEditor('fontSize', '6')}>32px</li>
-                                <li onClick={(e) => sendOptionToTextEditor('fontSize', '7')}>48px</li>
-                            </ul>
-                        </li>
-                        <li data-cmd="bold" onClick={(e) => sendOptionToTextEditor('bold', '', e)}><BsTypeBold /></li>
-                        <li data-cmd="italic" onClick={(e) => sendOptionToTextEditor('italic', '', e)}><BsTypeItalic /></li>
-                        <li data-cmd="underline" onClick={(e) => sendOptionToTextEditor('underline', '', e)}><BsTypeUnderline /></li>
-                        <li data-cmd="strikethrough" onClick={(e) => sendOptionToTextEditor('strikethrough', '', e)}><BsTypeStrikethrough /></li>
-                        <li data-cmd="justifycenter" onClick={(e) => sendOptionToTextEditor('justifycenter', '', e)}><BsTextCenter /></li>
-                        <li className="small-hidden" onClick={(e) => sendOptionToTextEditor('insertunorderedlist', '')}><BsListUl /></li>
-                        <li className="small-hidden" onClick={(e) => sendOptionToTextEditor('insertorderedlist', '')}><BsListOl /></li>
-                        <li className="small-hidden" onClick={(e) => sendOptionToTextEditor('indent', '')}><BsTextIndentLeft /></li>
-                        <li className="small-hidden" onClick={(e) => sendOptionToTextEditor('outdent', '')}><BsTextIndentRight /></li>
-                        <li onClick={openFileInput}><BsCardImage /></li>
-                    </ul>
-                    <iframe className="bb-board-wrtie__editor" name="boadeditrot" ref={iframeRef}></iframe>
-                </div>
+                <TextEditor 
+                    textEditorContentsState={textEditorContentsState}
+                    setTextEditorContentsState={setTextEditorContentsState}
+                    imageState={imageState}
+                    setImageState={setImageState}
+                    textEditorImageFilesState={textEditorImageFilesState}
+                    setTextEditorImageFilesState={setTextEditorImageFilesState}
+                />
                 <div className={`bb-board-write__image-tiles ${tempThumbnailImagePathState !== '' && 'on'}`}>
                     <span style={{backgroundImage: `url(${tempThumbnailImagePathState})`}} onClick={removeThumbnailImage}><BsX /></span>
                 </div>
