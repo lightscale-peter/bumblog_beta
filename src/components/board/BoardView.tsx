@@ -21,10 +21,8 @@ function BoardView({match}: {match: match<matchType>}){
         title: '',
         description: '',
         writer: '',
-        images: {
-            thumbnailImage: [],
-            descriptionImage: []
-        }
+        thumbnailImage: [],
+        descriptionImage: []
     });
 
     const [thumbnailImageState, setThumbnailImageState] = useState('');
@@ -42,7 +40,7 @@ function BoardView({match}: {match: match<matchType>}){
             if(res.data){
 
                 setListData(res.data);
-                const thumbnailImage = res.data.images.thumbnailImage[0];
+                const thumbnailImage = res.data.thumbnailImage[0];
 
                 if(thumbnailImage){
                     setThumbnailImageState(path.resolve('./uploads', thumbnailImage.filename));

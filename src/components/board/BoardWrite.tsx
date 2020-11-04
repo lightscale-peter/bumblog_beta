@@ -8,7 +8,7 @@ import useModal from '../../hooks/useModal';
 
 import TextEditor from '../common/TextEditor';
 
-import { boardListType, boardListImagesType } from './BoardHome';
+import { boardListType, imageStateType } from './BoardHome';
 import { matchType } from '../../App';
 import { BsX } from 'react-icons/bs';
 
@@ -26,19 +26,21 @@ function BoardWrite({match}: {match: match<matchType>}){
     const [tagsState, setTagsState] = useState<string[]>([]);
     const [idState, setIdState] = useState('');
 
-    const [thumbnailImageFilesState, setThumbnailImageFilesState] = useState<File | null>(null);
     const [tempThumbnailImagePathState, setTempThumbnailImagePathState] = useState('');
+    const [thumbnailImageState, setThumbnailImageState] = useState<imageStateType[]>([]);
+    const [thumbnailImageFilesState, setThumbnailImageFilesState] = useState<File[]>([]);
+    
 
+    // TextEditor
     const [textEditorContentsState, setTextEditorContentsState] = useState('');
+    const [textEditorImageState, setTextEditorImageState] = useState<imageStateType[]>([]);
     const [textEditorImageFilesState, setTextEditorImageFilesState] = useState<File[]>([]); // 신규 이미지 확인용
+    // const [imageState, setImageState] = useState<boardListImagesType>({ // 기존 이미지 확인용 
+    //     thumbnailImage: [],
+    //     descriptionImage:[]
+    // });
 
 
-    const [textEditorImageFileNamesState, setTextEditorImageFileNamesState] = useState<string[]>([]); // 기존 이미지 확인용 
-
-    const [imageState, setImageState] = useState<boardListImagesType>({
-        thumbnailImage: [],
-        descriptionImage:[]
-    });
 
     const setContentsOnPage = (id:string) =>{
         axios({
@@ -50,13 +52,12 @@ function BoardWrite({match}: {match: match<matchType>}){
             setTitleState(res.data.title);
             setTagsState(res.data.tags[0] === '' ? [] : res.data.tags);
 
-
-            setImageState(res.data.images);
-
+            setThumbnailImageState(res.data.thumbnailImage);
+            setTextEditorImageState(res.data.descriptionImage);
             setTagsOnViewByData(res.data.tags);
 
-            if(res.data.images.thumbnailImage.length > 0){
-                setTempThumbnailImagePathState(path.resolve('./uploads', res.data.images.thumbnailImage[0].filename));
+            if(res.data.thumbnailImage.length > 0){
+                setTempThumbnailImagePathState(path.resolve('./uploads', res.data.thumbnailImage[0].filename));
             }
 
             setTextEditorContentsState(res.data.description);
@@ -132,14 +133,18 @@ function BoardWrite({match}: {match: match<matchType>}){
 
             // 썸네일 이미지
             if(thumbnailImageFilesState){ 
-                form.append('thumbnailImage', thumbnailImageFilesState);
+                thumbnailImageFilesState.forEach(file =>{
+                    if(file){
+                        form.append('thumbnailImageFile', file);
+                    }
+                });
             }
 
             // 본문 이미지     
             if(textEditorImageFilesState){ 
                 textEditorImageFilesState.forEach(file =>{
                     if(file){
-                        form.append('descriptionImage', file);
+                        form.append('descriptionImageFile', file);
                     }
                 })
             }           
@@ -147,18 +152,23 @@ function BoardWrite({match}: {match: match<matchType>}){
         }else{ // 수정 등록
             form.append('_id', idState);
 
-            form.append('images', JSON.stringify(imageState)); // 기존 이미지 정보
+            form.append('thumbnailImage', JSON.stringify(thumbnailImageState)); // 기존 이미지 정보
+            form.append('descriptionImage', JSON.stringify(textEditorImageState)); // 기존 이미지 정보
             
             // 썸네일 이미지
             if(thumbnailImageFilesState){ // 이미지를 추가, 변경할때
-                form.append('thumbnailImage', thumbnailImageFilesState);
+                thumbnailImageFilesState.forEach(file =>{
+                    if(file){
+                        form.append('thumbnailImageFile', file);
+                    }
+                })
             }
 
             // 본문 이미지
             if(textEditorImageFilesState){ // 이미지를 추가, 변경할때
                 textEditorImageFilesState.forEach(file =>{
                     if(file){
-                        form.append('descriptionImage', file);
+                        form.append('descriptionImageFile', file);
                     }
                 })
             }
@@ -210,14 +220,12 @@ function BoardWrite({match}: {match: match<matchType>}){
             // 데이터 비우기
             setTitleState('');
           
-            setImageState({
-                thumbnailImage: [],
-                descriptionImage:[]
-            });
+            setThumbnailImageState([]);
+            setThumbnailImageFilesState([]);
+
+            setTextEditorImageState([]);
             setTextEditorImageFilesState([]);
 
-            setThumbnailImageFilesState(null);
-    
             setTextEditorContentsState('');
         }
     }
@@ -275,10 +283,10 @@ function BoardWrite({match}: {match: match<matchType>}){
                         }
                     });
                     e.currentTarget.value = ""; // Input File 초기화
-                    setThumbnailImageFilesState(null); // State 초기화
+                    setThumbnailImageFilesState([]); // State 초기화
                 }else{
                     setTempThumbnailImageOnView(imageFile);
-                    setThumbnailImageFilesState(imageFile);
+                    setThumbnailImageFilesState(thumbnailImageFilesState.concat(imageFile));
                 }
             }
         }
@@ -306,12 +314,8 @@ function BoardWrite({match}: {match: match<matchType>}){
 
     const removeThumbnailImage = () =>{
         setTempThumbnailImagePathState('');
-        setThumbnailImageFilesState(null);   
-        setImageState({
-            ...imageState,
-            thumbnailImage: []
-        });   
-
+        setThumbnailImageState([]);
+        setThumbnailImageFilesState([]);   
     }
 
 
@@ -329,8 +333,8 @@ function BoardWrite({match}: {match: match<matchType>}){
                 <TextEditor 
                     textEditorContentsState={textEditorContentsState}
                     setTextEditorContentsState={setTextEditorContentsState}
-                    imageState={imageState}
-                    setImageState={setImageState}
+                    textEditorImageState={textEditorImageState}
+                    setTextEditorImageState={setTextEditorImageState}
                     textEditorImageFilesState={textEditorImageFilesState}
                     setTextEditorImageFilesState={setTextEditorImageFilesState}
                 />

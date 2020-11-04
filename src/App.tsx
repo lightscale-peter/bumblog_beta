@@ -21,8 +21,8 @@ function App() {
       <BrowserRouter>
         <Header />
         <Modal />
-        <Route exact path="/" component={BoardHome} />
         <Switch>
+          <Route exact path="/" component={BoardHome} />
           <Route path="/login" component={Login} />
           <Route path="/board/write/:list_id" component={BoardWrite} />
           <Route path="/board/write" component={BoardWrite} />

@@ -39,13 +39,13 @@ const createFolder = () =>{
 createFolder();
 
 // CRUD
-router.post('/list',upload.fields([{name: 'thumbnailImage', maxCount: 1}, {name: 'descriptionImage', maxCount: 10}]), createList);
+router.post('/list',upload.fields([{name: 'thumbnailImageFile', maxCount: 1}, {name: 'descriptionImageFile', maxCount: 10}]), createList);
 
 router.get('/list', findAllList);
 router.get('/list/:list_id', findOneList);
 
 // router.put('/list', authMiddleware);
-router.put('/list', upload.fields([{name: 'thumbnailImage', maxCount: 1}, {name: 'descriptionImage', maxCount: 10}]), updateList);
+router.put('/list', upload.fields([{name: 'thumbnailImageFile', maxCount: 1}, {name: 'descriptionImageFile', maxCount: 10}]), updateList);
 
 // router.delete('/list', authMiddleware);
 router.delete('/list', deleteList);

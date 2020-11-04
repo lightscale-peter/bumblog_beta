@@ -8,16 +8,14 @@ const Board = new Schema({
     tags: [String],
     description: String,
     writer: String,
-    images: {
-        thumbnailImage: [{
-            originalname: String,
-            filename: String
-        }],
-        descriptionImage: [{
-            originalname: String,
-            filename: String
-        }]
-    }
+    thumbnailImage: [{
+        originalname: String,
+        filename: String
+    }],
+    descriptionImage: [{
+        originalname: String,
+        filename: String
+    }]
 });
 
 export type boardType = {
@@ -26,31 +24,31 @@ export type boardType = {
     tags: string | string[];
     description: string;
     writer: string;
-    images: imagesType;
-    thumbnailImage?: string;
-    descriptionImage?: string;
+    thumbnailImage: imageType[];
+    descriptionImage: imageType[];
 }
 
-export interface boardTypeDocument extends Document, boardType{ 
-    _id: string;
-} // methods
-
-export type imagesType = {
-        thumbnailImage?: imageNameType[];
-        descriptionImage?: imageNameType[];
-    }
-
-type imageNameType = {
+type imageType = {
     originalname: string;
     filename: string;
 }
 
-interface modelType extends Model<boardTypeDocument> { // statics
-    createList: (boardData: boardType) => Promise<boardTypeDocument>
-    findAllList: () => Promise<boardTypeDocument[]>
-    findOneListById: (boardId: string) => Promise<boardTypeDocument>
-    updateList: (boardData: boardType) => Promise<boardTypeDocument>
-    deleteList: (boardId: string) => Promise<boardTypeDocument>
+export type imageFileType = {
+    thumbnailImageFile?: imageType[];
+    descriptionImageFile?: imageType[];
+}
+
+export interface boardDocumentType extends Document, boardType{ // methods
+    _id: string;
+} 
+
+
+interface modelType extends Model<boardDocumentType> { // statics
+    createList: (boardData: boardType) => Promise<boardDocumentType>
+    findAllList: () => Promise<boardDocumentType[]>
+    findOneListById: (boardId: string) => Promise<boardDocumentType>
+    updateList: (boardData: boardType) => Promise<boardDocumentType>
+    deleteList: (boardId: string) => Promise<boardDocumentType>
 }
 
 
@@ -78,4 +76,4 @@ Board.statics.deleteList = function(boardId: string){
     return this.deleteOne({_id: boardId});
 }
 
-export default model<boardTypeDocument, modelType>('Board', Board, 'board');
+export default model<boardDocumentType, modelType>('Board', Board, 'board');

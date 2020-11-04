@@ -11,18 +11,13 @@ export type boardListType = {
     title: string;
     description: string;
     writer: string;
-    images: boardListImagesType;
+    thumbnailImage: imageStateType[],
+    descriptionImage: imageStateType[]
 }
 
-export type boardListImagesType = {
-    thumbnailImage: {
-        originalname: string;
-        filename: string;
-    }[];
-    descriptionImage: {
-        originalname: string;
-        filename: string;
-    }[];
+export type imageStateType = {
+    originalname: string;
+    filename: string;
 }
 
 

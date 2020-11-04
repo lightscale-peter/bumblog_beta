@@ -3,7 +3,6 @@ import mongoose from 'mongoose';
 import bodyParser from 'body-parser';
 import router from './routes/api'
 import path from 'path';
-import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import {bumblog} from './config/bumblog.config';
 import morgan from 'morgan';
@@ -28,25 +27,11 @@ app.use(bodyParser.urlencoded({
 }));
 app.use(bodyParser.json());
 
-// app.all('/*', (req: Request, res: Response, next:NextFunction) =>{
-//     next();
-// });
-
-app.use('/', express.static(buildDir));
-app.use('/login', express.static(buildDir));
-app.use('/board', express.static(buildDir));
-app.use('/board/view', express.static(buildDir));
-app.use('/board/write', express.static(buildDir));
-app.use('/uploads', express.static(uploadDir));
 app.use('/api', router);
-
-app.use((req:Request, res:Response)=>{
-    res.status(404).send('일치하는 주소가 없습니다.');
+app.use(express.static(buildDir));
+app.get('*', (req:Request, res:Response) =>{
+    res.sendFile(buildDir + '/index.html');
 });
-app.use((err:Error, req:Request, res:Response)=>{
-    res.status(500).send('서버 에러');
-});
-
 
 // Express 서버 완료시
 app.listen(port, ()=>{

@@ -31,8 +31,8 @@
   },
   "scripts": {
     "start": "node index.js",
-    "dev:start": "concurrently \"npm run react-start\" \"cd server && npm run express-start\"",
-    "dev:build": "concurrently \"npm run react-build\" \"cd server && npm run express-build\"",
+    "build": "concurrently \"npm run react-build\" \"cd server && npm run express-build\"",
+    "start:dev": "concurrently \"npm run react-start\" \"cd server && npm run express-start\"",
     "react-start": "react-scripts start",
     "react-build": "react-scripts build",
     "react-test": "react-scripts test",
@@ -53,6 +53,5 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "./",
   "proxy": "http://localhost:8001"
 }

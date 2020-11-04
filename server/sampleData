@@ -7,40 +7,32 @@ db.board.insert([
         tags: ['공부', '개발', '생각'],
         description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero ducimus quidem sapiente neque earum. Maxime adipisci ea accusantium totam error officiis at velit animi, atque excepturi exercitationem cupiditate incidunt placeat?',
         writer: '신범근',
-        images: {
-            thumbnail: [],
-            description: []
-        }
+        thumbnailImage: [],
+        descriptionImage: []
     },
     {
         title: '프론트엔드 개발의 목표',
         tags: ['생각', '개발'],
         description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero ducimus quidem sapiente neque earum. Maxime adipisci ea accusantium totam error officiis at velit animi, atque excepturi exercitationem cupiditate incidunt placeat?',
         writer: '신범근',
-        images: {
-            thumbnail: [],
-            description: []
-        }
+        thumbnailImage: [],
+        descriptionImage: []
     },
     {
         title: '번들러란 무엇인가?',
         tags: ['개발'],
         description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Officia facere est illum aperiam cumque amet soluta dicta adipisci nam similique, possimus nobis minima eveniet maxime natus quae debitis quidem ducimus.',
         writer: '신범근',
-        images: {
-            thumbnail: [],
-            description: []
-        }
+        thumbnailImage: [],
+        descriptionImage: []
     },
     {
         title: 'Heroku 호스팅을 이용하는 방법',
         tags: ['생각'],
         description: 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero ducimus quidem sapiente neque earum. Maxime adipisci ea accusantium totam error officiis at velit animi, atque excepturi exercitationem cupiditate incidunt placeat?',
         writer: '신범근',
-        images: {
-            thumbnail: [],
-            description: []
-        }
+        thumbnailImage: [],
+        descriptionImage: []
     }
 ]);
 

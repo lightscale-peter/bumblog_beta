@@ -15,21 +15,21 @@ import {
 import { VscTextSize } from 'react-icons/vsc';
 import { useEffect } from 'react';
 import useModal from '../../hooks/useModal';
-import {boardListImagesType} from '../board/BoardHome'
+import {imageStateType} from '../board/BoardHome'
 
 
 function TextEditor({
     textEditorContentsState,
     setTextEditorContentsState,
-    imageState,
-    setImageState,
+    textEditorImageState,
+    setTextEditorImageState,
     textEditorImageFilesState,
     setTextEditorImageFilesState
 }:{
     textEditorContentsState: string
     setTextEditorContentsState: React.Dispatch<React.SetStateAction<string>>
-    imageState: boardListImagesType
-    setImageState: React.Dispatch<React.SetStateAction<boardListImagesType>>
+    textEditorImageState: imageStateType[]
+    setTextEditorImageState: React.Dispatch<React.SetStateAction<imageStateType[]>>
     textEditorImageFilesState: File[]
     setTextEditorImageFilesState: React.Dispatch<React.SetStateAction<File[]>>
 }){
@@ -128,13 +128,9 @@ function TextEditor({
         if(e.type === "keyup"){
             if(e.key === "Backspace"){
                 // imageState - 기존 이미지 지워졌는지 검사
-                imageState.descriptionImage.forEach(image => {
+                textEditorImageState.forEach(image => {
                     if(iframeRef.current?.contentDocument?.body.innerHTML.indexOf(image.filename) === -1){
-                        setImageState({
-                            ...imageState,
-                            descriptionImage: imageState.descriptionImage.filter(item => item.filename !== image.filename)
-                        });
-
+                        setTextEditorImageState(textEditorImageState.filter(item => item.filename !== image.filename))
                     }
                 });
 
@@ -267,7 +263,7 @@ function TextEditor({
         return ()=>{
             removeEventOnTextEditor();
         }
-    }, [textEditorImageFilesState, imageState, firstClickOfEditorState]);
+    }, [textEditorImageFilesState, textEditorImageState, firstClickOfEditorState]);
 
     return (
         <div className="bb-board-write__editor-wrapper">
