@@ -45,11 +45,11 @@ npm 모듈을 모두 설치 후 npm run dev:start <br />
 ##### 실행
 
  * 개발 모드
-   * npm run dev:start
+   * npm run start:dev
    * 자동으로 https://localhost:3000 에서 앱 실행
  
  * 배포 모드
-   * npm run dev:build
+   * npm run build
    * ./build (프론트), web.js (백엔드) 로 번들링.
    * node web.js 실행 후, https://localhost:8001 에서 앱 확인 가능
    
