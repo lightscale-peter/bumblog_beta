@@ -39,7 +39,8 @@ db.board.insert([
 db.user.drop();
 db.user.insert([
     {
-        email: 'sbg',
+        email: 'tlsqjarms@gmail.com',
+        name: '신범근',
         password: '1234',
         admin: true
     },

@@ -3,19 +3,23 @@ import axios from 'axios';
 
 import './BoardWrite.scss';
 import path from 'path';
-import {match, useHistory} from 'react-router-dom';
+import {Redirect, RouteChildrenProps, useHistory} from 'react-router-dom';
 import useModal from '../../hooks/useModal';
+import useAuth from '../../hooks/useAuth';
 
 import TextEditor from '../common/TextEditor';
 
 import { boardListType, imageStateType } from './BoardHome';
-import { matchType } from '../../App';
 import { BsX } from 'react-icons/bs';
 
+type ParamsType = {
+    id: string;
+}
 
-function BoardWrite({match}: {match: match<matchType>}){
+function BoardWrite(props: RouteChildrenProps<ParamsType>){
 
     const history = useHistory();
+    const {authState} = useAuth();
     const {onOpenConfirmModal, onCloseModal} = useModal();
 
     const iframeRef = useRef<HTMLIFrameElement>(null);
@@ -26,6 +30,7 @@ function BoardWrite({match}: {match: match<matchType>}){
     const [tagsState, setTagsState] = useState<string[]>([]);
     const [idState, setIdState] = useState('');
 
+    // Thumbnail Image
     const [tempThumbnailImagePathState, setTempThumbnailImagePathState] = useState('');
     const [thumbnailImageState, setThumbnailImageState] = useState<imageStateType[]>([]);
     const [thumbnailImageFilesState, setThumbnailImageFilesState] = useState<File[]>([]);
@@ -35,17 +40,13 @@ function BoardWrite({match}: {match: match<matchType>}){
     const [textEditorContentsState, setTextEditorContentsState] = useState('');
     const [textEditorImageState, setTextEditorImageState] = useState<imageStateType[]>([]);
     const [textEditorImageFilesState, setTextEditorImageFilesState] = useState<File[]>([]); // 신규 이미지 확인용
-    // const [imageState, setImageState] = useState<boardListImagesType>({ // 기존 이미지 확인용 
-    //     thumbnailImage: [],
-    //     descriptionImage:[]
-    // });
 
 
 
     const setContentsOnPage = (id:string) =>{
         axios({
             method: 'get',
-            url: `/api/board/list/${match.params.list_id}`
+            url: `/api/board/list/${props.match?.params.id}`
         }).then((res: {data: boardListType}) =>{
             console.log('res', res.data);
 
@@ -65,13 +66,11 @@ function BoardWrite({match}: {match: match<matchType>}){
     }
 
 
-
-
     useEffect(()=>{
 
-        const listId = match.params.list_id;
+        const listId = props.match?.params.id;
 
-        console.log("match", match);
+        console.log("match", listId);
         
         // 수정요청으로 들어올 경우
         if(listId){
@@ -321,36 +320,40 @@ function BoardWrite({match}: {match: match<matchType>}){
 
     return (
         <main className="bb-board-write__main">
-            <section className="bb-board-write__form-section">
-                <form className="bb-board-write__form" onSubmit={onSubmit}>
-                <input className="bb-board-write__title" ref={titleInputRef} placeholder="제목을 입력해주세요." type="text" name="title" value={titleState} onChange={setTitleForOnChange}/>
-                {/* <input className="bb-board-write__title--sub" placeholder="소제목을 입력해주세요." type="text" name="subTitle" value={boardTitle?.subTitle} onChange={setTitleForOnChange}/> */}
-                <div className="bb-board-write__tags-wrapper">
-                    <span onClick={setTagsData}>개발</span>
-                    <span onClick={setTagsData}>공부</span>
-                    <span onClick={setTagsData}>생각</span>
-                </div>
-                <TextEditor 
-                    textEditorContentsState={textEditorContentsState}
-                    setTextEditorContentsState={setTextEditorContentsState}
-                    textEditorImageState={textEditorImageState}
-                    setTextEditorImageState={setTextEditorImageState}
-                    textEditorImageFilesState={textEditorImageFilesState}
-                    setTextEditorImageFilesState={setTextEditorImageFilesState}
-                />
-                <div className={`bb-board-write__image-tiles ${tempThumbnailImagePathState !== '' && 'on'}`}>
-                    <span style={{backgroundImage: `url(${tempThumbnailImagePathState})`}} onClick={removeThumbnailImage}><BsX /></span>
-                </div>
-                <div className="bb-board-write__image-upload-btn">
-                    <input type="file" ref={thumbImageRef} onChange={setThumbnailImageFile} />
-                    <button type="button" onClick={()=> thumbImageRef.current?.click()}>썸네일 이미지 업로드</button>
-                </div>
-                <div className="bb-board-write__buttons">
-                    <button type="button" onClick={() => history.push('/board')}>취소</button>
-                    <button type="submit">완료</button>
-                </div>
-                </form>
-            </section>
+            {authState.email !== '' ? (
+                <section className="bb-board-write__form-section">
+                    <form className="bb-board-write__form" onSubmit={onSubmit}>
+                    <input className="bb-board-write__title" ref={titleInputRef} placeholder="제목을 입력해주세요." type="text" name="title" value={titleState} onChange={setTitleForOnChange}/>
+                    {/* <input className="bb-board-write__title--sub" placeholder="소제목을 입력해주세요." type="text" name="subTitle" value={boardTitle?.subTitle} onChange={setTitleForOnChange}/> */}
+                    <div className="bb-board-write__tags-wrapper">
+                        <span onClick={setTagsData}>개발</span>
+                        <span onClick={setTagsData}>공부</span>
+                        <span onClick={setTagsData}>생각</span>
+                    </div>
+                    <TextEditor 
+                        textEditorContentsState={textEditorContentsState}
+                        setTextEditorContentsState={setTextEditorContentsState}
+                        textEditorImageState={textEditorImageState}
+                        setTextEditorImageState={setTextEditorImageState}
+                        textEditorImageFilesState={textEditorImageFilesState}
+                        setTextEditorImageFilesState={setTextEditorImageFilesState}
+                    />
+                    <div className={`bb-board-write__image-tiles ${tempThumbnailImagePathState !== '' && 'on'}`}>
+                        <span style={{backgroundImage: `url(${tempThumbnailImagePathState})`}} onClick={removeThumbnailImage}><BsX /></span>
+                    </div>
+                    <div className="bb-board-write__image-upload-btn">
+                        <input type="file" ref={thumbImageRef} onChange={setThumbnailImageFile} />
+                        <button type="button" onClick={()=> thumbImageRef.current?.click()}>썸네일 이미지 업로드</button>
+                    </div>
+                    <div className="bb-board-write__buttons">
+                        <button type="button" onClick={() => history.push('/board')}>취소</button>
+                        <button type="submit">완료</button>
+                    </div>
+                    </form>
+                </section>
+            ) : (
+                <Redirect to={`/login?redirect=/board`} />
+            )}
         </main>
     )
 }

@@ -145,14 +145,25 @@
     }
 
 }
-.bb-header__sub-menu-box-ul{
+.bb-header__sub-menu-wrapper{
     background-color: white;
     border: 1px solid black;
     border-radius: 5px;
-    min-width: 100px;
     margin-top: 6px;
-    padding: 20px;
-    text-align: center;
+}
+.bb-header__sub-menu_login-massage{
+    border-bottom: 1px solid lightgrey;
+    padding: 15px;
+    & > div{
+        @extend .text-bold;
+        margin-top: 5px;
+    }
+}
+.bb-header__sub-menu-box-ul{
+    padding: 15px;
+    
+    
+    
 
     & > li{
         margin-top: 5px;

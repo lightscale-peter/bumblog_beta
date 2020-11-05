@@ -1,17 +1,18 @@
 import React, {useRef, useMemo, useEffect, useState} from 'react';
 import axios from 'axios';
-import {Link, useHistory} from 'react-router-dom';
+import {Link, RouteChildrenProps, useHistory} from 'react-router-dom';
 import {BiMenu, BiUser} from 'react-icons/bi';
 import './Header.scss';
+import useAuth from '../../hooks/useAuth';
 
 function Header(){
 
     const history = useHistory();
-    const [isLoginState, setIsLoginState] = useState(false);
 
     const mobileMenuRef = useRef<HTMLUListElement>(null);
     const subMenuRef = useRef<HTMLDivElement>(null);
 
+    const {authState, onLogout} = useAuth();
 
     // MainMenu 모바일에서 메뉴 펄치기 버튼
     const toggleMainMenu = (event: any , status: Number = 2) =>{
@@ -63,9 +64,12 @@ function Header(){
     const bodyFunc = (e: any) =>{
         console.log('bodyevent 실행', e.srcElement.className);
         const exClassName = [
+            'bb-header__sub-menu-wrapper',
+            'bb-header__sub-menu_login-massage',
             'bb-header__sub-menu-box-ul',
             'bb-header__sub-menu-box-li'
         ];
+
         let flag = true;
 
 
@@ -87,7 +91,7 @@ function Header(){
         }).then((res) =>{
             console.log('post_res', res.data);
             if(res.data.status){
-                setIsLoginState(false);
+                onLogout();
                 history.push('/');
             }
         });
@@ -98,19 +102,6 @@ function Header(){
             mobileMenuRef.current?.classList.remove('on');
             subMenuRef.current?.classList.remove('on');
         });
-
-        axios({
-            method: 'get',
-            url: '/api/auth/check'
-        }).then((res) =>{
-            console.log('post_res', res.data);
-            
-            if(res.data.status){
-                setIsLoginState(true);
-            }
-         
-        });
-
     }, []);
 
     return (
@@ -128,15 +119,23 @@ function Header(){
                             <div className="edge-wrapper">
                                 <div className="edge"></div>
                             </div>
-                            <ul className="bb-header__sub-menu-box-ul">
-                                {isLoginState ? (
-                                        <li className="bb-header__sub-menu-box-li" onClick={logout}>로그아웃</li>
-                                    ) : (
-                                        <li className="bb-header__sub-menu-box-li">
-                                            <Link to="/login">로그인</Link>
-                                        </li>
-                                    )}
-                            </ul>
+                            <div className="bb-header__sub-menu-wrapper">
+                                {authState.name !== '' && (
+                                    <div className="bb-header__sub-menu_login-massage">
+                                        Signed&nbsp;in&nbsp;as
+                                        <div>{authState.name}</div>
+                                    </div>
+                                )}
+                                <ul className="bb-header__sub-menu-box-ul">
+                                    {authState.name !== '' ? (
+                                            <li className="bb-header__sub-menu-box-li" onClick={logout}>Logout</li>
+                                        ) : (
+                                            <li className="bb-header__sub-menu-box-li">
+                                                <Link to="/login">Login</Link>
+                                            </li>
+                                        )}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

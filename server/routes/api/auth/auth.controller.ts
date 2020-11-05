@@ -4,10 +4,11 @@ import JWT, { VerifyErrors } from 'jsonwebtoken';
 
 export const createUser = (req: Request, res: Response) =>{
 
-    const {email, password} = req.body;
+    const {email, name, password} = req.body;
  
     const userData = {
         email: email,
+        name: name,
         password: password
     }
     
@@ -85,6 +86,7 @@ export const login = (req: Request, res: Response) =>{
                         {
                             _id: user._id,
                             email: user.email,
+                            name: user.name,
                             admin: user.admin
                         },
                         secret,
@@ -176,7 +178,7 @@ export const check = (req: Request, res: Response) =>{
 
     const onError = (error: VerifyErrors | null) =>{
         res.json({
-            success: false,
+            status: false,
             message: error?.message
         })
     }

@@ -18,7 +18,7 @@ if(process.env.NODE_ENV === 'production'){ // 배포 모드
     uploadDir = path.resolve(__dirname, './uploads');
 }
 // app.use(cors());
-app.use(cookieParser());
+app.use(cookieParser()); // 브라우저 쿠키 저장
 app.use(morgan('dev')); // 로그 기록
 app.set('jwt-secret', bumblog.secret);
 

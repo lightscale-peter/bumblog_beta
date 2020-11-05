@@ -5,6 +5,7 @@ import {bumblog} from '../config/bumblog.config'
 
 const User = new Schema({
     email: String,
+    name: String,
     password: String,
     admin: {
         type: Boolean,
@@ -14,6 +15,7 @@ const User = new Schema({
 
 export type userType = {
     email: string;
+    name: string;
     password: string;
     admin?: boolean
 }

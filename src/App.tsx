@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import {BrowserRouter, Switch, Route} from 'react-router-dom';
 import {
   Header,
@@ -10,12 +10,37 @@ import {
   BoardWrite
 } from './components';
 import './App.scss';
-
-export type matchType = {
-  list_id: string;
-}
+import axios from 'axios';
+import useAuth from './hooks/useAuth';
 
 function App() {
+
+  const {onLogin} = useAuth();
+
+  const checkLoginStatus = () =>{
+    axios({
+      method: 'get',
+      url: '/api/auth/check'
+    }).then((res) =>{
+      console.log('post_res', res.data);
+      
+      if(res.data.status){ // Yes Login
+        const loginData = {
+          email: res.data.info.email,
+          name: res.data.info.name
+        }
+        onLogin(loginData);
+      }
+    });
+  }
+
+  useEffect(()=>{
+    checkLoginStatus();
+  }, [])
+
+
+
+
   return (
     <div className="bb-body">
       <BrowserRouter>
@@ -24,9 +49,9 @@ function App() {
         <Switch>
           <Route exact path="/" component={BoardHome} />
           <Route path="/login" component={Login} />
-          <Route path="/board/write/:list_id" component={BoardWrite} />
+          <Route path="/board/write/:id" component={BoardWrite} />
           <Route path="/board/write" component={BoardWrite} />
-          <Route path="/board/view/:list_id" component={BoardView} />
+          <Route path="/board/view/:id" component={BoardView} />
           <Route path="/board" component={BoardHome} />
         </Switch>
         <Footer />

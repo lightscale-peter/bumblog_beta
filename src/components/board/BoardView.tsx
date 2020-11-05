@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Link, match} from 'react-router-dom';
+import {Link, match, RouteChildrenProps} from 'react-router-dom';
 import './BoardView.scss';
 import axios from 'axios';
 import {boardListType} from './BoardHome';
@@ -8,10 +8,12 @@ import defaultThumbnail from '../../assets/images/board/default_thumbnail.jpg';
 import {BsPencilSquare, BsTrash} from 'react-icons/bs'
 import path from 'path';
 import useModal from '../../hooks/useModal';
-import {matchType} from '../../App';
 
+type ParamsType = {
+    id: string;
+}
 
-function BoardView({match}: {match: match<matchType>}){
+function BoardView(props: RouteChildrenProps<ParamsType>){
 
     const {onOpenConfirmModal, onCloseModal} = useModal();
 
@@ -31,12 +33,11 @@ function BoardView({match}: {match: match<matchType>}){
     useEffect(()=>{
 
         window.scrollTo(0, 0);
-       
+
         axios({
             method: 'get',
-            url: `/api/board/list/${match.params.list_id}`
+            url: `/api/board/list/${props.match?.params.id}`
         }).then((res) =>{
-
             if(res.data){
 
                 setListData(res.data);
@@ -93,7 +94,7 @@ function BoardView({match}: {match: match<matchType>}){
                 <ul className="bb-board-view__update-btns">
                     <li>
                         <button>
-                            <Link to={`/board/write/${match.params.list_id}`}>
+                            <Link to={`/board/write/${props.match?.params.id}`}>
                                 <BsPencilSquare className="bb-board-view__pencil-icon" />
                             </Link>
                         </button>
