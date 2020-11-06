@@ -6,7 +6,7 @@
 * 현재 게시판 CRUD(생성, 읽기, 수정, 삭제)가 구현되어 있으며, 로그인 기능 추가 구현 중에 있습니다.
 * 프론트 : React / 백엔드 : Express / DB : MongoDB로 되어있습니다.
 * 전 영역 (프론트 + 백엔드) TypeScript로 개발되어 있습니다.
-* heroku nodeJS 호스팅 서비스를 이용하여 배포되어 있어 접속이 가능합니다. [확인하기](https://beomblog.herokuapp.com/)
+* 현재 aws ec2 서버를 이용하여 배포되어 있습니다. [확인하기](https://bumblog.net/)
 * 배포 시에는 Webpack 번들러를 이용하여 ts -> js로 변환 후 사용했습니다.
 * 본인 기여도 100%로 개발되었습니다. (간략한 코드 포트폴리오는 [여기서](https://docs.google.com/presentation/d/1K_wRe0whovbAt0aJoLSoHcVZUKjVxyOsBKXIjpRQOBs/edit?usp=sharing) 확인이 가능합니다.)
 
