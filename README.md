@@ -33,9 +33,8 @@
 #### 3. 실행 방법.
 
 npm 모듈을 모두 설치 후 npm run dev:start <br />
-(server module의 경우 별도로 설치가 필요합니다)
 
-##### 설치 
+##### 설치 (sever폴더 별도 설치 필요)
 
 1. cd bumblog
 2. npm install
