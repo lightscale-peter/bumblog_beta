@@ -52,7 +52,7 @@ npm 모듈을 모두 설치 후 npm run dev:start <br />
    * ./build (프론트), web.js (백엔드) 로 번들링.
    * node web.js 실행 후, https://localhost:8001 에서 앱 확인 가능
    
- * 배포 실행 (heroku 호스팅용)
+ * 배포 실행
    * npm start
  
  
