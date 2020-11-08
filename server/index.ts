@@ -51,3 +51,5 @@ mongoose.connect(bumblog.mongodbUri, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 });
+
+export default app;

@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import './Login.scss';
 import {Redirect, RouteChildrenProps} from 'react-router-dom';
+import useAuth from '../../hooks/useAuth';
 
 
 type ParamsType = {
@@ -17,6 +18,9 @@ function Login(props : RouteChildrenProps<ParamsType>){
     const [modeState, setModeState] = useState('LOGIN');
     const [redirctState, setRedirectState] = useState('');
     const toggleBarRef = useRef<HTMLSpanElement>(null);
+
+    const {authState} = useAuth();
+
 
     
 
@@ -83,6 +87,12 @@ function Login(props : RouteChildrenProps<ParamsType>){
         console.log('redirectValue', redirectValue);
 
     }, []);
+
+    useEffect(()=>{
+        if(authState.email !== "" && redirctState !== ""){
+            props.history.push(redirctState);
+        }
+    }, [authState]);
 
     // Sign In 로그인
     // Sign Up 가입

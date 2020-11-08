@@ -30,6 +30,8 @@ function BoardWrite(props: RouteChildrenProps<ParamsType>){
     const [tagsState, setTagsState] = useState<string[]>([]);
     const [idState, setIdState] = useState('');
 
+    const [isLoginState, setIsLoginState] = useState<string | null>(null);
+
     // Thumbnail Image
     const [tempThumbnailImagePathState, setTempThumbnailImagePathState] = useState('');
     const [thumbnailImageState, setThumbnailImageState] = useState<imageStateType[]>([]);
@@ -126,7 +128,7 @@ function BoardWrite(props: RouteChildrenProps<ParamsType>){
         form.append('title', titleState);
         form.append('tags', JSON.stringify(tagsState));
         form.append('description', textEditorContentsState);
-        form.append('writer', '신범근');
+        form.append('writer', authState.name);
 
         if(idState == ''){ // 신규 등록
 
@@ -317,13 +319,20 @@ function BoardWrite(props: RouteChildrenProps<ParamsType>){
         setThumbnailImageFilesState([]);   
     }
 
+    useEffect(()=>{
+        setIsLoginState(authState.email);
+    }, [authState])
+
 
     return (
         <main className="bb-board-write__main">
-            {authState.email !== '' ? (
+            {isLoginState === "" ? (
+                <Redirect to={`/login?redirect=/board/write`} />
+            ) : (
                 <section className="bb-board-write__form-section">
                     <form className="bb-board-write__form" onSubmit={onSubmit}>
                     <input className="bb-board-write__title" ref={titleInputRef} placeholder="제목을 입력해주세요." type="text" name="title" value={titleState} onChange={setTitleForOnChange}/>
+                    <div className="bb-board-write__writer">작성자 : {authState.name}</div>
                     {/* <input className="bb-board-write__title--sub" placeholder="소제목을 입력해주세요." type="text" name="subTitle" value={boardTitle?.subTitle} onChange={setTitleForOnChange}/> */}
                     <div className="bb-board-write__tags-wrapper">
                         <span onClick={setTagsData}>개발</span>
@@ -351,8 +360,6 @@ function BoardWrite(props: RouteChildrenProps<ParamsType>){
                     </div>
                     </form>
                 </section>
-            ) : (
-                <Redirect to={`/login?redirect=/board`} />
             )}
         </main>
     )
