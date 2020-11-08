@@ -15,7 +15,7 @@ import useAuth from './hooks/useAuth';
 
 function App() {
 
-  const {onLogin} = useAuth();
+  const {onLogin, authState} = useAuth();
 
   const checkLoginStatus = () =>{
     axios({

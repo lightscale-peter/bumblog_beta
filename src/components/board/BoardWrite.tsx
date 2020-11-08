@@ -320,8 +320,12 @@ function BoardWrite(props: RouteChildrenProps<ParamsType>){
     }
 
     useEffect(()=>{
+        console.log('authSat', authState);
+
         setIsLoginState(authState.email);
     }, [authState])
+
+    
 
 
     return (

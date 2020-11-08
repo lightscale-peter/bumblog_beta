@@ -17,7 +17,7 @@ export type userType = {
     email: string;
     name: string;
     password: string;
-    admin?: boolean
+    admin?: boolean;
 }
 
 export interface userTypeDocument extends Document, userType{ // methods

@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from 'react';
 import axios from 'axios';
 import './Login.scss';
-import {Redirect, RouteChildrenProps} from 'react-router-dom';
+import {RouteChildrenProps} from 'react-router-dom';
 import useAuth from '../../hooks/useAuth';
-
 
 type ParamsType = {
     redirect: string;
@@ -19,15 +18,12 @@ function Login(props : RouteChildrenProps<ParamsType>){
     const [redirctState, setRedirectState] = useState('');
     const toggleBarRef = useRef<HTMLSpanElement>(null);
 
-    const {authState} = useAuth();
-
-
-    
-
     const toggleModeState = (targetMode: string) =>{
         setModeState(targetMode);
         toggleBarRef.current?.classList.toggle('on');
     }
+
+    const {onLogin} = useAuth();
 
     const setLoginState = (e: React.ChangeEvent<HTMLInputElement>) =>{
 
@@ -60,11 +56,27 @@ function Login(props : RouteChildrenProps<ParamsType>){
                 data: userInfoState
             }).then((res) =>{
                 console.log('post_res', res.data);
-                if(redirctState === ''){
-                    props.history.goBack();
-                }else{
-                    props.history.push(redirctState);
-                }
+
+                axios({
+                    method: 'get',
+                    url: '/api/auth/check'
+                }).then((res) =>{
+                    console.log('post_res', res.data);
+                
+                    if(res.data.status){ // Yes Login
+                        const loginData = {
+                            email: res.data.info.email,
+                            name: res.data.info.name
+                        }
+                        onLogin(loginData);
+                    }
+
+                    if(redirctState === ''){
+                        props.history.goBack();
+                    }else{
+                        props.history.push(redirctState);
+                    }
+                });
                 
             });
         }else{ // 신규 가입
@@ -88,11 +100,11 @@ function Login(props : RouteChildrenProps<ParamsType>){
 
     }, []);
 
-    useEffect(()=>{
-        if(authState.email !== "" && redirctState !== ""){
-            props.history.push(redirctState);
-        }
-    }, [authState]);
+    // useEffect(()=>{
+    //     if(authState.email !== "" && redirctState !== ""){
+    //         props.history.push(redirctState);
+    //     }
+    // }, [authState]);
 
     // Sign In 로그인
     // Sign Up 가입
