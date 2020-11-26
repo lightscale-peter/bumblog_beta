@@ -4,6 +4,7 @@
 
 * Node JS 서버 기반으로 작성된 토이프로젝트 입니다.
 * 프론트 : React / 백엔드 : Express / 통신: RESTful API / DB : MongoDB로 되어있습니다.
+* 현재 React + NestJS + GraphQL + Mysql 버전으로 별도 개발중이며 실사용을 목표로 하고 있습니다.[(코드 확인하기)](https://github.com/duracelldog/bumblog/blob/master/README.md)
 * 전 영역 (프론트 + 백엔드) TypeScript로 개발되어 있습니다.
 * 현재 aws ec2 서버를 이용하여 배포되어 있습니다. [확인하기](https://bumblog.net/)
 * 배포 시에는 Webpack 번들러를 이용하여 ts -> js로 변환 후 사용했습니다.
